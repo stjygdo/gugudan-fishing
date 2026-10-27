@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>구구단 낚시왕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+/* ===================== CSS: 스타일 ===================== */
+:root{
+  --sea1:#7fd3f7; --sea2:#2a8fd6; --sea3:#155e9c;
+  --ink:#1d2b3a; --card:#ffffff; --accent:#ff8a3d;
+  --good:#22b45a; --bad:#e5484d;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;touch-action:manipulation}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color:var(--ink);
+  background:linear-gradient(180deg,#c8ecff 0%,#bfe8ff 22%,var(--sea1) 32%,var(--sea2) 68%,var(--sea3) 100%);
+  background-color:var(--sea3);background-repeat:no-repeat;background-size:100% max(100%,100vh);
+  min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none;
+}
+.screen{display:none;min-height:100vh;padding:16px}
+.screen.active{display:flex;flex-direction:column;align-items:center}
+
+/* 시작 화면 */
+.panel{background:var(--card);border-radius:20px;padding:24px;max-width:560px;width:100%;
+  box-shadow:0 10px 30px rgba(0,40,80,.2);margin-top:3vh}
+h1{font-size:2rem;text-align:center;margin-bottom:4px}
+.sub{text-align:center;color:#5a6b7d;margin-bottom:8px}
+h2{font-size:1.1rem;margin:18px 0 10px}
+.dans{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dan{border:2px solid #cfe3f3;background:#f3f9ff;border-radius:12px;padding:12px 0;
+  font-size:1.2rem;font-weight:700;cursor:pointer;color:var(--ink)}
+.dan.on{background:var(--sea2);border-color:var(--sea2);color:#fff;box-shadow:0 3px 0 #155e9c}
+.row{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;border:none;background:#eef3f7;border-radius:10px;padding:8px;font-size:.95rem;cursor:pointer;color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--sea2);height:28px}
+.timeval{font-weight:800;color:var(--sea2)}
+.big-btn{width:100%;margin-top:22px;border:none;border-radius:14px;padding:16px;font-size:1.3rem;
+  font-weight:800;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 4px 0 #d96a22}
+.big-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #d96a22}
+.big-btn:disabled{background:#c7cdd3;box-shadow:none;cursor:default}
+.big-btn.sub-btn{background:#eef3f7;color:var(--ink);box-shadow:0 4px 0 #cdd6de;margin-top:10px}
+.help{font-size:.92rem;color:#4a5b6d;line-height:1.7;margin-top:16px;background:#f6f9fc;border-radius:10px;padding:10px 14px}
+/* 처음 화면 */
+.home{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 20px}
+.title{font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(2.4rem,9vw,3.4rem);color:#155e9c;letter-spacing:1px;
+  -webkit-text-stroke:2px #fff;paint-order:stroke fill;text-shadow:0 4px 0 rgba(21,94,156,.25);margin:0}
+.device{color:#ff6a2b;font-weight:900;font-size:1.05rem;margin-top:-6px}
+.qr{width:150px;height:150px;background:#fff;border:3px dashed #ff8a3d;border-radius:14px;padding:8px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer}
+.qr img,.qr canvas{width:100%;height:100%;image-rendering:pixelated}
+.qr-cat{width:100%;opacity:.9}
+.qr-cap{font-size:.85rem;color:#3b5570;margin-top:-6px}
+.guide{font-weight:800;color:var(--ink);margin:2px 0}
+.nick{width:100%;font-family:"Jua",sans-serif;font-size:clamp(1.6rem,6vw,2.2rem);text-align:center;color:var(--ink);
+  padding:18px 12px;border:4px solid #ffd84d;border-radius:28px;background:#fffdf3;outline:none}
+.nick::placeholder{color:#b8a98a}
+/* 아이폰(사파리)은 user-select:none이 입력창까지 막아 글자가 안 써지므로 입력창만 허용 */
+input,textarea{-webkit-user-select:text;user-select:text}
+button{touch-action:manipulation}
+.nick-msg{min-height:1.3em;margin-top:-6px;color:var(--bad);font-weight:800;font-size:.95rem}
+.nick:focus{border-color:#ffb800;box-shadow:0 0 0 4px rgba(255,216,77,.35)}
+.nick.need{animation:shake .35s;border-color:var(--bad)}
+.start-btn{width:100%;font-family:"Jua",sans-serif;font-size:clamp(1.7rem,6.5vw,2.3rem);color:#fff;cursor:pointer;
+  padding:16px;border:3px dashed rgba(255,255,255,.55);border-radius:28px;background:#ff5a1f;box-shadow:0 7px 0 #c73e0c}
+.start-btn:active{transform:translateY(5px);box-shadow:0 2px 0 #c73e0c}
+.home-start{background:linear-gradient(180deg,#1fc7b6,#0f9ea8);box-shadow:0 7px 0 #0b6f78}
+.home-start:active{box-shadow:0 2px 0 #0b6f78}
+.start-btn:disabled{background:#c7cdd3;box-shadow:0 7px 0 #9aa3ab;cursor:default}
+.settings{width:100%;background:rgba(255,255,255,.92);border-radius:18px;padding:14px 16px}
+.set-title{font-weight:800;margin-bottom:10px}
+.title.small{font-size:clamp(2rem,7vw,2.6rem)}
+.hello{font-weight:800;color:var(--ink);text-align:center}
+.back-btn{border:none;background:rgba(255,255,255,.85);color:var(--ink);font-weight:800;font-size:1rem;padding:10px 20px;border-radius:999px;cursor:pointer}
+#setupScreen .home{gap:16px;padding-top:3vh}
+.range-ticks{display:flex;justify-content:space-between;font-size:.75rem;color:#5a6b7d;margin-top:2px}
+.settings summary{cursor:pointer;font-weight:800;list-style:none}
+.settings summary::-webkit-details-marker{display:none}
+.settings summary span{font-weight:600;color:#5a6b7d;font-size:.9rem}
+.settings[open] summary{margin-bottom:10px}
+.set-time{font-weight:800;margin:14px 0 6px}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lv{border:2px solid #cfe3f3;background:#f3f9ff;border-radius:12px;padding:10px 0;font-size:1.1rem;font-weight:800;cursor:pointer;color:var(--ink)}
+.lv small{display:block;font-size:.75rem;font-weight:600;color:#5a6b7d;margin-top:2px}
+.lv.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.lv.on small{color:#fff}
+.lvtag{font-size:.75rem;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.2);margin-left:6px;vertical-align:middle}
+.rank-cap{font-weight:800;color:var(--ink);margin-bottom:-6px}
+.db-status{font-size:.8rem;color:#3b5570;margin-top:-6px}
+.rank{width:100%;background:rgba(10,45,90,.55);border:2px dashed rgba(255,255,255,.35);border-radius:20px;padding:6px 18px}
+.rank-row{display:flex;align-items:center;gap:14px;padding:12px 0;color:#fff;font-weight:800;font-size:1.05rem}
+.rank-row + .rank-row{border-top:1px solid rgba(255,255,255,.15)}
+.rank-row .medal{width:34px;text-align:center;font-size:1.5rem;flex:none}
+.rank-row .num{display:inline-block;width:28px;height:28px;line-height:28px;border-radius:50%;background:rgba(255,255,255,.2);font-size:.95rem}
+.rank-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-row .pts{font-variant-numeric:tabular-nums}
+.rank-row.me{color:#ffd84d}
+.rank-empty{color:#e6f4ff;text-align:center;padding:14px 0;font-weight:700}
+.my-rank{text-align:center;font-weight:800;color:var(--sea2);margin-top:4px}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* 게임 화면: 화면 한 장에 꽉 차게 (스크롤 없음) */
+#gameScreen.active{height:100vh;height:100dvh;min-height:0;overflow:hidden;overscroll-behavior:none;
+  padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
+.hud{flex:none;width:100%;max-width:1000px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hud .group{display:flex;gap:8px}
+.chip{background:rgba(255,255,255,.92);border-radius:999px;padding:8px 14px;font-weight:800;font-size:1.1rem;border:none;color:var(--ink)}
+button.chip{cursor:pointer;font-size:.95rem}
+.chip.warn{color:var(--bad)}
+
+/* 고양이 장면 */
+.scene{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2px}
+.cat{height:clamp(90px,27dvh,300px);width:auto;aspect-ratio:260/200;animation:bob 2.2s ease-in-out infinite}
+.cat.jump{animation:jump .5s ease-out}
+.cat.sad{animation:catShake .45s}
+.cat .happy,.cat .cry{display:none}
+.cat.mood-happy .eyes,.cat.mood-sad .eyes{display:none}
+.cat.mood-happy .happy{display:inline}
+.cat.mood-sad .cry{display:inline}
+.bubble{position:relative;background:#fff;border-radius:18px;padding:12px 16px;font-weight:800;font-size:1.1rem;
+  box-shadow:0 4px 12px rgba(0,40,80,.15);max-width:220px;line-height:1.4;word-break:keep-all}
+.bubble::before{content:"";position:absolute;left:-10px;top:50%;transform:translateY(-50%);
+  border:8px solid transparent;border-right:12px solid #fff;border-left:0}
+.bubble.pop{animation:pop .35s}
+.combo{flex:none;height:1.4em;font-weight:800;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.3)}
+
+/* 물고기 연못: 가로 화면 4×3, 세로 화면 3×4 (12마리) */
+.pond{flex:1;min-height:0;width:100%;max-width:1100px;display:grid;
+  grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:4px 10px}
+.cell{position:relative;min-height:0;cursor:pointer;touch-action:manipulation}
+.cell svg{width:100%;height:100%;overflow:visible}
+.cell.empty svg{visibility:hidden}
+.ln line{stroke:#fff;stroke-width:5;stroke-linecap:round}
+.eq text{font-size:34px;font-weight:900;fill:#1d2b3a;paint-order:stroke;stroke:#fff;stroke-width:6px;stroke-linejoin:round}
+.fishg,.ln,.wig{transform-box:fill-box}
+.ln{transform-origin:top center}
+.fishg{transform-origin:center}
+.wig{transform-origin:2% 40%}                       /* 입(바늘) 기준으로 흔들림 */
+.tailg{transform-box:fill-box;transform-origin:left center;animation:wag .5s ease-in-out infinite alternate}
+
+/* 시간 경과: 줄 색 변화 + 물고기 몸부림 */
+.cell.live .ln line{animation:tension var(--life) linear forwards}
+.cell.live .wig{animation:struggle var(--life) linear forwards}
+.cell.spawn .fishg{animation:rise .5s ease-out}
+.cell.caught svg{animation:reel .5s ease-in forwards}
+.cell.snap .ln{animation:retract .35s ease-out forwards}
+.cell.snap .fishg{animation:escape 1s ease-in forwards}
+
+.float{position:absolute;left:55%;top:35%;transform:translateX(-50%);font-weight:900;font-size:1.5rem;
+  pointer-events:none;animation:floatUp .9s ease-out forwards;text-shadow:0 2px 0 #fff,0 0 6px #fff;white-space:nowrap}
+.float.good{color:var(--good)} .float.bad{color:var(--bad)} .float.esc{color:#6b4320}
+.float.tang{color:#ff3b3b;font-size:2rem;top:20%;animation:tang .7s ease-out forwards}
+
+.countdown{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:20px;word-break:keep-all;line-height:1.25;
+  font-size:clamp(2.4rem,11vw,5.5rem);font-weight:900;color:#fff;text-shadow:0 6px 0 rgba(0,0,0,.2);background:rgba(10,60,110,.35);z-index:10}
+.countdown.show{display:flex}
+
+/* 결과 화면 */
+.score-big{font-size:3.4rem;font-weight:900;text-align:center;color:var(--accent);margin:6px 0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.stat{background:#f3f9ff;border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:1.4rem}
+.stat small{display:block;font-size:.75rem;color:#5a6b7d;word-break:keep-all}
+.set-note{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 10px;font-size:.85rem;color:#4a5b6d;margin-top:12px;line-height:1.5;background:#f3f9ff;border-radius:10px;padding:8px 12px}
+.set-note span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:340px){.set-note{grid-template-columns:1fr}}
+.float.combo{color:#ff6a2b;font-size:1.7rem}
+.float.release{color:#1d8fd6;font-size:1.2rem;top:52%}
+.float.goodword{color:#14a34a;font-size:1.6rem;top:18%;animation:tang .9s ease-out forwards;text-shadow:0 2px 0 #fff,0 0 8px #fff}
+.badge{text-align:center;font-weight:900;font-size:1.15rem;margin-top:10px;color:#1d8fd6}
+.rlog{display:flex;flex-direction:column;gap:6px}
+.rlog-row{display:flex;align-items:center;gap:8px;background:#f3f9ff;border-radius:10px;padding:6px 10px;font-weight:700}
+.rlog-row .rr{width:96px;white-space:nowrap}
+.rlog-row .bar{flex:1;height:10px;border-radius:999px;background:#e1ecf5;overflow:hidden}
+.rlog-row .bar i{display:block;height:100%;background:linear-gradient(90deg,#7fd3f7,#2a8fd6);border-radius:999px}
+.rlog-row .sc{width:56px;text-align:right;font-variant-numeric:tabular-nums}
+.rlog-row .st{width:24px;text-align:center}
+.rlog-row.best{background:#fff4e0}
+.rlog-row.best .bar i{background:linear-gradient(90deg,#ffd84d,#ff8a3d)}
+.wrongs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.wtag{background:#fff0f0;color:var(--bad);border-radius:8px;padding:4px 10px;font-weight:700}
+.wtag em{font-style:normal;color:var(--good)}
+
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes jump{0%{transform:translateY(0)}40%{transform:translateY(-22px) scale(1.05)}100%{transform:translateY(0)}}
+@keyframes catShake{0%,100%{transform:none}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes wag{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+/* 줄 색: 흰색 → 노랑 → 주황 → 빨강, 굵기도 점점 굵게 */
+@keyframes tension{
+  0%{stroke:#ffffff;stroke-width:5}
+  40%{stroke:#ffe14d;stroke-width:5.5}
+  70%{stroke:#ff9a1f;stroke-width:6.5}
+  88%{stroke:#ff2a2a;stroke-width:8}
+  100%{stroke:#d10000;stroke-width:9}
+}
+@keyframes rise{from{transform:translateY(70px);opacity:0}to{transform:none;opacity:1}}
+@keyframes reel{to{transform:translateY(-110%) scale(.8);opacity:0}}
+@keyframes retract{0%{transform:scaleY(1)}30%{transform:scaleY(.12)}100%{transform:scaleY(0)}}
+@keyframes escape{
+  0%{transform:none}
+  15%{transform:translate(-10px,-18px) rotate(-28deg)}
+  40%{transform:translate(4px,30px) rotate(22deg)}
+  100%{transform:translate(200px,60px) rotate(0);opacity:0}
+}
+@keyframes floatUp{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-45px)}}
+@keyframes tang{0%{opacity:0;transform:translate(-50%,0) scale(.4)}25%{opacity:1;transform:translate(-50%,0) scale(1.3)}100%{opacity:0;transform:translate(-50%,-30px) scale(1)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+/* 라운드 진행 막대 */
+.roundbar{flex:none;width:100%;max-width:640px;display:flex;align-items:center;gap:10px;margin-top:4px;
+  font-weight:900;color:#fff;text-shadow:0 0 3px rgba(0,30,60,.7),0 1px 3px rgba(0,0,0,.5)}
+.roundbar .prog{flex:1;height:14px;border-radius:999px;background:rgba(0,30,60,.22);box-shadow:inset 0 0 0 2px rgba(255,255,255,.5);overflow:hidden}
+.roundbar .prog i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#ffd84d,#ff8a3d);transition:width .3s}
+.roundbar .rn{white-space:nowrap}
+.rounds{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.rbtn{border:2px solid #cfe3f3;background:#f3f9ff;border-radius:12px;padding:6px 0 4px;cursor:pointer;color:var(--ink);font-weight:800;font-size:1rem;line-height:1.2}
+.rbtn small{display:block;font-size:1.1rem}
+.rbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rbtn.boss{border-color:#c0392b}
+.mult-note{margin-top:8px;font-weight:800;color:#d96a22;font-size:.92rem}
+.stage-tag{font-size:.8rem;font-weight:800;padding:2px 8px;border-radius:999px;background:#e6f4ff;color:#155e9c;margin-left:6px;vertical-align:middle}
+.stage-tag.deep{background:#0a3d62;color:#bfe8ff}
+.stage-tag.boss{background:#4a0d2a;color:#ffd23f}
+
+/* ===== 라운드별 배경 10종 =====
+   ::before = 움직이는 입자(물방울·비·눈·별), ::after = 풍경(해·달·산호·해초·해파리) */
+body{transition:background .8s}
+#gameScreen{isolation:isolate;position:relative;overflow:hidden}
+#gameScreen::before,#gameScreen::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
+.bubbles,body.bg-r1 #gameScreen::before,body.bg-r3 #gameScreen::before,body.bg-r4 #gameScreen::before,body.bg-r8 #gameScreen::before{
+  background-image:radial-gradient(circle,rgba(255,255,255,.4) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,255,255,.25) 0 2px,transparent 3px);
+  background-size:180px 220px,120px 160px;animation:bubbleUp 14s linear infinite}
+
+/* 1 맑은 바다 */
+body.bg-r1{background:linear-gradient(180deg,#c8ecff 0%,#bfe8ff 22%,#7fd3f7 32%,#2a8fd6 68%,#155e9c 100%)}
+body.bg-r1 #gameScreen::after{background:radial-gradient(circle at 90% 7%,#fff7b0 0 38px,rgba(255,240,150,.45) 39px 62px,transparent 63px)}
+/* 2 노을 바다 */
+body.bg-r2{background:linear-gradient(180deg,#ffd29a 0%,#ff9f7a 18%,#ff7a8a 30%,#8a5aa8 60%,#2b2f6e 100%)}
+body.bg-r2 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,240,200,.7) 0 2px,transparent 3px);background-size:140px 120px;animation:twinkle 3s ease-in-out infinite alternate}
+body.bg-r2 #gameScreen::after{background:radial-gradient(circle at 82% 26%,#ffe08a 0 60px,rgba(255,190,110,.4) 61px 100px,transparent 101px)}
+/* 3 산호초 */
+body.bg-r3{background:linear-gradient(180deg,#c9fbf3 0%,#8ff0e6 25%,#2ec4c9 60%,#0d8aa0 100%)}
+body.bg-r3 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 120'><g fill='%23ff7aa2' opacity='.6'><path d='M30 120V70q-14-6-10-24q8 4 10 16q2-22 12-26q4 14-4 30q12-8 18-2q-8 10-18 14V120Z'/></g><g fill='%23ffb347' opacity='.6'><circle cx='120' cy='108' r='22'/><circle cx='100' cy='112' r='14'/><circle cx='140' cy='114' r='12'/></g><g fill='%23b48cff' opacity='.55'><path d='M200 120V80l-12-30l14 20l4-34l6 34l14-22l-10 32V120Z'/></g></svg>") repeat-x bottom/260px 120px}
+/* 4 해초 숲 */
+body.bg-r4{background:linear-gradient(180deg,#c6f2dc 0%,#8fdcb8 25%,#3fb08a 55%,#126e5a 85%,#0b3d33 100%)}
+body.bg-r4 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 260'><g fill='none' stroke='%231f7a4c' stroke-width='10' stroke-linecap='round' opacity='.55'><path d='M30 260C10 200 50 160 30 100C15 60 40 30 34 0'/><path d='M110 260C130 210 90 170 112 120C126 90 104 70 110 40'/><path d='M170 260C155 220 185 190 168 150'/></g></svg>") repeat-x bottom/200px 260px;
+  transform-origin:bottom;animation:sway 4s ease-in-out infinite alternate}
+/* 5 비 오는 바다 */
+body.bg-r5{background:linear-gradient(180deg,#b5c0cb 0%,#8b9bab 25%,#5d7085 60%,#2d3e52 100%)}
+body.bg-r5 #gameScreen::before{background-image:radial-gradient(1.5px 14px,rgba(230,240,255,.75),transparent),radial-gradient(1px 10px,rgba(230,240,255,.55),transparent);
+  background-size:70px 120px,50px 90px;animation:rain .7s linear infinite}
+/* 6 밤바다 */
+body.bg-r6{background:linear-gradient(180deg,#0b1640 0%,#142a6b 30%,#0a1a44 65%,#050b20 100%)}
+body.bg-r6 #gameScreen::before{background-image:radial-gradient(circle,#fff 0 1.5px,transparent 2.5px),radial-gradient(circle,rgba(255,255,220,.8) 0 1px,transparent 2px);
+  background-size:130px 110px,90px 70px;background-position:0 0,40px 30px;animation:twinkle 2.5s ease-in-out infinite alternate}
+body.bg-r6 #gameScreen::after{background:radial-gradient(circle at 88% 9%,#fffbe0 0 32px,rgba(255,250,210,.22) 33px 64px,transparent 65px)}
+/* 7 북극 바다 */
+body.bg-r7{background:linear-gradient(180deg,#eaf8ff 0%,#c4e9fb 25%,#7cc4ea 60%,#2a7db5 100%)}
+body.bg-r7 #gameScreen::before{background-image:radial-gradient(circle,#fff 0 3px,transparent 4px),radial-gradient(circle,rgba(255,255,255,.8) 0 2px,transparent 3px);
+  background-size:180px 220px,120px 160px;animation:snow 9s linear infinite}
+body.bg-r7 #gameScreen::after{background:linear-gradient(100deg,transparent 10%,rgba(120,255,200,.28) 30%,rgba(170,120,255,.22) 50%,transparent 70%) top/100% 35% no-repeat;animation:aurora 6s ease-in-out infinite alternate}
+/* 8 깊은 바다 */
+body.bg-r8{background:linear-gradient(180deg,#123a63 0%,#0b2f55 25%,#072447 60%,#020f24 100%)}
+body.bg-r8 #gameScreen::after{background:repeating-linear-gradient(105deg,rgba(255,255,255,.05) 0 40px,transparent 40px 120px)}
+/* 9 심해 */
+body.bg-r9{background:linear-gradient(180deg,#0a1428 0%,#050b18 40%,#020611 75%,#000 100%)}
+body.bg-r9 #gameScreen::before{background-image:radial-gradient(circle,rgba(120,240,255,.8) 0 2px,transparent 4px),radial-gradient(circle,rgba(255,140,240,.7) 0 2px,transparent 4px);
+  background-size:150px 170px,110px 130px;background-position:0 0,50px 60px;animation:twinkle 1.8s ease-in-out infinite alternate}
+body.bg-r9 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><g opacity='.5'><path d='M60 80a30 26 0 0 1 60 0z' fill='%23ff8ff0'/><path d='M66 80q-4 20 4 40M80 80q4 24-2 46M94 80q-4 22 4 40M108 80q4 20-2 36' stroke='%23ff8ff0' stroke-width='3' fill='none'/></g><g opacity='.42'><path d='M210 200a24 20 0 0 1 48 0z' fill='%2378f0ff'/><path d='M216 200q-4 18 4 34M230 200q4 20-2 38M244 200q-4 18 4 32' stroke='%2378f0ff' stroke-width='3' fill='none'/></g></svg>") repeat/300px 300px;animation:drift 8s ease-in-out infinite alternate}
+/* 10 끝판왕 */
+body.bg-r10{background:linear-gradient(180deg,#3a0b30 0%,#4d0c26 35%,#2a0618 70%,#0d0208 100%)}
+body.bg-r10 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,140,60,.6) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,60,60,.45) 0 2px,transparent 3px);
+  background-size:180px 220px,120px 160px;animation:bubbleUp 7s linear infinite}
+body.bg-r10 #gameScreen::after{animation:flash 5s infinite}
+
+/* 어두운 배경에서는 낚싯줄을 밝게 */
+body.bg-r6 .ln line,body.bg-r8 .ln line,body.bg-r9 .ln line,body.bg-r10 .ln line{stroke:#d8ecff}
+/* 끝판왕 물고기 */
+body.theme-boss .bubble{border:3px solid #ff3b3b}
+body.theme-boss .eq text{fill:#fff;stroke:#2a0618}
+body.theme-boss .pupil{fill:#ff2b2b}
+.boss-only{display:none}
+body.theme-boss .boss-only{display:inline}
+body.theme-boss .smile,body.theme-boss .blush{display:none}
+
+@keyframes bubbleUp{from{background-position:0 0,60px 40px}to{background-position:0 -220px,60px -120px}}
+@keyframes snow{from{background-position:0 0,60px 40px}to{background-position:30px 220px,30px 200px}}
+@keyframes rain{from{background-position:0 0,30px 20px}to{background-position:-20px 120px,10px 110px}}
+@keyframes twinkle{from{opacity:.35}to{opacity:1}}
+@keyframes sway{from{transform:skewX(-3deg)}to{transform:skewX(3deg)}}
+@keyframes aurora{from{opacity:.4;background-position:-40px 0}to{opacity:1;background-position:40px 0}}
+@keyframes drift{from{background-position:0 0}to{background-position:20px -40px}}
+@keyframes flash{0%,86%,100%{background:rgba(255,60,60,0)}88%{background:rgba(255,80,80,.25)}90%{background:rgba(255,60,60,0)}92%{background:rgba(255,80,80,.18)}}
+
+/* 세로 화면(핸드폰·세운 패드): 3열 × 4행 */
+@media (orientation:portrait){
+  .pond{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr)}
+  .cat{height:clamp(110px,22dvh,280px)}
+}
+/* 좁은 화면 */
+@media (max-width:640px){
+  .bubble{font-size:.95rem;max-width:150px;padding:10px 12px}
+  .chip{font-size:.95rem;padding:6px 10px}
+  .pond{gap:2px 6px}
+}
+/* 높이가 낮은 가로 화면(핸드폰 가로) */
+@media (orientation:landscape) and (max-height:500px){
+  .cat{height:clamp(70px,24dvh,120px)}
+  .bubble{font-size:.85rem;padding:6px 10px}
+  .combo{height:1.1em;font-size:.85rem}
+  .roundbar{margin-top:2px;font-size:.85rem}
+  .roundbar .prog{height:10px}
+  .chip{padding:4px 10px;font-size:.9rem}
+}
+</style>
+</head>
+<body>
+<!-- ===================== HTML: 구조 ===================== -->
+
+<!-- 1) 시작 화면 -->
+<section id="startScreen" class="screen active">
+  <div class="home">
+    <h1 class="title">구구단 낚시왕</h1>
+    <div class="device" id="deviceLabel">모바일</div>
+
+    <!-- QR 코드: 배포 후 실제 주소로 생성해 넣을 자리 -->
+    <div class="qr" id="qrBox">
+      <svg class="qr-cat" viewBox="0 0 260 200"><use href="#catArt"/></svg>
+    </div>
+    <div class="qr-cap">QR을 눌러서 공유하세요!</div>
+
+    <p class="guide">🎣 맞는 곱셈식 물고기를 정확히 낚으세요!</p>
+
+    <input class="nick" id="nick" type="text" maxlength="10" placeholder="닉네임 입력" autocomplete="off" enterkeyhint="go">
+    <div class="nick-msg" id="nickMsg"></div>
+    <button class="start-btn home-start" id="startBtn">🐟 게임 시작!</button>
+
+    <!-- 랭킹 1~5등 -->
+    <div class="rank-cap">🏆 최종 점수 랭킹</div>
+    <div class="rank" id="rankList"></div>
+    <div class="db-status" id="dbStatus">⏳ 랭킹 불러오는 중…</div>
+  </div>
+</section>
+
+<!-- 2) 설정 화면: 단·시간 고르기 -->
+<section id="setupScreen" class="screen">
+  <div class="home">
+    <h1 class="title small">낚시 준비</h1>
+    <div class="hello" id="hello"></div>
+    <!-- 단·시간 설정 -->
+    <div class="settings">
+      <div class="set-title">⚙️ 몇 단을 연습할까요?</div>
+      <div class="dans" id="dans"></div>
+      <div class="row">
+        <button class="mini" id="allBtn">모두 고르기</button>
+        <button class="mini" id="noneBtn">모두 지우기</button>
+      </div>
+      <div class="set-time">시작 라운드: <span class="timeval" id="roundLabel">1라운드</span><span class="stage-tag" id="stageTag">🌊 바다</span></div>
+      <div class="rounds" id="roundPick"></div>
+      <div class="mult-note" id="multNote"></div>
+      <div class="set-note"><span>🎯 <b id="noteGoal">15</b>마리 → 다음 라운드</span><span>⏱ 라운드당 <b id="noteTime">2분</b></span><span>🔥 연속 낚기 보너스</span><span>👋 틀린 식 참기 <b id="noteRelease">+3</b></span><span>❌ 틀린 식 낚기 <b id="notePenalty">-5</b></span><span>💨 <b id="noteMax">15</b>마리 놓치면 끝</span></div>
+    </div>
+
+    <button class="start-btn" id="goBtn">🎣 낚시 시작!</button>
+    <button class="back-btn" id="backBtn">← 처음 화면</button>
+  </div>
+</section>
+
+<!-- 3) 게임 화면 -->
+<section id="gameScreen" class="screen">
+  <div class="hud">
+    <div class="group">
+      <span class="chip">⭐ <span id="score">0</span></span>
+      <span class="chip" id="clockChip">⏱ <span id="clock">0:00</span></span>
+      <span class="chip" id="missChip">💨 <span id="miss">0</span>/<span id="missMax">20</span></span>
+    </div>
+    <div class="group">
+      <button class="chip" id="soundBtn">🔊</button>
+      <button class="chip" id="quitBtn">끝내기</button>
+    </div>
+  </div>
+
+  <div class="scene">
+    <svg class="cat" id="cat" viewBox="0 0 260 200"><use href="#catArt"/></svg>
+    <div class="bubble" id="bubble">맞는 곱셈식만 낚아 줘냥!</div>
+  </div>
+  <div class="roundbar"><span class="rn" id="rbRound">1라운드</span><div class="prog"><i id="rbFill"></i></div><span class="rn">🐟 <span id="rbCaught">0</span>/<span id="rbGoal">20</span></span></div>
+  <div class="combo" id="combo"></div>
+
+  <div class="pond" id="pond"></div>
+</section>
+
+<!-- 4) 결과 화면 -->
+<section id="resultScreen" class="screen">
+  <div class="panel">
+    <h1 id="endTitle">🏁 게임 끝!</h1>
+    <div class="score-big" id="finalScore">0</div>
+    <div class="my-rank" id="myRank"></div>
+    <div class="stats">
+      <div class="stat">🏁 도달 라운드<b id="rRound">-</b><small id="rRoundDetail"></small></div>
+      <div class="stat">낚은 물고기<b id="rCorrect">0</b></div>
+      <div class="stat">정답률<b id="rRate">0%</b></div>
+      <div class="stat">놓친 물고기<b id="rEscaped">0</b><small id="rMissDetail"></small></div>
+      <div class="stat">🔥 최고 연속<b id="rCombo">0</b></div>
+      <div class="stat">👀 눈썰미<b id="rEye">-</b><small>틀린 식을 안 건드린 비율</small></div>
+      <div class="stat">👋 놓아준 물고기<b id="rReleased">0</b><small>+3점씩</small></div>
+    </div>
+    <div class="badge" id="rBadge"></div>
+    <h2>내 라운드별 점수</h2>
+    <div class="rlog" id="rLog"></div>
+    <h2>헷갈린 곱셈식</h2>
+    <div class="wrongs" id="rWrongs"></div>
+    <button class="big-btn" id="againBtn">다시 하기</button>
+    <button class="big-btn sub-btn" id="homeBtn">처음으로</button>
+  </div>
+</section>
+
+<div class="countdown" id="countdown"></div>
+
+<!-- 고양이 그림 (한 번 정의해서 시작 화면·게임 화면에서 재사용) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="catArt">
+      <!-- 낚싯대 -->
+      <line x1="168" y1="128" x2="250" y2="18" stroke="#8b5a2b" stroke-width="6" stroke-linecap="round"/>
+      <line x1="250" y1="18" x2="250" y2="70" stroke="#fff" stroke-width="2"/>
+      <!-- 꼬리 -->
+      <path d="M78 150 C40 150 40 108 62 104" stroke="#f2a65a" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <!-- 몸 -->
+      <ellipse cx="120" cy="145" rx="48" ry="36" fill="#ffe2b8" stroke="#5a4535" stroke-width="3"/>
+      <ellipse cx="120" cy="152" rx="28" ry="20" fill="#fff6e6"/>
+      <!-- 귀 -->
+      <path d="M76 70 L80 24 L114 50 Z" fill="#ffe2b8" stroke="#5a4535" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M164 70 L160 24 L126 50 Z" fill="#ffe2b8" stroke="#5a4535" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M84 58 L86 36 L104 50 Z" fill="#ffb3c1"/>
+      <path d="M156 58 L154 36 L136 50 Z" fill="#ffb3c1"/>
+      <!-- 머리 -->
+      <ellipse cx="120" cy="88" rx="56" ry="48" fill="#ffe2b8" stroke="#5a4535" stroke-width="3"/>
+      <!-- 이마 줄무늬 -->
+      <path d="M110 44 q4 10 0 18 M120 41 q0 12 0 20 M130 44 q-4 10 0 18" stroke="#f2a65a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- 눈: 기본 -->
+      <g class="eyes">
+        <ellipse cx="98" cy="90" rx="9" ry="11" fill="#3b2a20"/>
+        <ellipse cx="142" cy="90" rx="9" ry="11" fill="#3b2a20"/>
+        <circle cx="95" cy="85" r="3.5" fill="#fff"/><circle cx="139" cy="85" r="3.5" fill="#fff"/>
+        <circle cx="101" cy="95" r="1.8" fill="#fff"/><circle cx="145" cy="95" r="1.8" fill="#fff"/>
+      </g>
+      <!-- 눈: 기쁨 ^^ -->
+      <g class="happy" stroke="#3b2a20" stroke-width="4" fill="none" stroke-linecap="round">
+        <path d="M89 93 q9 -12 18 0"/><path d="M133 93 q9 -12 18 0"/>
+      </g>
+      <!-- 눈: 슬픔 ㅠㅠ -->
+      <g class="cry" stroke="#3b2a20" stroke-width="4" fill="none" stroke-linecap="round">
+        <path d="M89 88 l18 4"/><path d="M151 88 l-18 4"/>
+        <path d="M98 96 v10" stroke="#5fb6ff"/><path d="M142 96 v10" stroke="#5fb6ff"/>
+      </g>
+      <!-- 볼터치 -->
+      <ellipse cx="84" cy="106" rx="10" ry="6" fill="#ff8fa3" opacity=".55"/>
+      <ellipse cx="156" cy="106" rx="10" ry="6" fill="#ff8fa3" opacity=".55"/>
+      <!-- 코, 입 -->
+      <path d="M115 100 h10 l-5 6 Z" fill="#ff7a93"/>
+      <path d="M110 108 q5 7 10 0 q5 7 10 0" stroke="#5a4535" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- 수염 -->
+      <g stroke="#5a4535" stroke-width="2" stroke-linecap="round">
+        <path d="M70 100 l-18 -3"/><path d="M70 107 l-18 2"/>
+        <path d="M170 100 l18 -3"/><path d="M170 107 l18 2"/>
+      </g>
+      <!-- 앞발 (낚싯대 잡기) -->
+      <ellipse cx="166" cy="130" rx="13" ry="11" fill="#fff6e6" stroke="#5a4535" stroke-width="3"/>
+      <ellipse cx="100" cy="170" rx="13" ry="9" fill="#fff6e6" stroke="#5a4535" stroke-width="3"/>
+      <!-- 배 -->
+      <path d="M20 168 L240 168 Q222 198 130 198 Q38 198 20 168 Z" fill="#b9773f" stroke="#7a4a22" stroke-width="3"/>
+      <rect x="16" y="162" width="228" height="10" rx="5" fill="#d18f52" stroke="#7a4a22" stroke-width="3"/>
+    </g>
+  </defs>
+</svg>
+
+<script>
+/* ===================== JavaScript: 동작 ===================== */
+const $ = s => document.querySelector(s);
+const CELL_COUNT = 12;          // 물고기 12마리 (가로 4×3, 세로 3×4)
+// 줄이 끊어질 때 무작위로 나오는 글자
+const SNAP_WORDS = ['탕!','툭!','팅!','뚝!','퍽!','탁!','휘릭!','쏙!','첨벙!','휙!','빠직!','풍덩!'];
+/* ---------- 점수 배율 (중간 라운드에서 시작해도 공정하게) ----------
+   라운드 배율: 1R ×1.0 → 10R ×2.0 / 단 배율: 고른 단의 평균 난이도 + 여러 단을 섞을수록 보너스 */
+const DAN_WEIGHT = { 2:1.0, 5:1.0, 3:1.1, 4:1.1, 6:1.2, 7:1.2, 8:1.2, 9:1.2 };
+const roundMult = r => Math.round((1 + (r - 1) / (LAST_ROUND - 1)) * 10) / 10;
+const MIX_BONUS = 0.05;   // 단을 하나 더 고를 때마다 +5% (여러 단이 섞일수록 어려우므로)
+// 단 배율 = 고른 단의 평균 난이도 × (1 + 0.05 × (고른 단 수 - 1))
+const danMult = dans => {
+  if(!dans.length) return 1;
+  const avg = dans.reduce((t,d) => t + DAN_WEIGHT[d], 0) / dans.length;
+  return Math.round(avg * (1 + MIX_BONUS * (dans.length - 1)) * 100) / 100;
+};
+const pts = base => Math.round(base * S.mult);      // 배율을 적용한 점수
+function addScore(n){ S.score += n; S.roundScore += n; }
+const WRONG_PENALTY = 5;       // 틀린 식 물고기를 낚으면 감점
+const RELEASE_POINT = 3;       // 틀린 물고기를 놓아줬을 때 점수
+const ACTIVE_WINDOW = 5000;    // 최근 5초 안에 1마리 이상 낚았을 때만 놓아주기 점수 지급
+// 틀린 식 물고기를 잘 참고 놓아줬을 때 나오는 칭찬
+const GOOD_WORDS = ['굿!','좋아!','잘 참았어!','멋져!','눈썰미 짱!','바로 그거야!','훌륭해!','역시!','침착해!','완벽해!','최고!','잘 골랐어!'];
+const MIN_CORRECT = 3;          // 화면에 맞는 식 최소 3마리 유지
+const MAX_MISS = 15;            // 놓친 물고기(도망+틀린 식 터치) 한도
+const MISS_PER_ROUND = true;    // true: 라운드마다 0부터 다시 셈 / false: 게임 전체 누적
+const ROUND_GOAL = 15;          // 라운드마다 낚아야 할 맞는 물고기 수
+const ROUND_TIME = 120;         // 라운드 제한 시간(초) = 2분
+const LAST_ROUND = 10;
+
+/* 라운드별 난이도: 1라운드 → 20라운드로 갈수록
+   life(물고기가 버티는 시간)·gap(새 물고기 간격)은 짧아지고, max(동시 마릿수)는 늘고,
+   close(헷갈리는 오답 비율)는 높아짐 */
+function roundCfg(r){
+  const t = (r - 1) / (LAST_ROUND - 1), L = (a,b) => a + (b - a) * t;
+  return {
+    life:  [L(15000,5500), L(20000,7500)],
+    gap:   [L(1500,350),   L(3800,1200)],
+    max:   Math.round(L(7,11)),
+    close: L(.35,.95),
+    correctP: L(.42,.3)
+  };
+}
+// 라운드별 장소 (배경 그림·음악·고양이 말이 라운드마다 달라짐)
+const SCENES = [
+  { name:'🌊 맑은 바다',   cat:'맞는 곱셈식만 낚아 줘냥!' },
+  { name:'🌅 노을 바다',   cat:'노을이 예쁘다냥~' },
+  { name:'🪸 산호초',      cat:'산호초에 물고기가 많다냥!' },
+  { name:'🌿 해초 숲',     cat:'해초 사이를 잘 봐라냥!' },
+  { name:'🌧️ 비 오는 바다', cat:'비가 와도 낚시는 한다냥!' },
+  { name:'🌙 밤바다',      cat:'밤바다는 조용하다냥…' },
+  { name:'🧊 북극 바다',   cat:'으으 춥다냥! 집중!' },
+  { name:'🌌 깊은 바다',   cat:'깊은 바다다냥… 집중!' },
+  { name:'🪼 심해',        cat:'심해는 무섭다냥… 조심!' },
+  { name:'👑 끝판왕',      cat:'끝판왕이다냥! 힘내라냥!' }
+];
+const scene = r => SCENES[Math.min(Math.max(r,1),LAST_ROUND) - 1];
+const isBoss = r => r >= LAST_ROUND;
+let startRound = 1;
+try{ const v = +localStorage.getItem('fishStartRound'); if(v >= 1 && v <= LAST_ROUND) startRound = v; }catch(e){}
+// 끝판왕 물고기 색 [몸, 꼬리·지느러미, 배]
+const BOSS_COLORS = [['#6b2fa0','#2d1046','#a77ad9'],['#9b1f45','#4a0d20','#e0607c'],
+                     ['#24506a','#0b1a24','#5c9cbb'],['#4a4a4a','#141414','#8a8a8a']];
+// [몸, 꼬리·지느러미, 배]
+const COLORS = [['#ffb3c7','#ff7aa2','#ffe3ec'],['#ffd166','#f4a300','#fff3cc'],
+                ['#9be7a0','#4cc25a','#e3f9e5'],['#a7d8ff','#4fa8f0','#e6f4ff'],
+                ['#cdb4ff','#9a72f0','#f0e9ff'],['#ffb38a','#ff7d45','#ffe8db']];
+
+let selected = new Set();          // 처음에는 아무 단도 선택하지 않음
+let S = {};
+let cells = [];
+let clockTimer = null, catTimer = null, GEN = 0;
+let soundOn = true;
+const rand = (a,b) => a + Math.random()*(b-a);
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+
+/* ---------- 몸부림 애니메이션 생성: 시간이 갈수록 더 크고 빠르게 ---------- */
+(function makeStruggle(){
+  const N = 70; let k = '@keyframes struggle{';
+  for(let i=0; i<=N; i++){
+    const t = i/N;
+    const p = Math.pow(t, 0.6);                 // 뒤로 갈수록 간격이 좁아짐(빨라짐)
+    const amp = p < .4 ? 1 : 1 + Math.pow((p-.4)/.6, 2) * 12;   // 최대 약 13도
+    const s = i % 2 ? 1 : -1;
+    k += `${(p*100).toFixed(2)}%{transform:rotate(${(s*amp).toFixed(1)}deg) translateX(${(s*amp*.2).toFixed(1)}px)}`;
+  }
+  k += '}';
+  const st = document.createElement('style'); st.textContent = k; document.head.appendChild(st);
+})();
+
+/* ---------- 시작 화면 ---------- */
+function renderDans(){
+  const box = $('#dans'); box.innerHTML = '';
+  for(let d=2; d<=9; d++){
+    const b = document.createElement('button');
+    b.className = 'dan' + (selected.has(d) ? ' on' : '');
+    b.textContent = (selected.has(d) ? '✓ ' : '') + d + '단';
+    b.onclick = () => { selected.has(d) ? selected.delete(d) : selected.add(d); renderDans(); };
+    box.appendChild(b);
+  }
+  $('#goBtn').disabled = selected.size === 0;
+  updateMultNote();
+  $('#goBtn').textContent = selected.size ? '🎣 낚시 시작!' : '👆 단을 골라 주세요';
+}
+$('#allBtn').onclick = () => { selected = new Set([2,3,4,5,6,7,8,9]); renderDans(); };
+$('#noneBtn').onclick = () => { selected.clear(); renderDans(); };
+
+function updateMultNote(){
+  const el = $('#multNote'); if(!el) return;
+  const rm = roundMult(startRound), dm = danMult([...selected]);
+  el.textContent = selected.size ? `⚡ 점수 배율 ×${(rm*dm).toFixed(2)}  (라운드 ×${rm.toFixed(1)} · 단 ×${dm.toFixed(2)})` : `⚡ 라운드 배율 ×${rm.toFixed(1)}`;
+}
+
+/* ---------- 시작 라운드 선택 ---------- */
+function renderRoundPick(){
+  const box = $('#roundPick');
+  if(!box.children.length){
+    for(let r = 1; r <= LAST_ROUND; r++){
+      const b = document.createElement('button');
+      b.className = 'rbtn' + (isBoss(r) ? ' boss' : ''); b.dataset.r = r;
+      b.innerHTML = `<small>${scene(r).name.split(' ')[0]}</small>${r}`;
+      b.onclick = () => {
+        startRound = r; renderRoundPick();
+        try{ localStorage.setItem('fishStartRound', startRound); }catch(e){}
+      };
+      box.appendChild(b);
+    }
+  }
+  box.querySelectorAll('.rbtn').forEach(b => b.classList.toggle('on', +b.dataset.r === startRound));
+  updateMultNote();
+  $('#roundLabel').textContent = startRound + '라운드';
+  const tag = $('#stageTag');
+  tag.textContent = scene(startRound).name; tag.className = 'stage-tag' + (isBoss(startRound) ? ' boss' : '');
+}
+renderRoundPick();
+
+/* ---------- 기기 표시 ---------- */
+(function showDevice(){
+  const touch = matchMedia('(pointer:coarse)').matches;
+  const short = Math.min(screen.width, screen.height);
+  $('#deviceLabel').textContent = !touch ? 'PC' : short >= 600 ? '태블릿' : '모바일';
+})();
+
+/* ---------- 닉네임 ---------- */
+const NICK_KEY = 'fishNick';
+try{ $('#nick').value = localStorage.getItem(NICK_KEY) || ''; }catch(e){}
+function getNick(){ return $('#nick').value.trim().slice(0,10); }
+function tryStart(){
+  const n = getNick();
+  if(!n){
+    const el = $('#nick'); el.classList.remove('need'); void el.offsetWidth; el.classList.add('need'); el.focus();
+    $('#nickMsg').textContent = '👆 닉네임을 먼저 입력해 주세요!';
+    return;
+  }
+  try{ localStorage.setItem(NICK_KEY, n); }catch(e){}
+  $('#hello').textContent = `${n}, 어떤 단을 낚아 볼까냥? 🐟`;
+  showScreen('setupScreen');
+}
+$('#nick').addEventListener('input', e => { e.target.classList.remove('need'); $('#nickMsg').textContent = ''; });
+$('#nick').addEventListener('keydown', e => { if(e.key === 'Enter') tryStart(); });
+
+/* ---------- 랭킹 1~5등 ----------
+   Firebase에 연결되면 모든 기기의 랭킹(RANK_CACHE)을 보여 주고,
+   연결이 안 되면(인터넷 끊김, 파일로 직접 열기 등) 이 기기 기록만 보여 줍니다. */
+const RANK_KEY = 'fishRank3';   // 랭킹 기준 = 최종 점수(총점), ⚡ = 도달 라운드
+let RANK_CACHE = null;           // Firebase에서 불러온 랭킹 목록
+function loadRank(){
+  let list = [];
+  if(RANK_CACHE) list = RANK_CACHE.slice();
+  else { try{ list = JSON.parse(localStorage.getItem(RANK_KEY)) || []; }catch(e){} }
+  return list.sort((a,b) => b.score - a.score || a.at - b.at);   // 항상 점수 높은 순
+}
+function saveRank(entry){
+  const list = loadRank(); list.push(entry);
+  list.sort((a,b) => b.score - a.score || a.at - b.at);
+  if(RANK_CACHE) RANK_CACHE = list;
+  else { try{ localStorage.setItem(RANK_KEY, JSON.stringify(list.slice(0,50))); }catch(e){} }
+  // 순위는 닉네임당 최고 기록 1개씩만 두고 계산 (이번 기록이 내 최고가 아니면 내 최고 기록의 순위)
+  const board = bestPerName(list);
+  return board.findIndex(x => x.name === entry.name) + 1;
+}
+// 닉네임당 최고 기록 1개만 남기기 (list는 점수 높은 순으로 정렬된 상태)
+function bestPerName(list){
+  const seen = new Set();
+  return list.filter(x => !seen.has(x.name) && seen.add(x.name));
+}
+function renderRank(highlightAt){
+  const box = $('#rankList'); box.innerHTML = '';
+  const top = bestPerName(loadRank()).slice(0,5);
+  if(!top.length){ box.innerHTML = '<div class="rank-empty">아직 기록이 없어요. 첫 번째 낚시왕이 되어 보세요! 🐟</div>'; return; }
+  const medals = ['🥇','🥈','🥉'];
+  top.forEach((r,i) => {
+    const row = document.createElement('div');
+    row.className = 'rank-row' + (r.at === highlightAt ? ' me' : '');
+    const m = document.createElement('span'); m.className = 'medal';
+    m.innerHTML = i < 3 ? medals[i] : `<span class="num">${i+1}</span>`;
+    const nm = document.createElement('span'); nm.className = 'name'; nm.textContent = r.name;   // textContent: 닉네임에 태그가 있어도 안전
+    // ⚡ 몇 라운드까지 진행했는지
+    if(r.round){ const t = document.createElement('span'); t.className = 'lvtag'; t.textContent = '⚡' + r.round + 'R' + (r.clear ? ' 👑' : ''); nm.appendChild(t); }
+    const pt = document.createElement('span'); pt.className = 'pts'; pt.textContent = r.score;
+    row.append(m, nm, pt); box.appendChild(row);
+  });
+}
+
+/* ---------- QR 코드: 배포 후 실제 주소로 생성 예정 ---------- */
+$('#qrBox').onclick = () => {
+  if(navigator.share) navigator.share({ title:'구구단 낚시왕', url:location.href }).catch(()=>{});
+  else if(navigator.clipboard) navigator.clipboard.writeText(location.href).then(() => alert('주소를 복사했어요!')).catch(()=>{});
+};
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $('#'+id).classList.add('active');
+}
+
+/* ---------- 소리 ---------- */
+let ac;
+function tone(freq, dur, type='sine', when=0, vol=.15){
+  if(!soundOn) return;
+  try{
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + when;
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t+dur);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t+dur);
+  }catch(e){}
+}
+const sfx = {
+  good: () => { tone(660,.12); tone(990,.16,'sine',.1); },
+  bad:  () => tone(170,.25,'square',0,.07),
+  clear:() => { [72,76,79,84].forEach((m,i) => tone(midi(m), .25, 'triangle', i*.12, .12)); },
+  nice: () => { tone(880,.08,'sine',0,.08); tone(1320,.12,'sine',.07,.08); },
+  tang: () => { tone(1200,.05,'square',0,.12); tone(500,.08,'triangle',.02,.15); tone(110,.3,'triangle',.06,.18); }
+};
+
+/* ---------- 배경 음악 (Web Audio로 직접 연주) ----------
+   라운드마다 다른 곡 10개. mel=멜로디, bass=베이스 (MIDI 번호, _ = 쉼), long=베이스를 길게 */
+const midi = m => 440 * Math.pow(2, (m - 69) / 12);
+const _ = null;
+const BGM = [
+  /* 1 맑은 바다: 경쾌한 장조 */ { bpm:112, lead:'triangle', bassW:'sine', vol:.05,
+    mel:[72,76,79,76, 74,76,72,_, 69,72,74,72, 76,74,72,_], bass:[48,_,55,_, 45,_,52,_, 41,_,48,_, 43,_,50,_] },
+  /* 2 노을 바다: 느긋한 노래 */ { bpm:96, lead:'triangle', bassW:'sine', vol:.05,
+    mel:[65,69,72,_, 70,69,65,_, 67,70,74,72, 70,69,67,_], bass:[41,_,48,_, 46,_,53,_, 43,_,50,_, 48,_,_,_] },
+  /* 3 산호초: 통통 튀는 8비트 */ { bpm:124, lead:'square', bassW:'triangle', vol:.03,
+    mel:[67,71,74,71, 72,74,76,74, 71,67,69,71, 72,71,69,_], bass:[43,_,50,_, 48,_,55,_, 40,_,47,_, 50,_,_,_] },
+  /* 4 해초 숲: 살랑살랑 */ { bpm:100, lead:'sine', bassW:'triangle', vol:.06,
+    mel:[62,_,65,67, 69,_,67,65, 64,_,62,_, 60,62,64,_], bass:[38,_,_,45, _,_,43,_, 36,_,_,43, _,_,45,_] },
+  /* 5 비 오는 바다: 잔잔한 단조 */ { bpm:80, lead:'sine', bassW:'sine', vol:.06, long:true,
+    mel:[76,_,74,_, 72,_,71,_, 69,_,71,72, 71,_,_,_], bass:[45,_,_,_, 48,_,_,_, 41,_,_,_, 40,_,_,_] },
+  /* 6 밤바다: 자장가 */ { bpm:70, lead:'triangle', bassW:'sine', vol:.055, long:true,
+    mel:[72,_,79,_, 77,76,74,_, 76,_,72,_, 74,_,_,_], bass:[48,_,_,_, 53,_,_,_, 52,_,_,_, 43,_,_,_] },
+  /* 7 북극 바다: 맑은 종소리 */ { bpm:108, lead:'sine', bassW:'triangle', vol:.045, long:true,
+    mel:[88,_,83,_, 85,_,80,_, 81,83,85,_, 83,_,_,_], bass:[52,_,_,_, 49,_,_,_, 45,_,_,_, 47,_,_,_] },
+  /* 8 깊은 바다: 신비로운 단조 */ { bpm:84, lead:'sine', bassW:'triangle', vol:.06, long:true,
+    mel:[69,_,72,_, 76,_,74,72, 71,_,69,_, 64,_,_,_], bass:[45,_,_,_, 41,_,_,_, 43,_,_,_, 40,_,_,_] },
+  /* 9 심해: 으스스 */ { bpm:64, lead:'sine', bassW:'sawtooth', vol:.045, long:true,
+    mel:[69,_,_,70, _,_,64,_, _,63,_,_, _,_,_,_], bass:[33,_,_,_, _,_,_,_, 34,_,_,_, _,_,_,_] },
+  /* 10 끝판왕: 빠르고 긴장감 */ { bpm:152, lead:'square', bassW:'sawtooth', vol:.035,
+    mel:[62,62,65,62, 67,62,69,68, 62,62,65,62, 70,69,67,65], bass:[38,38,50,38, 38,50,38,50, 36,36,48,36, 37,37,49,37] }
+];
+let bgm = { timer:null, theme:null, step:0, next:0 };   // theme = 라운드 번호
+function bgmNote(m, t, dur, wave, vol){
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = wave; o.frequency.value = midi(m);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .02);
+  g.gain.exponentialRampToValueAtTime(.0005, t + dur);
+  o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur + .05);
+}
+function bgmPlay(theme){
+  if(bgm.theme === theme && bgm.timer) return;
+  bgmStop(); bgm.theme = theme;
+  if(!soundOn) return;
+  try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume && ac.resume(); }catch(e){ return; }
+  bgm.step = 0; bgm.next = ac.currentTime + .1;
+  bgm.timer = setInterval(() => {
+    const T = BGM[bgm.theme - 1], stepDur = 60 / T.bpm / 2;      // 8분음표
+    while(bgm.next < ac.currentTime + .2){
+      const i = bgm.step % 16, m = T.mel[i], b = T.bass[i];
+      if(m) bgmNote(m, bgm.next, stepDur * 1.6, T.lead, T.vol);
+      if(b) bgmNote(b, bgm.next, stepDur * (T.long ? 4 : 1.2), T.bassW, T.vol * .9);
+      bgm.next += stepDur; bgm.step++;
+    }
+  }, 30);
+}
+function bgmStop(){ clearInterval(bgm.timer); bgm.timer = null; }
+$('#soundBtn').onclick = () => {
+  soundOn = !soundOn; $('#soundBtn').textContent = soundOn ? '🔊' : '🔇';
+  if(!soundOn) bgmStop(); else if(S.round && !S.over){ const t = bgm.theme; bgm.theme = null; bgmPlay(t || S.round); }
+};
+
+/* ---------- 고양이 반응 ---------- */
+const catDefault = () => scene(S.round || 1).cat;
+function catReact(text, mood){
+  const cat = $('#cat'), b = $('#bubble');
+  b.textContent = text;
+  b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+  cat.classList.remove('jump','sad','mood-happy','mood-sad'); void cat.getBoundingClientRect();
+  if(mood === 'happy') cat.classList.add('jump','mood-happy');
+  if(mood === 'sad')   cat.classList.add('sad','mood-sad');
+  clearTimeout(catTimer);
+  catTimer = setTimeout(() => {
+    cat.classList.remove('jump','sad','mood-happy','mood-sad');
+    b.textContent = catDefault();
+  }, 1500);
+}
+
+/* ---------- 귀여운 물고기 SVG ---------- */
+const FISH_SVG = `
+<svg viewBox="0 0 230 175">
+  <g class="ln"><line x1="28" y1="0" x2="28" y2="108"/></g>
+  <g class="fishg"><g class="wig">
+    <g class="tailg">
+      <path class="tail" d="M196 112 C214 84 232 82 228 100 C226 108 220 112 220 112 C220 112 226 116 228 124 C232 142 214 140 196 112 Z"/>
+    </g>
+    <path class="fin" d="M95 68 C108 46 140 48 150 70 Z"/>
+    <path class="boss-only spike" d="M70 74 L82 36 L96 66 L110 28 L124 64 L140 32 L152 72 Z"/>
+    <ellipse class="body" cx="112" cy="112" rx="86" ry="50"/>
+    <ellipse class="belly" cx="112" cy="134" rx="62" ry="22" opacity=".9"/>
+    <path class="fin" d="M120 128 C132 150 152 150 150 132 Z" opacity=".85"/>
+    <circle cx="58" cy="100" r="13" fill="#fff"/>
+    <circle class="pupil" cx="55" cy="101" r="8" fill="#1d2b3a"/>
+    <circle cx="52" cy="97" r="3" fill="#fff"/>
+    <ellipse class="blush" cx="62" cy="124" rx="9" ry="5" fill="#ff6b8a" opacity=".45"/>
+    <path class="smile" d="M30 112 q6 6 12 0" stroke="#1d2b3a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path class="boss-only" d="M42 82 L72 92" stroke="#1d0010" stroke-width="6" stroke-linecap="round"/>
+    <path class="boss-only" d="M30 110 l5 8 l5 -8 l5 8 l5 -8" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
+    <path class="boss-only" d="M36 72 L42 46 L54 62 L62 40 L70 62 L82 46 L86 72 Z" fill="#ffd23f" stroke="#a87a00" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M28 106 q-7 5 0 11" stroke="#666" stroke-width="2.5" fill="none"/>
+  </g>
+  <!-- 곱셈식: 몸부림(.wig) 밖에 두어 흔들리지 않음 -->
+  <g class="eq"><text x="134" y="124" text-anchor="middle"></text></g>
+  </g>
+</svg>`;
+
+function buildPond(){
+  const pond = $('#pond'); pond.innerHTML = ''; cells = [];
+  for(let i=0; i<CELL_COUNT; i++){
+    const el = document.createElement('div');
+    el.className = 'cell empty';
+    el.innerHTML = FISH_SVG;
+    const c = { el, a:0, b:0, shown:0, empty:true, busy:false, timer:null, gen:S.gen };
+    el.addEventListener('pointerdown', e => { e.preventDefault(); touch(c); });
+    pond.appendChild(el); cells.push(c);
+  }
+}
+
+/* ---------- 게임 시작 ---------- */
+function startGame(){
+  S = { dans:[...selected].sort((a,b)=>a-b), danMult:danMult([...selected]), best:{ score:0, round:startRound }, roundScore:0, roundLog:[], roundLogged:0, mult:1, startRound, round:startRound, cleared:0, gen:0,
+        timeLeft:ROUND_TIME, roundCaught:0, roundMiss:0, score:0, combo:0, bestCombo:0,
+        correct:0, wrong:0, escaped:0, wrongLog:[], miss:0, ignored:0, released:0, lastCatchAt:0,
+        running:false, over:false };
+  showScreen('gameScreen');
+  startRound_(true);
+}
+
+function applyTheme(r){
+  document.body.className = 'bg-r' + r + (isBoss(r) ? ' theme-boss' : '');
+  $('#bubble').textContent = catDefault();
+}
+
+// 라운드 시작: 연못 초기화 → 안내 → 3·2·1 → 물고기 등장
+function startRound_(first){
+  S.gen = ++GEN; S.cfg = roundCfg(S.round);
+  S.mult = roundMult(S.round) * S.danMult; S.roundScore = 0;   // GEN: 이전 판·라운드의 남은 타이머가 끼어들지 않게 하는 번호
+  S.roundCaught = 0; S.roundMiss = 0; S.timeLeft = ROUND_TIME;
+  buildPond(); applyTheme(S.round); updateHud();
+  bgmPlay(S.round);
+  const intro = [isBoss(S.round) ? '👑 끝판왕 등장!' : scene(S.round).name, `${S.round}라운드`];
+  countdown([...intro, '3', '2', '1', '시작!'], () => {
+    if(S.over) return;
+    S.running = true;
+    // 12자리 중 무작위 순서·무작위 시간에 하나씩 등장
+    cells.forEach(c => { c.timer = setTimeout(() => spawn(c), rand(200, 4000)); });
+    clockTimer = setInterval(tick, 1000);
+  });
+}
+
+// 한 라운드가 끝날 때 그 라운드 점수를 최고 기록과 비교
+function closeRound(cleared){
+  if(S.roundLogged === S.gen) return;               // 같은 라운드를 두 번 기록하지 않음
+  S.roundLogged = S.gen;
+  S.roundLog.push({ round:S.round, score:S.roundScore, caught:S.roundCaught, cleared:!!cleared });
+  if(S.roundScore > S.best.score) S.best = { score:S.roundScore, round:S.round };
+}
+
+// 라운드 클리어: 보너스 → 다음 라운드 (마지막 라운드면 게임 완료)
+function roundClear(){
+  S.running = false;
+  clearInterval(clockTimer); clockTimer = null;
+  cells.forEach(c => clearTimeout(c.timer));
+  const bonus = pts(50 + S.timeLeft);     // 클리어 보너스 (50 + 남은 초) × 배율
+  addScore(bonus); S.cleared++; closeRound(true); updateHud();
+  sfx.clear();
+  if(S.round >= LAST_ROUND){ setTimeout(() => endGame('allclear'), 700); return; }
+  countdown([`🎉 ${S.round}라운드 클리어!`, `보너스 +${bonus}`], () => {
+    if(S.over) return;
+    S.round++; startRound_(false);
+  }, 1100);
+}
+
+function countdown(seq, done, slow){
+  const cd = $('#countdown'); let i = 0;
+  cd.classList.add('show');
+  (function next(){
+    if(i >= seq.length){ cd.classList.remove('show'); done(); return; }
+    const txt = seq[i++]; cd.textContent = txt;
+    const isNum = /^[0-9]$/.test(txt);
+    setTimeout(next, slow || (isNum ? 650 : txt === '시작!' ? 500 : 1000));
+  })();
+}
+
+function tick(){
+  if(!S.running) return;
+  S.timeLeft--; updateHud();
+  if(S.timeLeft <= 0) endGame('time');
+}
+
+/* ---------- 곱셈식 만들기 ---------- */
+function makeEquation(wantCorrect){
+  const a = pick(S.dans), b = 1 + Math.floor(Math.random()*9), ans = a*b;
+  if(wantCorrect) return {a, b, shown:ans};
+  // 헷갈리는 오답: ±1, 이웃 단(±a, ±b), 자릿수 바꾸기(24→42)
+  const rev = ans >= 10 && ans % 11 ? +String(ans).split('').reverse().join('') : 0;
+  const close = [ans+1, ans-1, ans+a, ans-a, ans+b, ans-b, rev];
+  // 쉬운 오답: 차이가 큼
+  const far = [ans+10, ans-10, ans+a*2, ans+12, ans-12, ans+20];
+  const pool = (Math.random() < S.cfg.close ? close : far).filter(x => x > 0 && x !== ans);
+  return {a, b, shown:pick(pool.length ? pool : [ans+10])};
+}
+const isCorrect = c => c.shown === c.a * c.b;
+const correctOnBoard = () => cells.filter(c => !c.empty && !c.busy && isCorrect(c)).length;
+
+/* ---------- 물고기 상태 ---------- */
+function setState(c, ...cls){
+  c.el.className = 'cell';
+  void c.el.offsetWidth;
+  cls.forEach(k => c.el.classList.add(k));
+}
+
+const activeCount = () => cells.filter(c => !c.empty).length;
+const gapDelay = () => rand(...S.cfg.gap);
+
+function spawn(c){
+  if(!S.running || c.gen !== S.gen) return;
+  if(activeCount() >= S.cfg.max){            // 너무 많으면 잠시 뒤 다시 시도
+    c.timer = setTimeout(() => spawn(c), rand(800, 2000)); return;
+  }
+  const want = correctOnBoard() < MIN_CORRECT ? Math.random() < .7 : Math.random() < S.cfg.correctP;
+  const eq = makeEquation(want);
+  Object.assign(c, eq, {empty:false, busy:false});
+  const [body, dark, belly] = pick(isBoss(S.round) ? BOSS_COLORS : COLORS);
+  const svg = c.el.querySelector('svg');
+  svg.querySelector('.body').setAttribute('fill', body);
+  svg.querySelector('.belly').setAttribute('fill', belly);
+  svg.querySelector('.tail').setAttribute('fill', dark);
+  svg.querySelectorAll('.fin,.spike').forEach(f => f.setAttribute('fill', dark));
+  svg.querySelector('text').textContent = `${eq.a}×${eq.b}=${eq.shown}`;
+  const life = rand(...S.cfg.life);
+  c.el.style.setProperty('--life', life + 'ms');
+  setState(c, 'live', 'spawn');
+  clearTimeout(c.timer);
+  c.timer = setTimeout(() => expire(c), life);
+}
+
+// 줄이 "탕!" 풀리며 도망 → 잠시 후 새 물고기
+function escapeFish(c, delay){
+  c.busy = true;
+  setState(c, 'snap');
+  c.timer = setTimeout(() => { setState(c, 'empty'); c.empty = true;
+    c.timer = setTimeout(() => spawn(c), delay); }, 1000);
+}
+
+// 시간 초과: 맞는 식이든 틀린 식이든 "탕!" 하고 풀려 도망
+function expire(c){
+  if(!S.running || c.gen !== S.gen || c.empty || c.busy) return;
+  if(isCorrect(c)){
+    floatText(c, pick(SNAP_WORDS), 'tang'); sfx.tang();
+    S.escaped++; S.combo = 0;
+    catReact('앗, 놓쳤다냥…', 'sad');
+    escapeFish(c, gapDelay());
+    addMiss(); return;
+  }
+  // 틀린 식을 건드리지 않음 → 칭찬 글자, 눈썰미 집계, 활동 중이면 놓아주기 점수
+  floatText(c, pick(GOOD_WORDS), 'goodword'); sfx.nice();
+  S.ignored++;
+  if(Date.now() - S.lastCatchAt <= ACTIVE_WINDOW){
+    const rp = pts(RELEASE_POINT);
+    S.released++; addScore(rp); updateHud();
+    floatText(c, `+${rp} 👋`, 'release');
+  }
+  escapeFish(c, gapDelay());
+}
+
+/* ---------- 터치 처리 ---------- */
+function touch(c){
+  if(!S.running || c.gen !== S.gen || c.empty || c.busy) return;
+  clearTimeout(c.timer);
+  if(isCorrect(c)){
+    c.busy = true;
+    S.correct++; S.combo++; S.lastCatchAt = Date.now(); S.bestCombo = Math.max(S.bestCombo, S.combo);
+    const bonus = comboBonus(S.combo), gain = pts(10 + bonus);
+    addScore(gain);
+    setState(c, 'caught'); floatText(c, bonus ? `+${gain} 🔥` : '+' + gain, bonus ? 'combo' : 'good'); sfx.good();
+    catReact(S.combo >= 3 ? `${S.combo}연속! 최고다냥!` : '냥! 잘 낚았다!', 'happy');
+    c.timer = setTimeout(() => { setState(c, 'empty'); c.empty = true;
+      c.timer = setTimeout(() => spawn(c), gapDelay()); }, 500);
+    S.roundCaught++;
+    if(S.roundCaught >= ROUND_GOAL){ updateHud(); setTimeout(roundClear, 450); S.running = false; return; }
+  } else {
+    S.wrong++; S.combo = 0;
+    S.score = Math.max(0, S.score - WRONG_PENALTY);          // 0점 아래로는 내려가지 않음
+    S.roundScore = Math.max(0, S.roundScore - WRONG_PENALTY);
+    S.wrongLog.push({ expr:`${c.a}×${c.b}`, shown:c.shown, answer:c.a*c.b });
+    floatText(c, `✗ -${WRONG_PENALTY}`, 'bad'); sfx.bad();
+    catReact(`${c.a}×${c.b}=${c.a*c.b} 이다냥!`, 'sad');
+    escapeFish(c, gapDelay());
+    addMiss();
+  }
+  updateHud();
+}
+
+// 연속 보너스: 3연속 +5, 5연속 +10, 10연속 +20
+function comboBonus(n){ return n >= 10 ? 20 : n >= 5 ? 10 : n >= 3 ? 5 : 0; }
+
+// 놓침 1회 추가, 한도에 닿으면 게임 종료
+function addMiss(){
+  S.miss++; S.roundMiss++; updateHud();
+  if(missNow() >= MAX_MISS) endGame('miss');
+}
+const missNow = () => (MISS_PER_ROUND ? S.roundMiss : S.miss) || 0;
+
+function floatText(c, txt, kind){
+  const f = document.createElement('div');
+  f.className = 'float ' + kind; f.textContent = txt;
+  c.el.appendChild(f); setTimeout(() => f.remove(), 900);
+}
+
+function updateHud(){
+  $('#score').textContent = S.score;
+  const t = Math.max(0, S.timeLeft);
+  $('#clock').textContent = `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+  $('#clockChip').classList.toggle('warn', t <= 10);
+  const nb = comboBonus(S.combo + 1);
+  $('#combo').textContent = S.combo >= 2 ? `🔥 ${S.combo}연속!` + (nb ? ` 다음 +${nb}` : '') : '';
+  $('#miss').textContent = missNow();
+  $('#missChip').classList.toggle('warn', missNow() >= MAX_MISS - 5);
+  $('#rbRound').textContent = (S.round === LAST_ROUND ? '👑 ' : '') + S.round + '라운드' + (S.mult ? ` ×${S.mult.toFixed(1)}` : '');
+  $('#rbCaught').textContent = S.roundCaught || 0;
+  $('#rbFill').style.width = Math.min(100, (S.roundCaught || 0) / ROUND_GOAL * 100) + '%';
+}
+
+/* ---------- 게임 종료 ---------- */
+function endGame(reason){
+  if(!S.round || S.over) return;
+  S.over = true;
+  $('#countdown').classList.remove('show');
+  bgmStop();
+  const titles = {
+    allclear: `👑 끝판왕 격파! ${LAST_ROUND}라운드 클리어!`,
+    time: `⏰ ${S.round}라운드 시간 초과!`,
+    miss: `💨 물고기 ${MAX_MISS}마리를 놓쳤어요!`
+  };
+  $('#endTitle').textContent = titles[reason] || '🏁 게임 끝!';
+  S.running = false;
+  clearInterval(clockTimer); clockTimer = null;
+  cells.forEach(c => clearTimeout(c.timer));
+
+  closeRound();
+  // Firebase records 컬렉션에 저장할 학습 기록
+  const result = {
+    startRound: S.startRound, reachedRound: S.round, clearedRounds: S.cleared, allClear: reason === 'allclear',
+    dans: S.dans, danMult: S.danMult, score: S.score, bestRoundScore: S.best.score, bestRound: S.best.round, miss: S.miss, ignored: S.ignored, released: S.released,
+    eyeRate: (S.ignored + S.wrong) ? Math.round(S.ignored / (S.ignored + S.wrong) * 100) : null, endReason: reason || 'quit',
+    correct: S.correct, wrong: S.wrong, escaped: S.escaped,
+    bestCombo: S.bestCombo, wrongLog: S.wrongLog.slice(0, 50)
+  };
+  console.log('게임 결과', result);
+
+  // 랭킹 저장
+  const entry = { name:getNick(), score:S.score, round:S.round, clear:reason === 'allclear', at:Date.now() };
+  const rank = saveRank(entry);
+  if(window.FB) window.FB.saveGame(entry, { name:entry.name, ...result });   // Firebase에 저장 (rankings + records)
+  S.lastAt = entry.at;
+  $('#myRank').textContent = `⚡${entry.round}라운드까지 · ` + (rank <= 5 ? `🎉 랭킹 ${rank}등!` : `랭킹 ${rank}등`);
+
+  const total = S.correct + S.wrong;
+  $('#finalScore').textContent = '총 ' + S.score + '점';
+  // 내 라운드별 점수 (✅ 클리어 / 🐟 낚은 수, ⚡ = 랭킹에 올라간 최고 기록)
+  const log = $('#rLog'); log.innerHTML = '';
+  const maxSc = Math.max(1, ...S.roundLog.map(x => x.score));
+  S.roundLog.forEach(x => {
+    const row = document.createElement('div');
+    const isBest = x.round === S.best.round && x.score === S.best.score && x.score > 0;
+    row.className = 'rlog-row' + (isBest ? ' best' : '');
+    row.innerHTML = `<span class="rr">${x.round}R ${scene(x.round).name.split(' ')[0]}</span>`
+      + `<span class="bar"><i style="width:${Math.round(x.score / maxSc * 100)}%"></i></span>`
+      + `<span class="sc">${x.score}</span>`
+      + `<span class="st">${x.cleared ? '✅' : isBest ? '⚡' : '🐟'}</span>`;
+    row.title = x.cleared ? '클리어' : `${x.caught}/${ROUND_GOAL}마리`;
+    if(!x.cleared) row.querySelector('.rr').textContent += ` ${x.caught}/${ROUND_GOAL}`;
+    log.appendChild(row);
+  });
+  if(!S.roundLog.length) log.innerHTML = '<span>기록이 없어요</span>';
+  $('#rRound').textContent = reason === 'allclear' ? '👑 ' + LAST_ROUND : S.round + 'R';
+  $('#rRoundDetail').textContent = `${S.startRound}라운드 시작 · ${S.cleared}개 클리어`;
+  $('#rCorrect').textContent = S.correct + '마리';
+  $('#rRate').textContent = total ? Math.round(S.correct/total*100) + '%' : '-';
+  const eyeTotal = S.ignored + S.wrong;
+  const eye = eyeTotal ? Math.round(S.ignored / eyeTotal * 100) : null;
+  $('#rEye').textContent = eye === null ? '-' : eye + '%';
+  $('#rReleased').textContent = S.released + '마리';
+  $('#rBadge').textContent = eye === null ? '' : eye >= 90 ? '🦅 매의 눈 배지 획득!' : eye >= 70 ? '🐱 고양이 눈 배지 획득!' : '🔍 틀린 식을 잘 살펴봐요!';
+  $('#rEscaped').textContent = S.miss + '마리';
+  $('#rMissDetail').textContent = `도망 ${S.escaped} · 틀린 식 ${S.wrong}`;
+  $('#rCombo').textContent = S.bestCombo + '번';
+  const w = $('#rWrongs'); w.innerHTML = '';
+  const uniq = [...new Map(S.wrongLog.map(x => [x.expr+'='+x.shown, x])).values()];
+  if(!uniq.length) w.innerHTML = '<span>없어요! 👍</span>';
+  uniq.forEach(x => {
+    const s = document.createElement('span'); s.className = 'wtag';
+    s.innerHTML = `${x.expr}=${x.shown} → <em>${x.answer}</em>`; w.appendChild(s);
+  });
+  setTimeout(() => showScreen('resultScreen'), 500);
+}
+
+$('#startBtn').onclick = tryStart;
+$('#goBtn').onclick = startGame;
+$('#backBtn').onclick = () => showScreen('startScreen');
+$('#againBtn').onclick = () => { document.body.className = ''; startGame(); };
+$('#homeBtn').onclick = () => { document.body.className = ''; renderRank(S.lastAt); showScreen('startScreen'); };
+$('#quitBtn').onclick = () => endGame('quit');
+
+// <use>로는 표정 변경(CSS)이 적용되지 않으므로 고양이 그림을 직접 복제해 넣음
+document.querySelectorAll('use[href="#catArt"]').forEach(u => {
+  const g = document.getElementById('catArt').cloneNode(true);
+  g.removeAttribute('id'); u.replaceWith(g);
+});
+
+// 안내문 숫자는 위 설정값에서 자동으로 채움
+$('#missMax').textContent = $('#noteMax').textContent = MAX_MISS;
+$('#rbGoal').textContent = $('#noteGoal').textContent = ROUND_GOAL;
+$('#noteTime').textContent = ROUND_TIME % 60 ? ROUND_TIME + '초' : (ROUND_TIME / 60) + '분';
+$('#notePenalty').textContent = '-' + WRONG_PENALTY;
+$('#noteRelease').textContent = '+' + RELEASE_POINT;
+renderDans();
+renderRank();
+// Firebase를 6초 안에 못 불러오면(인터넷 차단 등) 이 기기 기록으로 표시
+setTimeout(() => { if(!window.FB) $('#dbStatus').textContent = '🟡 이 기기 기록만 보여요 (서버 연결 안 됨)'; }, 6000);
+</script>
+<!-- ===================== Firebase: 익명 로그인 + 랭킹 공유 + 기록 저장 =====================
+     rankings : 닉네임·점수·라운드 (첫 화면 랭킹용, 모두 읽기)
+     records  : 게임 한 판의 학습 기록 전체 (교사만 읽기 - 보안 규칙에서 설정) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBY8VfrWI-NvuE_hgtyl6BC5YJGNPrIOtA",
+  authDomain: "gugudan-fishing.firebaseapp.com",
+  projectId: "gugudan-fishing",
+  storageBucket: "gugudan-fishing.firebasestorage.app",
+  messagingSenderId: "604632224970",
+  appId: "1:604632224970:web:6b76901613df86c2cbd033"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const status = t => { const el = document.getElementById('dbStatus'); if(el) el.textContent = t; };
+
+// 1) 익명 로그인 (학생은 계정 없이 접속, 보안 규칙에서 "로그인한 사람만 쓰기"로 사용)
+const ready = signInAnonymously(auth).then(c => c.user)
+  .catch(e => { console.warn('익명 로그인 실패', e.code); status('🟡 이 기기 기록만 보여요 (서버 연결 안 됨)'); throw e; });
+
+// 2) 랭킹 불러오기: 점수 높은 순 100개 → 화면에서 닉네임당 최고 1개씩 5등까지
+async function loadRanking(){
+  try{
+    await ready;
+    const snap = await getDocs(query(collection(db, 'rankings'), orderBy('score', 'desc'), limit(100)));
+    RANK_CACHE = snap.docs.map(d => {
+      const x = d.data();
+      return { name:x.name, score:x.score, round:x.round, clear:!!x.clear, at:x.createdAt ? x.createdAt.toMillis() : 0 };
+    });
+    renderRank(S.lastAt);
+    status('🟢 모든 친구의 랭킹이에요');
+  }catch(e){
+    console.warn('랭킹 불러오기 실패', e.code || e);
+    status('🟡 이 기기 기록만 보여요 (서버 연결 안 됨)');
+  }
+}
+
+// 3) 게임 끝: rankings 와 records 에 한 줄씩 추가
+async function saveGame(entry, record){
+  try{
+    const user = await ready;
+    await addDoc(collection(db, 'rankings'), {
+      name: entry.name, score: entry.score, round: entry.round, clear: entry.clear,
+      uid: user.uid, createdAt: serverTimestamp()
+    });
+    await addDoc(collection(db, 'records'), { ...record, uid: user.uid, createdAt: serverTimestamp() });
+    console.log('Firebase 저장 완료');
+  }catch(e){
+    console.warn('Firebase 저장 실패', e.code || e);
+    // 서버 저장이 안 되면 이 기기에라도 남겨 둠
+    try{
+      const list = JSON.parse(localStorage.getItem(RANK_KEY)) || [];
+      list.push(entry); localStorage.setItem(RANK_KEY, JSON.stringify(list.slice(-50)));
+    }catch(_){}
+  }
+}
+
+window.FB = { saveGame, loadRanking };
+loadRanking();
+// 처음 화면으로 돌아올 때마다 최신 랭킹 다시 불러오기
+document.getElementById('homeBtn').addEventListener('click', loadRanking);
+</script>
+</body>
+</html>
