@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>구구단 낚시왕 — 교사용</title>
+<style>
+  :root{--ink:#1f2a37;--muted:#5a6b7d;--line:#e2e8f0;--bg:#f4f7fb;--accent:#1769aa;--ok:#0c7a4d;--warn:#b45309;--bad:#b91c1c}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  button{font:inherit;font-weight:700;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;background:var(--accent);color:#fff}
+  button.ghost{background:#e8eef5;color:var(--ink)}
+  button:disabled{opacity:.45;cursor:default}
+  .tab{background:#e8eef5;color:var(--ink)}
+  .tab.on{background:var(--accent);color:#fff}
+  #status{font-size:14px;margin-left:auto}
+  .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  input[type=search]{font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:9px;min-width:180px}
+  .stats{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 12px}
+  .stat{background:var(--bg);border-radius:10px;padding:8px 14px;font-size:13px}
+  .stat b{display:block;font-size:18px}
+  .tablebox{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;white-space:nowrap;vertical-align:top}
+  td.long{white-space:normal;min-width:220px;max-width:420px;word-break:break-all}
+  th{position:sticky;top:0;background:#eef3f8;z-index:1}
+  tr:hover td{background:#fafcff}
+  .empty{color:var(--muted);padding:20px;text-align:center}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎣 구구단 낚시왕 — 교사용 기록 보기</h1>
+  <p class="sub">허용된 교사 Google 계정으로 로그인해야 학생 기록을 볼 수 있습니다.</p>
+
+  <div class="card">
+    <div class="row">
+      <button id="loginBtn">Google 계정으로 로그인</button>
+      <button id="logoutBtn" class="ghost hidden">로그아웃</button>
+      <span id="status" class="warn">로그인되지 않음</span>
+    </div>
+  </div>
+
+  <div id="main" class="card hidden">
+    <div class="row" style="margin-bottom:10px">
+      <button class="tab on" data-col="records">📒 학습 기록 (records)</button>
+      <button class="tab" data-col="rankings">🏆 랭킹 (rankings)</button>
+      <button id="reloadBtn" class="ghost">🔄 새로고침</button>
+      <button id="csvBtn">⬇ CSV 다운로드</button>
+    </div>
+    <div class="row" style="margin-bottom:6px">
+      <input type="search" id="filter" placeholder="닉네임으로 찾기">
+      <span id="countText" class="sub" style="margin:0"></span>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="tablebox"><table id="table"></table></div>
+  </div>
+</div>
+
+<!-- Firebase (CDN Compat 방식) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// ===== 설정 (게임 index.html과 같은 프로젝트) =====
+const firebaseConfig = {
+  apiKey: "AIzaSyBY8VfrWI-NvuE_hgtyl6BC5YJGNPrIOtA",
+  authDomain: "gugudan-fishing.firebaseapp.com",
+  projectId: "gugudan-fishing"
+};
+const TEACHER_EMAILS = ["stjygdo@gmail.com"]; // 보안 규칙의 교사 메일과 같아야 함
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const $ = s => document.querySelector(s);
+let currentCol = "records";
+let rows = [];      // 화면에 쓰는 평평한(flat) 데이터
+let columns = [];   // 표 열 이름
+
+// ===== 로그인 =====
+$("#loginBtn").onclick = async () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  try {
+    await auth.signInWithPopup(provider);
+  } catch (e) {
+    if (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment") {
+      await auth.signInWithRedirect(provider);
+    } else if (e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request") {
+      setStatus("로그인 실패: " + e.code, "bad");
+    }
+  }
+};
+$("#logoutBtn").onclick = () => auth.signOut();
+
+auth.onAuthStateChanged(user => {
+  const email = user && user.email ? user.email.toLowerCase() : "";
+  const isTeacher = TEACHER_EMAILS.includes(email);
+  $("#loginBtn").classList.toggle("hidden", isTeacher);
+  $("#logoutBtn").classList.toggle("hidden", !user || user.isAnonymous);
+  $("#main").classList.toggle("hidden", !isTeacher);
+  if (!user || user.isAnonymous) {
+    setStatus("로그인되지 않음", "warn");
+  } else if (!isTeacher) {
+    setStatus(`${user.email} 은(는) 허용된 교사 계정이 아닙니다.`, "bad");
+  } else {
+    setStatus(`✅ ${user.email} 로그인됨`, "ok");
+    loadData();
+  }
+});
+
+function setStatus(text, cls) {
+  const el = $("#status");
+  el.textContent = text;
+  el.className = cls;
+}
+
+// ===== 데이터 불러오기 =====
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("on"));
+    btn.classList.add("on");
+    currentCol = btn.dataset.col;
+    $("#filter").value = "";
+    loadData();
+  };
+});
+$("#reloadBtn").onclick = loadData;
+$("#filter").oninput = render;
+
+async function loadData() {
+  $("#table").innerHTML = '<tr><td class="empty">불러오는 중…</td></tr>';
+  $("#stats").innerHTML = "";
+  try {
+    const snap = await db.collection(currentCol).get();
+    rows = snap.docs.map(d => flatten({ 문서ID: d.id, ...d.data() }));
+    rows.sort((a, b) => (b._time || 0) - (a._time || 0)); // 최신순
+    columns = buildColumns(rows);
+    render();
+  } catch (e) {
+    console.error(e);
+    rows = []; columns = [];
+    const msg = e.code === "permission-denied"
+      ? "권한이 없습니다. 보안 규칙의 교사 메일과 로그인한 메일이 같은지 확인하세요."
+      : "불러오기 실패: " + (e.code || e.message);
+    $("#table").innerHTML = `<tr><td class="empty bad">${esc(msg)}</td></tr>`;
+  }
+}
+
+// 중첩된 값(객체·배열·시각)을 표에 넣을 수 있게 평평하게 만들기
+function flatten(obj) {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v && typeof v.toDate === "function") {           // Firestore 시각
+      const d = v.toDate();
+      out[k] = fmtDate(d);
+      if (k === "createdAt" || out._time === undefined) out._time = d.getTime();
+    } else if (Array.isArray(v) || (v && typeof v === "object")) {
+      out[k] = JSON.stringify(v);
+    } else {
+      out[k] = v;
+    }
+  }
+  return out;
+}
+
+function buildColumns(list) {
+  const set = new Set();
+  list.forEach(r => Object.keys(r).forEach(k => { if (k !== "_time") set.add(k); }));
+  // 자주 보는 열을 앞으로
+  const front = ["createdAt", "name", "score", "round", "clear", "dans"];
+  const back = ["uid", "문서ID"];
+  const cols = [...set];
+  return [
+    ...front.filter(c => set.has(c)),
+    ...cols.filter(c => !front.includes(c) && !back.includes(c)).sort(),
+    ...back.filter(c => set.has(c))
+  ];
+}
+
+function filtered() {
+  const q = $("#filter").value.trim().toLowerCase();
+  if (!q) return rows;
+  return rows.filter(r => String(r.name ?? "").toLowerCase().includes(q));
+}
+
+// ===== 표 그리기 =====
+function render() {
+  const list = filtered();
+  $("#countText").textContent = `총 ${rows.length}건 중 ${list.length}건 표시`;
+  renderStats(list);
+  if (!list.length) {
+    $("#table").innerHTML = '<tr><td class="empty">기록이 없습니다.</td></tr>';
+    return;
+  }
+  const head = "<tr>" + columns.map(c => `<th>${esc(label(c))}</th>`).join("") + "</tr>";
+  const body = list.map(r =>
+    "<tr>" + columns.map(c => {
+      const v = r[c] ?? "";
+      const long = String(v).length > 40 ? ' class="long"' : "";
+      return `<td${long}>${esc(v)}</td>`;
+    }).join("") + "</tr>"
+  ).join("");
+  $("#table").innerHTML = head + body;
+}
+
+function renderStats(list) {
+  const names = new Set(list.map(r => r.name).filter(Boolean));
+  const scores = list.map(r => Number(r.score)).filter(n => !isNaN(n));
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : "-";
+  const max = scores.length ? Math.max(...scores) : "-";
+  $("#stats").innerHTML = [
+    ["기록 수", list.length], ["참여 닉네임", names.size], ["평균 점수", avg], ["최고 점수", max]
+  ].map(([k, v]) => `<div class="stat">${k}<b>${v}</b></div>`).join("");
+}
+
+const LABELS = { createdAt: "제출 시각", name: "닉네임", score: "점수", round: "라운드", clear: "클리어", dans: "단" };
+function label(c) { return LABELS[c] ? `${LABELS[c]} (${c})` : c; }
+
+// ===== CSV 다운로드 (한글 깨짐 방지: UTF-8 BOM) =====
+$("#csvBtn").onclick = () => {
+  const list = filtered();
+  if (!list.length) { alert("내려받을 기록이 없습니다."); return; }
+  const lines = [columns.map(c => csvCell(label(c))).join(",")];
+  list.forEach(r => lines.push(columns.map(c => csvCell(r[c] ?? "")).join(",")));
+  const blob = new Blob(["\uFEFF" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `구구단낚시_${currentCol}_${fmtDate(new Date()).replace(/[: ]/g, "-")}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+
+function csvCell(v) {
+  let s = String(v);
+  if (/^[=+\-@]/.test(s)) s = "'" + s;           // 엑셀 수식 실행 방지
+  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function fmtDate(d) {
+  const p = n => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
+function esc(v) {
+  return String(v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+</script>
+</body>
+</html>
