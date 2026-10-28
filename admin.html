@@ -160,7 +160,9 @@ async function loadData() {
 function flatten(obj) {
   const out = {};
   for (const [k, v] of Object.entries(obj)) {
-    if (v && typeof v.toDate === "function") {           // Firestore 시각
+    if (k === "wrongLog" && Array.isArray(v)) {          // 틀린 문항을 읽기 쉽게
+      out[k] = fmtWrong(v);
+    } else if (v && typeof v.toDate === "function") {    // Firestore 시각
       const d = v.toDate();
       out[k] = fmtDate(d);
       if (k === "createdAt" || out._time === undefined) out._time = d.getTime();
@@ -173,11 +175,22 @@ function flatten(obj) {
   return out;
 }
 
+// [{expr:"3×4", shown:13, answer:12}, …] → "3×4=13 (정답 12), …" (같은 실수는 ×횟수)
+function fmtWrong(list) {
+  if (!list.length) return "없음";
+  const count = new Map();
+  list.forEach(w => {
+    const key = `${w.expr}=${w.shown} (정답 ${w.answer})`;
+    count.set(key, (count.get(key) || 0) + 1);
+  });
+  return [...count].map(([k, n]) => n > 1 ? `${k} ×${n}` : k).join(", ");
+}
+
 function buildColumns(list) {
   const set = new Set();
   list.forEach(r => Object.keys(r).forEach(k => { if (k !== "_time") set.add(k); }));
   // 자주 보는 열을 앞으로
-  const front = ["createdAt", "name", "score", "round", "clear", "dans"];
+  const front = ["createdAt", "name", "score", "round", "clear", "dans", "wrongLog"];
   const back = ["uid", "문서ID"];
   const cols = [...set];
   return [
@@ -223,7 +236,7 @@ function renderStats(list) {
   ].map(([k, v]) => `<div class="stat">${k}<b>${v}</b></div>`).join("");
 }
 
-const LABELS = { createdAt: "제출 시각", name: "닉네임", score: "점수", round: "라운드", clear: "클리어", dans: "단" };
+const LABELS = { createdAt: "제출 시각", name: "닉네임", score: "점수", round: "라운드", clear: "클리어", dans: "단", wrongLog: "틀린 문항" };
 function label(c) { return LABELS[c] ? `${LABELS[c]} (${c})` : c; }
 
 // ===== CSV 다운로드 (한글 깨짐 방지: UTF-8 BOM) =====
