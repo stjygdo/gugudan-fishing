@@ -217,7 +217,7 @@ button.chip{cursor:pointer;font-size:.95rem}
 .roundbar .prog i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#ffd84d,#ff8a3d);transition:width .3s}
 .roundbar .rn{white-space:nowrap}
 .rounds{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.rbtn{border:2px solid #cfe3f3;background:#f3f9ff;border-radius:12px;padding:6px 0 4px;cursor:pointer;color:var(--ink);font-weight:800;font-size:1rem;line-height:1.2}
+.rbtn{border:2px solid #cfe3f3;font-size:.95rem !important;background:#f3f9ff;border-radius:12px;padding:6px 0 4px;cursor:pointer;color:var(--ink);font-weight:800;font-size:1rem;line-height:1.2}
 .rbtn small{display:block;font-size:1.1rem}
 .rbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .rbtn.boss{border-color:#c0392b}
@@ -271,14 +271,39 @@ body.bg-r9{background:linear-gradient(180deg,#0a1428 0%,#050b18 40%,#020611 75%,
 body.bg-r9 #gameScreen::before{background-image:radial-gradient(circle,rgba(120,240,255,.8) 0 2px,transparent 4px),radial-gradient(circle,rgba(255,140,240,.7) 0 2px,transparent 4px);
   background-size:150px 170px,110px 130px;background-position:0 0,50px 60px;animation:twinkle 1.8s ease-in-out infinite alternate}
 body.bg-r9 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><g opacity='.5'><path d='M60 80a30 26 0 0 1 60 0z' fill='%23ff8ff0'/><path d='M66 80q-4 20 4 40M80 80q4 24-2 46M94 80q-4 22 4 40M108 80q4 20-2 36' stroke='%23ff8ff0' stroke-width='3' fill='none'/></g><g opacity='.42'><path d='M210 200a24 20 0 0 1 48 0z' fill='%2378f0ff'/><path d='M216 200q-4 18 4 34M230 200q4 20-2 38M244 200q-4 18 4 32' stroke='%2378f0ff' stroke-width='3' fill='none'/></g></svg>") repeat/300px 300px;animation:drift 8s ease-in-out infinite alternate}
-/* 10 끝판왕 */
-body.bg-r10{background:linear-gradient(180deg,#3a0b30 0%,#4d0c26 35%,#2a0618 70%,#0d0208 100%)}
-body.bg-r10 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,140,60,.6) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,60,60,.45) 0 2px,transparent 3px);
+/* 10 열대 바다 */
+body.bg-r10{background:linear-gradient(180deg,#bff3ff 0%,#7fe3f0 25%,#2fc7d6 55%,#14a3b8 80%,#f1d9a0 100%)}
+body.bg-r10 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,255,255,.45) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,255,255,.3) 0 2px,transparent 3px);
+  background-size:180px 220px,120px 160px;animation:bubbleUp 12s linear infinite}
+body.bg-r10 #gameScreen::after{background:radial-gradient(circle at 10% 8%,#fff3a0 0 34px,rgba(255,236,150,.4) 35px 58px,transparent 59px),
+  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 160'><path d='M60 160 Q64 100 54 60' stroke='%23845a2a' stroke-width='7' fill='none'/><g fill='%232f9e4f' opacity='.85'><path d='M54 60 Q20 40 4 62 Q30 50 54 60Z'/><path d='M54 60 Q88 36 112 56 Q82 48 54 60Z'/><path d='M54 60 Q40 22 52 6 Q58 34 54 60Z'/><path d='M54 60 Q76 26 98 24 Q72 40 54 60Z'/></g></svg>") no-repeat right 4% top 2%/90px 120px}
+/* 11 화산 바다 */
+body.bg-r11{background:linear-gradient(180deg,#3b3b46 0%,#4a3a3a 25%,#5e2a1c 60%,#8a2a10 85%,#c8471a 100%)}
+body.bg-r11 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,170,60,.75) 0 2.5px,transparent 4px),radial-gradient(circle,rgba(255,90,30,.6) 0 2px,transparent 3px);
+  background-size:160px 200px,110px 150px;animation:bubbleUp 9s linear infinite}
+body.bg-r11 #gameScreen::after{background:radial-gradient(ellipse at 50% 108%,rgba(255,120,30,.55),transparent 55%)}
+/* 12 난파선 */
+body.bg-r12{background:linear-gradient(180deg,#1f5b6b 0%,#174a5a 30%,#0f3442 65%,#071c26 100%)}
+body.bg-r12 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,255,255,.35) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,255,255,.22) 0 2px,transparent 3px);
+  background-size:180px 220px,120px 160px;animation:bubbleUp 14s linear infinite}
+body.bg-r12 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 120'><g fill='%23062a33' opacity='.75'><path d='M20 100 L60 70 L250 70 L300 96 L280 120 L40 120Z'/><rect x='120' y='10' width='8' height='62'/><path d='M128 14 L180 40 L128 58Z'/><rect x='200' y='30' width='6' height='42' transform='rotate(18 203 51)'/></g></svg>") no-repeat center bottom/min(520px,90%) auto}
+/* 13 폭풍 바다 */
+body.bg-r13{background:linear-gradient(180deg,#4a5563 0%,#38424f 30%,#26303c 65%,#141b24 100%)}
+body.bg-r13 #gameScreen::before{background-image:radial-gradient(1.5px 16px,rgba(220,232,255,.8),transparent),radial-gradient(1px 12px,rgba(220,232,255,.6),transparent);
+  background-size:50px 100px,36px 80px;animation:rain .45s linear infinite}
+body.bg-r13 #gameScreen::after{animation:lightning 6s infinite}
+/* 14 소용돌이 */
+body.bg-r14{background:linear-gradient(180deg,#3a2a7a 0%,#2c2070 35%,#1d165a 70%,#0e0b33 100%)}
+body.bg-r14 #gameScreen::after{inset:-75%;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(160,140,255,.12) 0 12deg,transparent 12deg 30deg);animation:spin 18s linear infinite;transform-origin:50% 50%}
+body.bg-r14 #gameScreen::before{background-image:radial-gradient(circle,rgba(200,180,255,.5) 0 2px,transparent 3px);background-size:120px 140px;animation:twinkle 2s ease-in-out infinite alternate}
+/* 15 끝판왕 */
+body.bg-r15{background:linear-gradient(180deg,#3a0b30 0%,#4d0c26 35%,#2a0618 70%,#0d0208 100%)}
+body.bg-r15 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,140,60,.6) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,60,60,.45) 0 2px,transparent 3px);
   background-size:180px 220px,120px 160px;animation:bubbleUp 7s linear infinite}
-body.bg-r10 #gameScreen::after{animation:flash 5s infinite}
+body.bg-r15 #gameScreen::after{animation:flash 5s infinite}
 
 /* 어두운 배경에서는 낚싯줄을 밝게 */
-body.bg-r6 .ln line,body.bg-r8 .ln line,body.bg-r9 .ln line,body.bg-r10 .ln line{stroke:#d8ecff}
+body.bg-r6 .ln line,body.bg-r8 .ln line,body.bg-r9 .ln line,body.bg-r11 .ln line,body.bg-r12 .ln line,body.bg-r13 .ln line,body.bg-r14 .ln line,body.bg-r15 .ln line{stroke:#d8ecff}
 /* 끝판왕 물고기 */
 body.theme-boss .bubble{border:3px solid #ff3b3b}
 body.theme-boss .eq text{fill:#fff;stroke:#2a0618}
@@ -294,7 +319,62 @@ body.theme-boss .smile,body.theme-boss .blush{display:none}
 @keyframes sway{from{transform:skewX(-3deg)}to{transform:skewX(3deg)}}
 @keyframes aurora{from{opacity:.4;background-position:-40px 0}to{opacity:1;background-position:40px 0}}
 @keyframes drift{from{background-position:0 0}to{background-position:20px -40px}}
+@keyframes lightning{0%,90%,94%,100%{background:rgba(255,255,255,0)}91%{background:rgba(255,255,255,.55)}92%{background:rgba(255,255,255,.05)}93%{background:rgba(255,255,255,.4)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 @keyframes flash{0%,86%,100%{background:rgba(255,60,60,0)}88%{background:rgba(255,80,80,.25)}90%{background:rgba(255,60,60,0)}92%{background:rgba(255,80,80,.18)}}
+
+/* ===== 함께 하기 ===== */
+.together-btn{background:linear-gradient(180deg,#8f6bff,#6a46e8);box-shadow:0 7px 0 #4b2fb8;margin-top:-2px}
+.together-btn:active{box-shadow:0 2px 0 #4b2fb8}
+.together-btn small{font-size:.55em}
+.join-row{display:flex;gap:8px;align-items:stretch}
+.code-in{flex:1;min-width:0;font-size:1.6rem;padding:10px;letter-spacing:6px;border-radius:18px}
+.join-btn{width:auto;flex:none;font-size:1.3rem;padding:10px 18px;border-radius:18px}
+.room-top{display:flex;align-items:center;gap:16px}
+.room-code{text-align:center;font-weight:800;color:var(--ink)}
+.room-code b{display:block;font-family:"Jua",sans-serif;font-weight:400;font-size:3rem;letter-spacing:8px;color:#4b2fb8;line-height:1.1}
+.room-qr{width:110px;height:110px;padding:5px;border-color:#8f6bff;cursor:default}
+.room-info{font-weight:800;color:var(--ink);text-align:center}
+.room-mates{width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.rmate{background:rgba(255,255,255,.92);border-radius:14px;padding:6px 4px;text-align:center;font-size:.8rem;min-width:0}
+.rmate svg{width:100%;height:auto}
+.rmate b{display:block;font-size:.85rem;white-space:nowrap}
+.rmate span{display:block;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rmate.empty{opacity:.55}
+.rwait{font-size:2rem;font-weight:900;color:#9aa3ab;aspect-ratio:260/200;display:flex;align-items:center;justify-content:center}
+.room-msg{font-weight:800;color:var(--ink);text-align:center;min-height:1.4em}
+.crew{display:none;flex:none;width:100%;max-width:1000px;justify-content:center;gap:clamp(4px,1.5vw,14px);margin-top:2px}
+body.multi .crew{display:flex}
+body.multi .scene{display:none}
+body.multi:not(.coop) #missChip{display:none}
+#modePick{display:none}
+body.pick-multi #modePick{display:block}
+.mate{position:relative;flex:0 1 150px;min-width:0;text-align:center;background:rgba(255,255,255,.82);border-radius:14px;padding:2px 4px 4px;border:3px solid transparent}
+.mate.me{border-color:var(--mc)}
+.mate .cat{width:100%;height:auto;aspect-ratio:260/200;max-height:clamp(46px,13dvh,120px);animation:bob 2.2s ease-in-out infinite}
+.mate .cat.jump{animation:jump .5s ease-out}
+.mate .cat.sad{animation:catShake .45s}
+.mname{font-weight:800;font-size:.8rem;color:var(--mc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mscore{font-weight:900;font-size:1.05rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.mate .crown{display:none;position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-style:normal;font-size:1.2rem}
+.mate.lead .crown{display:block}
+.float.mate{font-size:1.25rem;top:22%}
+.room-rank{display:none;flex-direction:column;gap:6px;margin:10px 0 4px}
+#resultScreen.multi .room-rank{display:flex}
+#resultScreen.multi .solo-only{display:none}
+.rr-row{display:flex;align-items:center;gap:8px;background:#f3f9ff;border-radius:12px;padding:4px 10px;font-weight:800}
+.rr-row.me{background:#fff4e0}
+.rr-medal{width:28px;text-align:center;font-size:1.3rem}
+.rr-svg{width:56px;height:auto;flex:none;animation:none}
+.rr-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rr-pts{text-align:right;font-variant-numeric:tabular-nums}
+.rr-pts small{display:block;font-size:.72rem;color:#5a6b7d}
+@media (max-width:640px){
+  .rmate{font-size:.7rem;padding:4px 2px}
+  .rmate b{font-size:.7rem}
+  .mname{font-size:.68rem}
+  .mscore{font-size:.9rem}
+}
 
 /* 세로 화면(핸드폰·세운 패드): 3열 × 4행 */
 @media (orientation:portrait){
@@ -337,7 +417,8 @@ body.theme-boss .smile,body.theme-boss .blush{display:none}
 
     <input class="nick" id="nick" type="text" maxlength="10" placeholder="닉네임 입력" autocomplete="off" enterkeyhint="go">
     <div class="nick-msg" id="nickMsg"></div>
-    <button class="start-btn home-start" id="startBtn">🐟 게임 시작!</button>
+    <button class="start-btn home-start" id="startBtn">🐟 혼자 하기</button>
+    <button class="start-btn together-btn" id="togetherBtn">👥 함께 하기 <small>(2~5명)</small></button>
 
     <!-- 랭킹 1~5등 -->
     <div class="rank-cap">🏆 최종 점수 랭킹</div>
@@ -362,11 +443,53 @@ body.theme-boss .smile,body.theme-boss .blush{display:none}
       <div class="set-time">시작 라운드: <span class="timeval" id="roundLabel">1라운드</span><span class="stage-tag" id="stageTag">🌊 바다</span></div>
       <div class="rounds" id="roundPick"></div>
       <div class="mult-note" id="multNote"></div>
+      <div id="modePick">
+        <div class="set-time">함께 하기 방식</div>
+        <div class="levels">
+          <button class="lv" data-m="race">⚔️ 경쟁<small>먼저 낚는 사람이 점수</small></button>
+          <button class="lv" data-m="coop">🤝 협동<small>다 같이 팀 점수</small></button>
+        </div>
+      </div>
       <div class="set-note"><span>🎯 <b id="noteGoal">15</b>마리 → 다음 라운드</span><span>⏱ 라운드당 <b id="noteTime">2분</b></span><span>🔥 연속 낚기 보너스</span><span>👋 틀린 식 참기 <b id="noteRelease">+3</b></span><span>❌ 틀린 식 낚기 <b id="notePenalty">-5</b></span><span>💨 <b id="noteMax">15</b>마리 놓치면 끝</span></div>
     </div>
 
     <button class="start-btn" id="goBtn">🎣 낚시 시작!</button>
     <button class="back-btn" id="backBtn">← 처음 화면</button>
+  </div>
+</section>
+
+<!-- 2-1) 함께 하기 로비: 방 만들기 / 들어가기 -->
+<section id="lobbyScreen" class="screen">
+  <div class="home">
+    <h1 class="title small">함께 낚시</h1>
+    <div class="hello" id="lobbyHello"></div>
+    <div class="settings">
+      <div class="set-title">👑 내가 방장이 될래요</div>
+      <button class="start-btn" id="makeRoomBtn">🏠 방 만들기</button>
+      <div class="set-title" style="margin-top:18px">🙋 친구 방에 들어갈래요</div>
+      <div class="join-row">
+        <input class="nick code-in" id="roomCode" type="text" inputmode="numeric" maxlength="4" placeholder="방 번호 4자리" autocomplete="off">
+        <button class="start-btn join-btn" id="joinBtn">들어가기</button>
+      </div>
+      <div class="nick-msg" id="lobbyMsg"></div>
+    </div>
+    <button class="back-btn" id="lobbyBack">← 처음 화면</button>
+  </div>
+</section>
+
+<!-- 2-2) 대기실: 참가자 모이기 -->
+<section id="roomScreen" class="screen">
+  <div class="home">
+    <h1 class="title small">대기실</h1>
+    <div class="room-top">
+      <div class="room-code">방 번호<b id="roomCodeView">0000</b></div>
+      <div class="qr room-qr" id="roomQr"></div>
+    </div>
+    <div class="room-info" id="roomInfo"></div>
+    <div class="room-mates" id="roomMates"></div>
+    <button class="start-btn" id="roomStartBtn">🎣 다 같이 시작!</button>
+    <div class="room-msg" id="roomMsg"></div>
+    <button class="back-btn" id="roomLeave">← 나가기</button>
   </div>
 </section>
 
@@ -384,6 +507,7 @@ body.theme-boss .smile,body.theme-boss .blush{display:none}
     </div>
   </div>
 
+  <div class="crew" id="crew"></div>
   <div class="scene">
     <svg class="cat" id="cat" viewBox="0 0 260 200"><use href="#catArt"/></svg>
     <div class="bubble" id="bubble">맞는 곱셈식만 낚아 줘냥!</div>
@@ -400,6 +524,7 @@ body.theme-boss .smile,body.theme-boss .blush{display:none}
     <h1 id="endTitle">🏁 게임 끝!</h1>
     <div class="score-big" id="finalScore">0</div>
     <div class="my-rank" id="myRank"></div>
+    <div class="room-rank" id="roomRank"></div>
     <div class="stats">
       <div class="stat">🏁 도달 라운드<b id="rRound">-</b><small id="rRoundDetail"></small></div>
       <div class="stat">낚은 물고기<b id="rCorrect">0</b></div>
@@ -407,7 +532,7 @@ body.theme-boss .smile,body.theme-boss .blush{display:none}
       <div class="stat">놓친 물고기<b id="rEscaped">0</b><small id="rMissDetail"></small></div>
       <div class="stat">🔥 최고 연속<b id="rCombo">0</b></div>
       <div class="stat">👀 눈썰미<b id="rEye">-</b><small>틀린 식을 안 건드린 비율</small></div>
-      <div class="stat">👋 놓아준 물고기<b id="rReleased">0</b><small>+3점씩</small></div>
+      <div class="stat solo-only">👋 놓아준 물고기<b id="rReleased">0</b><small>+3점씩</small></div>
     </div>
     <div class="badge" id="rBadge"></div>
     <h2>내 라운드별 점수</h2>
@@ -513,7 +638,7 @@ const MAX_MISS = 15;            // 놓친 물고기(도망+틀린 식 터치) �
 const MISS_PER_ROUND = true;    // true: 라운드마다 0부터 다시 셈 / false: 게임 전체 누적
 const ROUND_GOAL = 15;          // 라운드마다 낚아야 할 맞는 물고기 수
 const ROUND_TIME = 120;         // 라운드 제한 시간(초) = 2분
-const LAST_ROUND = 10;
+const LAST_ROUND = 15;
 
 /* 라운드별 난이도: 1라운드 → 20라운드로 갈수록
    life(물고기가 버티는 시간)·gap(새 물고기 간격)은 짧아지고, max(동시 마릿수)는 늘고,
@@ -539,6 +664,11 @@ const SCENES = [
   { name:'🧊 북극 바다',   cat:'으으 춥다냥! 집중!' },
   { name:'🌌 깊은 바다',   cat:'깊은 바다다냥… 집중!' },
   { name:'🪼 심해',        cat:'심해는 무섭다냥… 조심!' },
+  { name:'🏝️ 열대 바다',   cat:'열대 바다다냥! 덥다냥~' },
+  { name:'🌋 화산 바다',   cat:'화산이 부글부글냥!' },
+  { name:'🚢 난파선',      cat:'보물이 있을지도 모른다냥!' },
+  { name:'⛈️ 폭풍 바다',   cat:'폭풍이다냥! 꽉 잡아라냥!' },
+  { name:'🌀 소용돌이',    cat:'빙글빙글 어지럽다냥~' },
   { name:'👑 끝판왕',      cat:'끝판왕이다냥! 힘내라냥!' }
 ];
 const scene = r => SCENES[Math.min(Math.max(r,1),LAST_ROUND) - 1];
@@ -577,6 +707,7 @@ const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 
 /* ---------- 시작 화면 ---------- */
 function renderDans(){
+  if(typeof renderModePick === 'function') renderModePick();
   const box = $('#dans'); box.innerHTML = '';
   for(let d=2; d<=9; d++){
     const b = document.createElement('button');
@@ -587,7 +718,7 @@ function renderDans(){
   }
   $('#goBtn').disabled = selected.size === 0;
   updateMultNote();
-  $('#goBtn').textContent = selected.size ? '🎣 낚시 시작!' : '👆 단을 골라 주세요';
+  $('#goBtn').textContent = !selected.size ? '👆 단을 골라 주세요' : MODE === 'multi' ? '🏠 방 만들기' : '🎣 낚시 시작!';
 }
 $('#allBtn').onclick = () => { selected = new Set([2,3,4,5,6,7,8,9]); renderDans(); };
 $('#noneBtn').onclick = () => { selected.clear(); renderDans(); };
@@ -632,7 +763,7 @@ renderRoundPick();
 const NICK_KEY = 'fishNick';
 try{ $('#nick').value = localStorage.getItem(NICK_KEY) || ''; }catch(e){}
 function getNick(){ return $('#nick').value.trim().slice(0,10); }
-function tryStart(){
+function tryStart(mode){
   const n = getNick();
   if(!n){
     const el = $('#nick'); el.classList.remove('need'); void el.offsetWidth; el.classList.add('need'); el.focus();
@@ -640,8 +771,10 @@ function tryStart(){
     return;
   }
   try{ localStorage.setItem(NICK_KEY, n); }catch(e){}
+  if(mode === 'multi'){ goLobby(); return; }
+  MODE = 'solo';
   $('#hello').textContent = `${n}, 어떤 단을 낚아 볼까냥? 🐟`;
-  showScreen('setupScreen');
+  renderDans(); showScreen('setupScreen');
 }
 $('#nick').addEventListener('input', e => { e.target.classList.remove('need'); $('#nickMsg').textContent = ''; });
 $('#nick').addEventListener('keydown', e => { if(e.key === 'Enter') tryStart(); });
@@ -732,7 +865,7 @@ const sfx = {
 };
 
 /* ---------- 배경 음악 (Web Audio로 직접 연주) ----------
-   라운드마다 다른 곡 10개. mel=멜로디, bass=베이스 (MIDI 번호, _ = 쉼), long=베이스를 길게 */
+   라운드마다 다른 곡 15개. mel=멜로디, bass=베이스 (MIDI 번호, _ = 쉼), long=베이스를 길게 */
 const midi = m => 440 * Math.pow(2, (m - 69) / 12);
 const _ = null;
 const BGM = [
@@ -754,7 +887,17 @@ const BGM = [
     mel:[69,_,72,_, 76,_,74,72, 71,_,69,_, 64,_,_,_], bass:[45,_,_,_, 41,_,_,_, 43,_,_,_, 40,_,_,_] },
   /* 9 심해: 으스스 */ { bpm:64, lead:'sine', bassW:'sawtooth', vol:.045, long:true,
     mel:[69,_,_,70, _,_,64,_, _,63,_,_, _,_,_,_], bass:[33,_,_,_, _,_,_,_, 34,_,_,_, _,_,_,_] },
-  /* 10 끝판왕: 빠르고 긴장감 */ { bpm:152, lead:'square', bassW:'sawtooth', vol:.035,
+  /* 10 열대 바다: 신나는 리듬 */ { bpm:118, lead:'triangle', bassW:'sine', vol:.05,
+    mel:[72,74,76,79, 81,79,76,74, 72,76,79,76, 74,72,_,_], bass:[48,_,52,_, 55,_,52,_, 53,_,57,_, 55,_,_,_] },
+  /* 11 화산 바다: 묵직한 단조 */ { bpm:132, lead:'sawtooth', bassW:'square', vol:.028,
+    mel:[57,60,63,60, 57,_,62,63, 60,_,57,55, 57,_,_,_], bass:[33,33,_,33, 36,_,33,_, 31,31,_,31, 33,_,_,_] },
+  /* 12 난파선: 뱃노래 */ { bpm:90, lead:'triangle', bassW:'triangle', vol:.05,
+    mel:[64,_,67,69, 71,_,69,67, 64,_,62,64, 67,_,_,_], bass:[40,_,47,_, 40,_,47,_, 38,_,45,_, 40,_,_,_] },
+  /* 13 폭풍 바다: 몰아치는 리듬 */ { bpm:140, lead:'square', bassW:'sawtooth', vol:.03,
+    mel:[69,_,69,72, 74,_,72,69, 67,_,67,70, 72,_,70,67], bass:[45,45,45,45, 43,43,43,43, 41,41,41,41, 40,40,40,40] },
+  /* 14 소용돌이: 빙글빙글 */ { bpm:104, lead:'sine', bassW:'triangle', vol:.055, long:true,
+    mel:[76,79,83,79, 76,79,83,86, 84,81,77,81, 84,_,_,_], bass:[52,_,_,_, 52,_,_,_, 53,_,_,_, 53,_,_,_] },
+  /* 15 끝판왕: 빠르고 긴장감 */ { bpm:152, lead:'square', bassW:'sawtooth', vol:.035,
     mel:[62,62,65,62, 67,62,69,68, 62,62,65,62, 70,69,67,65], bass:[38,38,50,38, 38,50,38,50, 36,36,48,36, 37,37,49,37] }
 ];
 let bgm = { timer:null, theme:null, step:0, next:0 };   // theme = 라운드 번호
@@ -838,14 +981,15 @@ function buildPond(){
     el.className = 'cell empty';
     el.innerHTML = FISH_SVG;
     const c = { el, a:0, b:0, shown:0, empty:true, busy:false, timer:null, gen:S.gen };
-    el.addEventListener('pointerdown', e => { e.preventDefault(); touch(c); });
+    el.addEventListener('pointerdown', e => { e.preventDefault(); MODE === 'multi' ? mpTouch(c) : touch(c); });
     pond.appendChild(el); cells.push(c);
   }
 }
 
 /* ---------- 게임 시작 ---------- */
 function startGame(){
-  S = { dans:[...selected].sort((a,b)=>a-b), danMult:danMult([...selected]), best:{ score:0, round:startRound }, roundScore:0, roundLog:[], roundLogged:0, mult:1, startRound, round:startRound, cleared:0, gen:0,
+  MODE = 'solo'; mpLeave(true);
+  S = { mode:'solo', dans:[...selected].sort((a,b)=>a-b), danMult:danMult([...selected]), best:{ score:0, round:startRound }, roundScore:0, roundLog:[], roundLogged:0, mult:1, startRound, round:startRound, cleared:0, gen:0,
         timeLeft:ROUND_TIME, roundCaught:0, roundMiss:0, score:0, combo:0, bestCombo:0,
         correct:0, wrong:0, escaped:0, wrongLog:[], miss:0, ignored:0, released:0, lastCatchAt:0,
         running:false, over:false };
@@ -854,7 +998,7 @@ function startGame(){
 }
 
 function applyTheme(r){
-  document.body.className = 'bg-r' + r + (isBoss(r) ? ' theme-boss' : '');
+  document.body.className = 'bg-r' + r + (isBoss(r) ? ' theme-boss' : '') + (MODE === 'multi' ? ' multi' + (S.coop ? ' coop' : '') : '');
   $('#bubble').textContent = catDefault();
 }
 
@@ -916,16 +1060,17 @@ function tick(){
 }
 
 /* ---------- 곱셈식 만들기 ---------- */
-function makeEquation(wantCorrect){
-  const a = pick(S.dans), b = 1 + Math.floor(Math.random()*9), ans = a*b;
+function makeEquation(wantCorrect, R = Math.random){
+  const a = S.dans[Math.floor(R() * S.dans.length)], b = 1 + Math.floor(R()*9), ans = a*b;
   if(wantCorrect) return {a, b, shown:ans};
   // 헷갈리는 오답: ±1, 이웃 단(±a, ±b), 자릿수 바꾸기(24→42)
   const rev = ans >= 10 && ans % 11 ? +String(ans).split('').reverse().join('') : 0;
   const close = [ans+1, ans-1, ans+a, ans-a, ans+b, ans-b, rev];
   // 쉬운 오답: 차이가 큼
   const far = [ans+10, ans-10, ans+a*2, ans+12, ans-12, ans+20];
-  const pool = (Math.random() < S.cfg.close ? close : far).filter(x => x > 0 && x !== ans);
-  return {a, b, shown:pick(pool.length ? pool : [ans+10])};
+  const pool = (R() < S.cfg.close ? close : far).filter(x => x > 0 && x !== ans);
+  const p2 = pool.length ? pool : [ans+10];
+  return {a, b, shown:p2[Math.floor(R() * p2.length)]};
 }
 const isCorrect = c => c.shown === c.a * c.b;
 const correctOnBoard = () => cells.filter(c => !c.empty && !c.busy && isCorrect(c)).length;
@@ -934,7 +1079,7 @@ const correctOnBoard = () => cells.filter(c => !c.empty && !c.busy && isCorrect(
 function setState(c, ...cls){
   c.el.className = 'cell';
   void c.el.offsetWidth;
-  cls.forEach(k => c.el.classList.add(k));
+  cls.filter(Boolean).forEach(k => c.el.classList.add(k));
 }
 
 const activeCount = () => cells.filter(c => !c.empty).length;
@@ -1029,14 +1174,15 @@ function addMiss(){
 }
 const missNow = () => (MISS_PER_ROUND ? S.roundMiss : S.miss) || 0;
 
-function floatText(c, txt, kind){
+function floatText(c, txt, kind, color){
   const f = document.createElement('div');
   f.className = 'float ' + kind; f.textContent = txt;
+  if(color) f.style.color = color;
   c.el.appendChild(f); setTimeout(() => f.remove(), 900);
 }
 
 function updateHud(){
-  $('#score').textContent = S.score;
+  $('#score').textContent = S.coop ? teamScore() : S.score;
   const t = Math.max(0, S.timeLeft);
   $('#clock').textContent = `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
   $('#clockChip').classList.toggle('warn', t <= 10);
@@ -1076,15 +1222,34 @@ function endGame(reason){
   };
   console.log('게임 결과', result);
 
-  // 랭킹 저장
-  const entry = { name:getNick(), score:S.score, round:S.round, clear:reason === 'allclear', at:Date.now() };
-  const rank = saveRank(entry);
-  if(window.FB) window.FB.saveGame(entry, { name:entry.name, ...result });   // Firebase에 저장 (rankings + records)
-  S.lastAt = entry.at;
-  $('#myRank').textContent = `⚡${entry.round}라운드까지 · ` + (rank <= 5 ? `🎉 랭킹 ${rank}등!` : `랭킹 ${rank}등`);
+  const multi = S.mode === 'multi' && MP && MP.room;
+  $('#resultScreen').classList.toggle('multi', !!multi);
+  if(multi){
+    // 함께 하기: 방 순위 표시, 학습 기록만 저장 (첫 화면 랭킹은 혼자 하기 기록만)
+    mpPushMe();
+    const rr = mpResults();
+    if(S.coop){
+      $('#endTitle').textContent = reason === 'allclear' ? `👑 우리 팀 ${LAST_ROUND}라운드 클리어!` : `🤝 우리 팀 ${S.round}라운드까지!`;
+      $('#myRank').textContent = `🤝 ${rr.count}명이 함께 · ` + ({ allclear:'끝판왕 격파!', time:'시간 초과', miss:`팀이 ${MAX_MISS}마리 놓침` }[reason] || '게임 종료');
+      if(window.FB) window.FB.saveRecord({ name:getNick(), mode:'coop', room:MP.code, players:rr.count, teamScore:teamScore(), ...result });
+    }else{
+      $('#endTitle').textContent = `🏆 ${rr.winner.name} 우승!`;
+      $('#myRank').textContent = `🏅 방 순위 ${rr.myRank}등 / ${rr.count}명 · ` + ({ allclear:'15라운드 클리어', time:`${S.round}라운드 시간 초과` }[reason] || '게임 종료');
+      if(window.FB) window.FB.saveRecord({ name:getNick(), mode:'multi', room:MP.code, players:rr.count, roomRank:rr.myRank, ...result });
+    }
+    $('#againBtn').textContent = '👥 다시 함께 하기';
+  }else{
+    // 랭킹 저장
+    const entry = { name:getNick(), score:S.score, round:S.round, clear:reason === 'allclear', at:Date.now() };
+    const rank = saveRank(entry);
+    if(window.FB) window.FB.saveGame(entry, { name:entry.name, mode:'solo', ...result });   // Firebase에 저장 (rankings + records)
+    S.lastAt = entry.at;
+    $('#myRank').textContent = `⚡${entry.round}라운드까지 · ` + (rank <= 5 ? `🎉 랭킹 ${rank}등!` : `랭킹 ${rank}등`);
+    $('#againBtn').textContent = '다시 하기';
+  }
 
   const total = S.correct + S.wrong;
-  $('#finalScore').textContent = '총 ' + S.score + '점';
+  $('#finalScore').textContent = (multi && S.coop ? '팀 ' + teamScore() : '총 ' + S.score) + '점';
   // 내 라운드별 점수 (✅ 클리어 / 🐟 낚은 수, ⚡ = 랭킹에 올라간 최고 기록)
   const log = $('#rLog'); log.innerHTML = '';
   const maxSc = Math.max(1, ...S.roundLog.map(x => x.score));
@@ -1110,7 +1275,7 @@ function endGame(reason){
   $('#rEye').textContent = eye === null ? '-' : eye + '%';
   $('#rReleased').textContent = S.released + '마리';
   $('#rBadge').textContent = eye === null ? '' : eye >= 90 ? '🦅 매의 눈 배지 획득!' : eye >= 70 ? '🐱 고양이 눈 배지 획득!' : '🔍 틀린 식을 잘 살펴봐요!';
-  $('#rEscaped').textContent = S.miss + '마리';
+  $('#rEscaped').textContent = (multi ? S.escaped + S.wrong : S.miss) + '마리';
   $('#rMissDetail').textContent = `도망 ${S.escaped} · 틀린 식 ${S.wrong}`;
   $('#rCombo').textContent = S.bestCombo + '번';
   const w = $('#rWrongs'); w.innerHTML = '';
@@ -1123,12 +1288,431 @@ function endGame(reason){
   setTimeout(() => showScreen('resultScreen'), 500);
 }
 
-$('#startBtn').onclick = tryStart;
-$('#goBtn').onclick = startGame;
-$('#backBtn').onclick = () => showScreen('startScreen');
-$('#againBtn').onclick = () => { document.body.className = ''; startGame(); };
-$('#homeBtn').onclick = () => { document.body.className = ''; renderRank(S.lastAt); showScreen('startScreen'); };
-$('#quitBtn').onclick = () => endGame('quit');
+
+/* ===================== 함께 하기 (2~5명, 하나의 연못에서 경쟁) =====================
+   · 방장이 방을 만들면 4자리 방 번호가 생기고, 친구들이 번호로 들어옴 (최대 5명)
+   · 모두 같은 물고기를 봄: 물고기 순서는 방 번호에 딸린 '씨앗(seed)'으로 모든 기기에서 똑같이 계산
+   · 먼저 터치한 사람이 낚음: Firebase에 "이 물고기 내가 낚았다" 기록을 먼저 남긴 사람만 성공
+   · 맞는 물고기 15마리가 낚이면 다 같이 다음 라운드 (방장 화면이 진행을 맡음) */
+const MP_MAX = 5, MP_INTRO = 5000;             // 최대 인원, 라운드 시작 전 안내 시간(ms)
+const MATES = [
+  { name:'치즈냥', color:'#e8892b' }, { name:'멍멍이', color:'#9a6438' },
+  { name:'깡총이', color:'#ff5f97' }, { name:'곰돌이', color:'#7a4a22' }, { name:'펭펭이', color:'#2f6fb5' }
+];
+let MODE = 'solo';
+let MP = null;
+
+/* ---------- 캐릭터 그림 (0 고양이 · 1 강아지 · 2 토끼 · 3 곰 · 4 펭귄) ---------- */
+const ROD  = '<line x1="168" y1="128" x2="250" y2="18" stroke="#8b5a2b" stroke-width="6" stroke-linecap="round"/><line x1="250" y1="18" x2="250" y2="70" stroke="#fff" stroke-width="2"/>';
+const BOAT = '<path d="M20 168 L240 168 Q222 198 130 198 Q38 198 20 168 Z" fill="#b9773f" stroke="#7a4a22" stroke-width="3"/><rect x="16" y="162" width="228" height="10" rx="5" fill="#d18f52" stroke="#7a4a22" stroke-width="3"/>';
+const FACE = (eye = '#3b2a20') => `
+  <g class="eyes"><ellipse cx="98" cy="90" rx="9" ry="11" fill="${eye}"/><ellipse cx="142" cy="90" rx="9" ry="11" fill="${eye}"/>
+    <circle cx="95" cy="85" r="3.5" fill="#fff"/><circle cx="139" cy="85" r="3.5" fill="#fff"/></g>
+  <g class="happy" stroke="${eye}" stroke-width="4" fill="none" stroke-linecap="round"><path d="M89 93 q9 -12 18 0"/><path d="M133 93 q9 -12 18 0"/></g>
+  <g class="cry" stroke="${eye}" stroke-width="4" fill="none" stroke-linecap="round"><path d="M89 88 l18 4"/><path d="M151 88 l-18 4"/>
+    <path d="M98 96 v10" stroke="#5fb6ff"/><path d="M142 96 v10" stroke="#5fb6ff"/></g>
+  <ellipse cx="84" cy="106" rx="10" ry="6" fill="#ff8fa3" opacity=".55"/><ellipse cx="156" cy="106" rx="10" ry="6" fill="#ff8fa3" opacity=".55"/>`;
+const PAWS = (c, s = '#5a4535') => `<ellipse cx="166" cy="130" rx="13" ry="11" fill="${c}" stroke="${s}" stroke-width="3"/><ellipse cx="100" cy="170" rx="13" ry="9" fill="${c}" stroke="${s}" stroke-width="3"/>`;
+const ST = 'stroke="#5a4535" stroke-width="3"';
+function mateArt(i){
+  if(i === 0) return document.getElementById('catArt').innerHTML;
+  if(i === 1) return ROD +   // 강아지: 늘어진 귀
+    `<path d="M76 150 q-22 -6 -18 -30" stroke="#9a6438" stroke-width="10" fill="none" stroke-linecap="round"/>
+     <ellipse cx="120" cy="145" rx="48" ry="36" fill="#f0d2a6" ${ST}/><ellipse cx="120" cy="152" rx="28" ry="20" fill="#fff6e6"/>
+     <ellipse cx="120" cy="88" rx="56" ry="48" fill="#f0d2a6" ${ST}/>
+     <path d="M72 58 C46 66 48 122 72 114 C82 100 82 74 86 64 Z" fill="#9a6438" ${ST}/>
+     <path d="M168 58 C194 66 192 122 168 114 C158 100 158 74 154 64 Z" fill="#9a6438" ${ST}/>
+     <ellipse cx="120" cy="110" rx="22" ry="15" fill="#fff6e6"/>` + FACE() +
+    `<ellipse cx="120" cy="102" rx="8" ry="6" fill="#3b2a20"/><path d="M112 112 q8 8 16 0" stroke="#5a4535" stroke-width="3" fill="none" stroke-linecap="round"/>` + PAWS('#fff6e6') + BOAT;
+  if(i === 2) return ROD +   // 토끼: 긴 귀
+    `<circle cx="74" cy="152" r="12" fill="#fff" ${ST}/>
+     <ellipse cx="120" cy="145" rx="48" ry="36" fill="#fff" ${ST}/>
+     <ellipse cx="96" cy="34" rx="13" ry="36" fill="#fff" ${ST} transform="rotate(-10 96 34)"/><ellipse cx="96" cy="36" rx="6" ry="26" fill="#ffb3c8" transform="rotate(-10 96 36)"/>
+     <ellipse cx="144" cy="34" rx="13" ry="36" fill="#fff" ${ST} transform="rotate(10 144 34)"/><ellipse cx="144" cy="36" rx="6" ry="26" fill="#ffb3c8" transform="rotate(10 144 36)"/>
+     <ellipse cx="120" cy="90" rx="54" ry="46" fill="#fff" ${ST}/>` + FACE() +
+    `<path d="M115 100 h10 l-5 6 Z" fill="#ff7a93"/><path d="M120 106 v4 M120 110 q-6 5 -10 1 M120 110 q6 5 10 1" stroke="#5a4535" stroke-width="3" fill="none" stroke-linecap="round"/>` + PAWS('#ffe9f0') + BOAT;
+  if(i === 3) return ROD +   // 곰: 동그란 귀
+    `<ellipse cx="120" cy="145" rx="50" ry="37" fill="#c08a5b" ${ST}/><ellipse cx="120" cy="152" rx="28" ry="20" fill="#f1d3b0"/>
+     <circle cx="76" cy="50" r="18" fill="#c08a5b" ${ST}/><circle cx="76" cy="50" r="9" fill="#f1d3b0"/>
+     <circle cx="164" cy="50" r="18" fill="#c08a5b" ${ST}/><circle cx="164" cy="50" r="9" fill="#f1d3b0"/>
+     <ellipse cx="120" cy="88" rx="56" ry="48" fill="#c08a5b" ${ST}/><ellipse cx="120" cy="108" rx="22" ry="16" fill="#f1d3b0"/>` + FACE() +
+    `<ellipse cx="120" cy="101" rx="8" ry="6" fill="#3b2a20"/><path d="M112 111 q8 7 16 0" stroke="#5a4535" stroke-width="3" fill="none" stroke-linecap="round"/>` + PAWS('#f1d3b0') + BOAT;
+  return ROD +               // 펭귄: 까만 머리 + 주황 부리
+    `<ellipse cx="120" cy="145" rx="48" ry="37" fill="#2f3e57" ${ST}/><ellipse cx="120" cy="152" rx="30" ry="24" fill="#fff"/>
+     <ellipse cx="120" cy="88" rx="56" ry="48" fill="#2f3e57" ${ST}/>
+     <path d="M112 42 q8 -14 16 0" stroke="#2f3e57" stroke-width="6" fill="none" stroke-linecap="round"/>
+     <ellipse cx="120" cy="98" rx="42" ry="34" fill="#fff"/>` + FACE('#1d2b3a') +
+    `<path d="M108 100 L132 100 L120 114 Z" fill="#ffa531" stroke="#c86f00" stroke-width="2" stroke-linejoin="round"/>` + PAWS('#ffa531', '#c86f00') + BOAT;
+}
+const mateSvg = (i, cls = '') => `<svg class="cat ${cls}" viewBox="0 0 260 200">${mateArt(i)}</svg>`;
+
+/* ---------- 같은 물고기 순서를 만드는 난수 (씨앗이 같으면 모든 기기에서 같은 결과) ---------- */
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rRange = (R, a, b) => a + R() * (b - a);
+const rPick = (R, arr) => arr[Math.floor(R() * arr.length)];
+
+// 라운드의 물고기 시간표: 칸마다 "몇 초에 어떤 물고기가 몇 초 동안" 나오는지
+function mpSchedule(seed, round){
+  const out = [];
+  for(let i = 0; i < CELL_COUNT; i++){
+    const R = mulberry32(seed + round * 7919 + i * 104729);
+    const list = []; let t = rRange(R, 300, 4500), k = 0;
+    while(t < ROUND_TIME * 1000){
+      const eq = makeEquation(R() < 0.5, R);
+      const life = rRange(R, ...S.cfg.life);
+      list.push({ id:`${i}-${k}`, t, life, ...eq, col:Math.floor(R() * 24) });
+      t += life + 1000 + rRange(R, ...S.cfg.gap) * 1.3; k++;
+    }
+    out.push(list);
+  }
+  return out;
+}
+const sNow = () => Date.now() + (MP ? MP.offset : 0);          // 서버 기준 현재 시각
+const seatOf = uid => MP && MP.room ? MP.room.seats.indexOf(uid) : -1;
+const nameOf = uid => (MP && MP.players[uid] && MP.players[uid].name) || '친구';
+
+/* ---------- 로비: 방 만들기 / 들어가기 ---------- */
+function goLobby(){
+  MODE = 'multi';
+  $('#lobbyHello').textContent = `${getNick()}, 친구들과 같이 낚아 볼까냥? 🐟`;
+  $('#lobbyMsg').textContent = '';
+  showScreen('lobbyScreen');
+}
+$('#makeRoomBtn').onclick = () => {
+  MODE = 'multi';
+  $('#hello').textContent = `${getNick()}, 방에서 연습할 단을 골라 줘냥! 🏠`;
+  renderDans(); showScreen('setupScreen');
+};
+$('#lobbyBack').onclick = () => { MODE = 'solo'; showScreen('startScreen'); };
+$('#roomCode').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); $('#lobbyMsg').textContent = ''; });
+$('#roomCode').addEventListener('keydown', e => { if(e.key === 'Enter') $('#joinBtn').click(); });
+$('#joinBtn').onclick = async () => {
+  const code = $('#roomCode').value;
+  if(!/^\d{4}$/.test(code)){ $('#lobbyMsg').textContent = '👆 방 번호 4자리를 입력해 주세요!'; return; }
+  if(!window.FB){ $('#lobbyMsg').textContent = '🟡 서버에 연결되지 않아 함께 하기를 할 수 없어요.'; return; }
+  $('#lobbyMsg').textContent = '⏳ 들어가는 중…';
+  try{
+    const res = await window.FB.mpJoin(code, getNick());
+    const msg = { none:'❌ 그런 번호의 방이 없어요.', full:'❌ 방이 꽉 찼어요. (최대 5명)', started:'❌ 이미 게임이 시작된 방이에요.' };
+    if(res !== 'ok'){ $('#lobbyMsg').textContent = msg[res] || '❌ 들어갈 수 없어요.'; return; }
+    mpEnterRoom(code, false);
+  }catch(e){ console.warn(e); $('#lobbyMsg').textContent = '❌ 들어가지 못했어요. 잠시 후 다시 해 주세요.'; }
+};
+let coopPick = false;
+try{ coopPick = localStorage.getItem('fishCoop') === '1'; }catch(e){}
+function renderModePick(){
+  document.body.classList.toggle('pick-multi', MODE === 'multi');
+  document.querySelectorAll('#modePick .lv').forEach(b => b.classList.toggle('on', (b.dataset.m === 'coop') === coopPick));
+}
+document.querySelectorAll('#modePick .lv').forEach(b => b.onclick = () => {
+  coopPick = b.dataset.m === 'coop'; renderModePick();
+  try{ localStorage.setItem('fishCoop', coopPick ? '1' : '0'); }catch(e){}
+});
+async function mpCreateRoom(){
+  if(!window.FB){ alert('서버에 연결되지 않아 방을 만들 수 없어요.'); return; }
+  $('#goBtn').disabled = true; $('#goBtn').textContent = '⏳ 방 만드는 중…';
+  try{
+    const code = await window.FB.mpCreate(getNick(), {
+      dans:[...selected].sort((a,b)=>a-b), startRound, coop:coopPick, seed:Math.floor(Math.random() * 1e9) });
+    mpEnterRoom(code, true);
+  }catch(e){ console.warn(e); alert('방을 만들지 못했어요. 잠시 후 다시 해 주세요.'); }
+  renderDans();
+}
+
+/* ---------- 대기실 ---------- */
+function mpEnterRoom(code, isHost){
+  mpLeave(true);
+  MP = { code, isHost, uid:window.FB.uid(), offset:0, lastTs:0, room:null, players:{}, claims:{}, unsub:[] };
+  $('#roomCodeView').textContent = code;
+  $('#roomMsg').textContent = '';
+  try{   // 방 번호가 들어간 QR (찍으면 번호가 미리 입력됨)
+    const qr = qrcode(0, 'M'); qr.addData(location.origin + location.pathname + '?room=' + code); qr.make();
+    $('#roomQr').innerHTML = qr.createSvgTag({ cellSize:3, margin:1, scalable:true });
+  }catch(e){ $('#roomQr').innerHTML = ''; }
+  MP.unsub.push(window.FB.mpWatch(code, mpOnRoom, mpOnPlayers));
+  showScreen('roomScreen');
+}
+function mpLeave(silent){
+  if(!MP) return;
+  MP.unsub.forEach(u => { try{ u(); }catch(e){} });
+  if(MP.unClaims) try{ MP.unClaims(); }catch(e){}
+  clearInterval(clockTimer); clockTimer = null;
+  if(!silent && MP.isHost && MP.room && MP.room.status !== 'ended') window.FB.mpRoom(MP.code, { status:'ended', endReason:'quit' });
+  MP = null;
+}
+$('#roomLeave').onclick = () => { mpLeave(); goLobby(); };
+$('#roomStartBtn').onclick = () => {
+  if(!MP || !MP.isHost || MP.room.seats.length < 2) return;
+  $('#roomStartBtn').disabled = true;
+  window.FB.mpRoom(MP.code, { status:'playing', round:MP.room.startRound }, true);
+};
+function renderRoomLobby(){
+  const room = MP.room;
+  const dans = room.dans.length === 8 ? '모든 단' : room.dans.join('·') + '단';
+  $('#roomInfo').textContent = `${room.coop ? '🤝 협동' : '⚔️ 경쟁'} · 📚 ${dans} · 🚩 ${room.startRound}라운드부터 · 👥 ${room.seats.length}/${MP_MAX}명`;
+  const box = $('#roomMates'); box.innerHTML = '';
+  for(let i = 0; i < MP_MAX; i++){
+    const uid = room.seats[i], d = document.createElement('div');
+    d.className = 'rmate' + (uid ? '' : ' empty');
+    d.innerHTML = uid ? mateSvg(i) + `<b style="color:${MATES[i].color}">${i === 0 ? '👑 ' : ''}${MATES[i].name}</b><span></span>`
+                      : `<div class="rwait">?</div><b>기다리는 중…</b><span></span>`;
+    if(uid) d.querySelector('span').textContent = nameOf(uid) + (uid === MP.uid ? ' (나)' : '');
+    box.appendChild(d);
+  }
+  const btn = $('#roomStartBtn');
+  btn.style.display = MP.isHost ? '' : 'none';
+  btn.disabled = room.seats.length < 2;
+  $('#roomMsg').textContent = MP.isHost ? (room.seats.length < 2 ? '친구가 1명 이상 들어오면 시작할 수 있어요.' : '모두 들어왔으면 시작을 눌러 주세요!')
+                                        : '방장이 시작하면 바로 낚시가 시작돼요! 🎣';
+}
+
+/* ---------- 서버에서 방·참가자 정보가 바뀔 때 ---------- */
+function mpOnRoom(room){
+  if(!MP) return;
+  MP.room = room;
+  if(room.status === 'waiting'){ renderRoomLobby(); return; }
+  if(room.status === 'playing' && room.roundStartAt && MP.startedRound !== room.round){
+    if(!S.round || S.mode !== 'multi' || S.over) mpBeginGame(room);
+    MP.startedRound = room.round;
+    mpStartRound(room.round, room.roundStartAt);
+  }
+  if(room.status === 'ended' && S.mode === 'multi' && !S.over) endGame(room.endReason || 'quit');
+}
+function mpOnPlayers(list){
+  if(!MP) return;
+  list.forEach(p => {
+    MP.players[p.uid] = p;
+    // 내 기록에 서버가 찍은 시각으로 기기 시계 차이 보정
+    if(p.uid === MP.uid && p.ts && p.ts !== MP.lastTs){ MP.lastTs = p.ts; MP.offset = p.ts - Date.now(); }
+  });
+  if(MP.room && MP.room.status === 'waiting') renderRoomLobby();
+  if(S.mode === 'multi') renderCrew();
+}
+
+/* ---------- 게임 진행 ---------- */
+function mpBeginGame(room){
+  MODE = 'multi';
+  S = { mode:'multi', coop:!!room.coop, dans:room.dans, danMult:danMult(room.dans), best:{ score:0, round:room.startRound }, roundScore:0, roundLog:[], roundLogged:0,
+        mult:1, startRound:room.startRound, round:room.startRound, cleared:0, gen:0, timeLeft:ROUND_TIME, roundCaught:0, roundMiss:0,
+        score:0, combo:0, bestCombo:0, correct:0, wrong:0, escaped:0, wrongLog:[], miss:0, ignored:0, released:0, lastCatchAt:0,
+        running:false, over:false };
+  buildCrew();
+  showScreen('gameScreen');
+}
+function mpStartRound(r, startAt){
+  clearInterval(clockTimer);
+  S.round = r; S.gen = ++GEN; S.cfg = roundCfg(r);
+  S.mult = roundMult(r) * S.danMult; S.roundScore = 0; S.roundCaught = 0; S.timeLeft = ROUND_TIME;
+  MP.t0 = startAt + MP_INTRO; MP.claims = {}; MP.roundOver = false; MP.escMiss = 0; MP.wrongMiss = 0; S.roundMiss = 0;
+  MP.sched = mpSchedule(MP.room.seed, r);
+  buildPond(); cells.forEach(c => { c.k = -1; c.fid = null; c.state = 'empty'; });
+  applyTheme(r); updateHud(); bgmPlay(r); renderCrew();
+  if(MP.unClaims) MP.unClaims();
+  MP.unClaims = window.FB.mpWatchClaims(MP.code, r, mpOnClaims);
+  S.running = true;
+  clockTimer = setInterval(mpTick, 100);
+}
+function mpOnClaims(list){
+  if(!MP || !S.running && !MP.roundOver) return;
+  list.forEach(cl => { MP.claims[cl.id] = cl; });
+  const caught = list.filter(cl => cl.ok).length;
+  if(caught !== S.roundCaught){ S.roundCaught = caught; updateHud(); }
+  MP.wrongMiss = list.filter(cl => !cl.ok).length;
+  if(S.coop){ S.roundMiss = MP.escMiss + MP.wrongMiss; updateHud(); }
+  if(S.running && caught >= ROUND_GOAL && !MP.roundOver) mpRoundClear();
+  else if(S.running && S.coop && S.roundMiss >= MAX_MISS && !MP.roundOver) mpRoundFail();
+  mpTick();
+}
+function mpTick(){
+  if(!MP || !S.round) return;
+  const now = sNow() - MP.t0, cd = $('#countdown');
+  // 라운드 시작 안내 (모든 기기가 같은 시각에 시작하도록 서버 시각 기준)
+  if(now < 600 && !MP.roundOver){
+    const rem = -now, txt = rem > 4000 ? (isBoss(S.round) ? '👑 끝판왕 등장!' : scene(S.round).name) : rem > 3000 ? `${S.round}라운드`
+      : rem > 2000 ? '3' : rem > 1000 ? '2' : rem > 0 ? '1' : '시작!';
+    if(cd.textContent !== txt) cd.textContent = txt;
+    cd.classList.add('show');
+  }else if(cd.classList.contains('show') && !MP.roundOver) cd.classList.remove('show');
+  if(now < 0 || !S.running) return;
+  const left = Math.max(0, Math.ceil(ROUND_TIME - now / 1000));
+  if(left !== S.timeLeft){ S.timeLeft = left; updateHud(); }
+  cells.forEach((c, i) => {
+    const list = MP.sched[i];
+    while(c.k + 1 < list.length && list[c.k + 1].t <= now) c.k++;
+    const f = list[c.k];
+    if(!f) return;
+    if(c.fid !== f.id){
+      if(now >= f.t + f.life){ if(!c.empty){ setState(c, 'empty'); c.empty = true; } c.fid = f.id; c.state = 'gone'; return; }
+      mpShowFish(c, f, now - f.t);
+    }
+    if(c.state === 'live'){
+      const cl = MP.claims[f.id];
+      if(cl) mpClaimed(c, f, cl);
+      else if(now >= f.t + f.life) mpExpire(c, f);
+    }
+  });
+  if(now >= ROUND_TIME * 1000 && !MP.roundOver) mpRoundTimeout();
+}
+function paintFish(c, eq, col){
+  const [body, dark, belly] = isBoss(S.round) ? BOSS_COLORS[col % BOSS_COLORS.length] : COLORS[col % COLORS.length];
+  const svg = c.el.querySelector('svg');
+  svg.querySelector('.body').setAttribute('fill', body);
+  svg.querySelector('.belly').setAttribute('fill', belly);
+  svg.querySelector('.tail').setAttribute('fill', dark);
+  svg.querySelectorAll('.fin,.spike').forEach(x => x.setAttribute('fill', dark));
+  svg.querySelector('text').textContent = `${eq.a}×${eq.b}=${eq.shown}`;
+}
+function mpShowFish(c, f, elapsed){
+  Object.assign(c, { a:f.a, b:f.b, shown:f.shown, fid:f.id, f, state:'live', empty:false, busy:false, pending:false });
+  paintFish(c, f, f.col);
+  c.el.style.setProperty('--life', f.life + 'ms');
+  setState(c, 'live', elapsed < 600 ? 'spawn' : '');
+  // 늦게 그려졌으면 지난 시간만큼 줄 색·몸부림을 앞당김
+  c.el.querySelector('.ln line').style.animationDelay = c.el.querySelector('.wig').style.animationDelay = (-elapsed) + 'ms';
+}
+function mpLater(c, f){ const g = S.gen; setTimeout(() => { if(S.gen === g && c.fid === f.id){ setState(c, 'empty'); c.empty = true; } }, 950); }
+function mpClaimed(c, f, cl){
+  c.state = 'done';
+  const mine = cl.uid === MP.uid, seat = seatOf(cl.uid), color = seat >= 0 ? MATES[seat].color : '#333';
+  if(cl.ok){
+    setState(c, 'caught');
+    if(!mine){ floatText(c, `🎣 ${nameOf(cl.uid)}`, 'mate', color); }
+    mateReact(seat, 'happy');
+  }else{
+    setState(c, 'snap');
+    if(!mine) floatText(c, `✗ ${nameOf(cl.uid)}`, 'bad');
+    mateReact(seat, 'sad');
+  }
+  mpLater(c, f);
+}
+function mpExpire(c, f){
+  c.state = 'done';
+  setState(c, 'snap');
+  if(isCorrect(c)){ floatText(c, pick(SNAP_WORDS), 'tang'); sfx.tang(); S.escaped++;
+    if(S.coop){ MP.escMiss++; S.roundMiss = MP.escMiss + MP.wrongMiss; updateHud();
+      if(S.roundMiss >= MAX_MISS && !MP.roundOver) mpRoundFail(); } }
+  else { floatText(c, pick(GOOD_WORDS), 'goodword'); S.ignored++; }
+  mpLater(c, f);
+}
+function mpTouch(c){
+  if(!S.running || c.state !== 'live' || c.pending || MP.claims[c.fid]) return;
+  c.pending = true;
+  const ok = isCorrect(c), f = c.f, g = S.gen;
+  window.FB.mpClaim(MP.code, S.round, f.id, ok).then(won => {
+    c.pending = false;
+    if(g !== S.gen) return;
+    if(!won){ if(!MP.claims[f.id] || MP.claims[f.id].uid !== MP.uid) floatText(c, S.coop ? '친구가 먼저!' : '늦었다냥!', 'esc'); return; }
+    if(ok){
+      S.correct++; S.combo++; S.lastCatchAt = Date.now(); S.bestCombo = Math.max(S.bestCombo, S.combo);
+      const bonus = comboBonus(S.combo), gain = pts(10 + bonus);
+      addScore(gain); floatText(c, bonus ? `+${gain} 🔥` : '+' + gain, bonus ? 'combo' : 'good'); sfx.good();
+    }else{
+      S.wrong++; S.combo = 0;
+      S.score = Math.max(0, S.score - WRONG_PENALTY); S.roundScore = Math.max(0, S.roundScore - WRONG_PENALTY);
+      S.wrongLog.push({ expr:`${c.a}×${c.b}`, shown:c.shown, answer:c.a*c.b });
+      floatText(c, `✗ -${WRONG_PENALTY}`, 'bad'); sfx.bad();
+    }
+    updateHud(); mpPushMe();
+  });
+}
+function mpPushMe(){
+  if(!MP) return;
+  window.FB.mpSetMe(MP.code, { name:getNick(), score:S.score, caught:S.correct, wrong:S.wrong, round:S.round });
+}
+function mpRoundClear(){
+  MP.roundOver = true; S.running = false;
+  const bonus = pts(50 + S.timeLeft);
+  addScore(bonus); S.cleared++; closeRound(true); updateHud(); mpPushMe(); sfx.clear();
+  const last = S.round >= LAST_ROUND, r = S.round;
+  countdown(last ? ['👑 끝판왕 격파!'] : [`🎉 ${r}라운드 클리어!`, `보너스 +${bonus}`], () => {}, 1300);
+  if(MP.isHost) setTimeout(() => {
+    if(!MP) return;
+    if(last) window.FB.mpRoom(MP.code, { status:'ended', endReason:'allclear' });
+    else window.FB.mpRoom(MP.code, { round:r + 1 }, true);
+  }, 2800);
+}
+// 협동: 팀이 한 라운드에 15마리를 놓치면 끝
+function mpRoundFail(){
+  MP.roundOver = true; S.running = false;
+  if(MP.isHost) window.FB.mpRoom(MP.code, { status:'ended', endReason:'miss' });
+  const g = S.gen; setTimeout(() => { if(S.gen === g && S.mode === 'multi' && !S.over) endGame('miss'); }, 5000);
+}
+function mpRoundTimeout(){
+  MP.roundOver = true; S.running = false;
+  if(MP.isHost) window.FB.mpRoom(MP.code, { status:'ended', endReason:'time' });
+  const g = S.gen; setTimeout(() => { if(S.gen === g && S.mode === 'multi' && !S.over) endGame('time'); }, 5000);   // 방장이 없어도 끝내기
+}
+
+/* ---------- 게임 화면 위쪽: 참가자 캐릭터 줄 ---------- */
+function buildCrew(){
+  const box = $('#crew'); box.innerHTML = '';
+  MP.room.seats.forEach((uid, i) => {
+    const d = document.createElement('div');
+    d.className = 'mate' + (uid === MP.uid ? ' me' : ''); d.dataset.uid = uid;
+    d.style.setProperty('--mc', MATES[i].color);
+    d.innerHTML = mateSvg(i) + '<div class="mname"></div><div class="mscore">0</div><i class="crown">👑</i>';
+    box.appendChild(d);
+  });
+  renderCrew();
+}
+const teamScore = () => MP && MP.room ? MP.room.seats.reduce((t, uid) =>
+  t + ((uid === MP.uid ? S.score : (MP.players[uid] && MP.players[uid].score)) || 0), 0) : S.score;
+function renderCrew(){
+  if(!MP || !MP.room) return;
+  const scores = MP.room.seats.map(uid => (uid === MP.uid ? S.score : (MP.players[uid] && MP.players[uid].score)) || 0);
+  const top = Math.max(...scores);
+  if(S.coop) $('#score').textContent = teamScore();
+  document.querySelectorAll('#crew .mate').forEach((d, i) => {
+    const uid = d.dataset.uid;
+    d.querySelector('.mname').textContent = nameOf(uid) + (uid === MP.uid ? ' (나)' : '');
+    const caught = (uid === MP.uid ? S.correct : (MP.players[uid] && MP.players[uid].caught)) || 0;
+    d.querySelector('.mscore').textContent = S.coop ? `🐟 ${caught}` : scores[i];
+    d.classList.toggle('lead', !S.coop && top > 0 && scores[i] === top);
+  });
+}
+function mateReact(seat, mood){
+  const d = document.querySelectorAll('#crew .mate')[seat];
+  if(!d) return;
+  const svg = d.querySelector('svg');
+  svg.classList.remove('jump', 'sad', 'mood-happy', 'mood-sad'); void svg.getBoundingClientRect();
+  svg.classList.add(...(mood === 'happy' ? ['jump', 'mood-happy'] : ['sad', 'mood-sad']));
+  clearTimeout(d._t); d._t = setTimeout(() => svg.classList.remove('jump', 'sad', 'mood-happy', 'mood-sad'), 1200);
+  renderCrew();
+}
+
+/* ---------- 함께 하기 결과: 방 순위 ---------- */
+function mpResults(){
+  const box = $('#roomRank'); box.innerHTML = '';
+  const rows = MP.room.seats.map((uid, i) => ({ uid, i, name:nameOf(uid),
+    score:(uid === MP.uid ? S.score : (MP.players[uid] && MP.players[uid].score)) || 0,
+    caught:(uid === MP.uid ? S.correct : (MP.players[uid] && MP.players[uid].caught)) || 0 }))
+    .sort((a, b) => S.coop ? b.caught - a.caught : b.score - a.score);
+  const medals = S.coop ? ['🤝','🤝','🤝','🤝','🤝'] : ['🥇','🥈','🥉','4','5'];
+  rows.forEach((r, k) => {
+    const d = document.createElement('div');
+    d.className = 'rr-row' + (r.uid === MP.uid ? ' me' : '');
+    d.innerHTML = `<span class="rr-medal">${medals[k]}</span>${mateSvg(r.i, 'rr-svg')}<span class="rr-name"></span><span class="rr-pts">${r.score}점<small>🐟 ${r.caught}마리</small></span>`;
+    d.querySelector('.rr-name').textContent = r.name + (r.uid === MP.uid ? ' (나)' : '');
+    box.appendChild(d);
+  });
+  const myRank = rows.findIndex(r => r.uid === MP.uid) + 1;
+  return { winner:rows[0], myRank, count:rows.length };
+}
+
+$('#startBtn').onclick = () => tryStart('solo');
+$('#togetherBtn').onclick = () => tryStart('multi');
+$('#goBtn').onclick = () => MODE === 'multi' ? mpCreateRoom() : startGame();
+$('#backBtn').onclick = () => MODE === 'multi' ? goLobby() : showScreen('startScreen');
+$('#againBtn').onclick = () => {
+  document.body.className = '';
+  if(S.mode === 'multi'){ mpLeave(true); goLobby(); } else startGame();
+};
+$('#homeBtn').onclick = () => { document.body.className = ''; mpLeave(true); MODE = 'solo'; renderRank(S.lastAt); showScreen('startScreen'); };
+$('#quitBtn').onclick = () => {
+  if(S.mode === 'multi' && MP && MP.isHost){ window.FB.mpRoom(MP.code, { status:'ended', endReason:'quit' }); return; }   // 방장이 끝내면 모두 끝
+  endGame('quit');
+};
 
 // <use>로는 표정 변경(CSS)이 적용되지 않으므로 고양이 그림을 직접 복제해 넣음
 document.querySelectorAll('use[href="#catArt"]').forEach(u => {
@@ -1144,16 +1728,23 @@ $('#notePenalty').textContent = '-' + WRONG_PENALTY;
 $('#noteRelease').textContent = '+' + RELEASE_POINT;
 renderDans();
 renderRank();
+// QR로 방 번호가 넘어오면 미리 입력
+(function(){ const m = location.search.match(/[?&]room=(\d{4})/); if(m){ $('#roomCode').value = m[1];
+  $('#nickMsg').textContent = `👥 ${m[1]}번 방 초대! 닉네임을 쓰고 '함께 하기'를 눌러 주세요.`; } })();
 // Firebase를 6초 안에 못 불러오면(인터넷 차단 등) 이 기기 기록으로 표시
 setTimeout(() => { if(!window.FB) $('#dbStatus').textContent = '🟡 이 기기 기록만 보여요 (서버 연결 안 됨)'; }, 6000);
 </script>
-<!-- ===================== Firebase: 익명 로그인 + 랭킹 공유 + 기록 저장 =====================
+<!-- ===================== Firebase: 익명 로그인 + 랭킹 공유 + 기록 저장 + 함께 하기 =====================
      rankings : 닉네임·점수·라운드 (첫 화면 랭킹용, 모두 읽기)
-     records  : 게임 한 판의 학습 기록 전체 (교사만 읽기 - 보안 규칙에서 설정) -->
+     records  : 게임 한 판의 학습 기록 전체 (교사만 읽기 - 보안 규칙에서 설정)
+     rooms    : 함께 하기 방 (방장·참가자 자리·진행 라운드)
+       └ players/{uid}            : 참가자별 닉네임·점수 (본인만 쓰기)
+       └ rounds/{라운드}/claims/{물고기} : "이 물고기 내가 낚았다" 기록 (먼저 쓴 1명만 성공, 덮어쓰기 금지) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp }
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp,
+         doc, setDoc, onSnapshot, runTransaction }
   from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1213,7 +1804,89 @@ async function saveGame(entry, record){
   }
 }
 
-window.FB = { saveGame, loadRanking };
+// 함께 하기 기록만 저장 (첫 화면 랭킹에는 올리지 않음)
+async function saveRecord(record){
+  try{
+    const user = await ready;
+    await addDoc(collection(db, 'records'), { ...record, uid: user.uid, createdAt: serverTimestamp() });
+  }catch(e){ console.warn('기록 저장 실패', e.code || e); }
+}
+
+/* ---------- 함께 하기 ---------- */
+let me = null;
+ready.then(u => { me = u; }).catch(() => {});
+
+// 방 만들기: 빈 4자리 번호를 찾아 방 문서 생성 (같은 번호가 있으면 다른 번호로)
+async function mpCreate(name, info){
+  const u = await ready;
+  for(let i = 0; i < 10; i++){
+    const code = String(1000 + Math.floor(Math.random() * 9000)), ref = doc(db, 'rooms', code);
+    const made = await runTransaction(db, async tx => {
+      const s = await tx.get(ref);
+      if(s.exists()) return false;
+      tx.set(ref, { host:u.uid, seats:[u.uid], status:'waiting', round:info.startRound, startRound:info.startRound,
+                    dans:info.dans, coop:!!info.coop, seed:info.seed, roundStartAt:null, endReason:'', createdAt:serverTimestamp() });
+      return true;
+    });
+    if(made){ await mpSetMe(code, { name, score:0 }); return code; }
+  }
+  throw new Error('방 번호를 만들지 못함');
+}
+// 방 들어가기: 대기 중이고 5명 미만이면 내 자리 추가
+async function mpJoin(code, name){
+  const u = await ready, ref = doc(db, 'rooms', code);
+  const res = await runTransaction(db, async tx => {
+    const s = await tx.get(ref);
+    if(!s.exists()) return 'none';
+    const d = s.data();
+    if(d.seats.includes(u.uid)) return 'ok';
+    if(d.status !== 'waiting') return 'started';
+    if(d.seats.length >= 5) return 'full';
+    tx.update(ref, { seats:[...d.seats, u.uid] });
+    return 'ok';
+  });
+  if(res === 'ok') await mpSetMe(code, { name, score:0 });
+  return res;
+}
+// 내 닉네임·점수 저장 (ts = 서버 시각 → 기기 시계 차이 보정에 사용)
+function mpSetMe(code, data){
+  return setDoc(doc(db, 'rooms', code, 'players', me.uid), { ...data, ts:serverTimestamp() }, { merge:true })
+    .catch(e => console.warn('점수 저장 실패', e.code || e));
+}
+// 방 정보 바꾸기 (방장만 가능 - 보안 규칙), startNow면 라운드 시작 시각을 서버 시각으로
+function mpRoom(code, data, startNow){
+  if(startNow) data = { ...data, roundStartAt:serverTimestamp() };
+  return setDoc(doc(db, 'rooms', code), data, { merge:true }).catch(e => console.warn('방 정보 저장 실패', e.code || e));
+}
+// 방·참가자 실시간 보기 (아직 서버에 안 올라간 내 변경은 건너뜀)
+function mpWatch(code, onRoom, onPlayers){
+  const u1 = onSnapshot(doc(db, 'rooms', code), { includeMetadataChanges:true }, s => {
+    if(!s.exists() || s.metadata.hasPendingWrites) return;
+    const d = s.data();
+    onRoom({ ...d, roundStartAt: d.roundStartAt ? d.roundStartAt.toMillis() : null });
+  });
+  const u2 = onSnapshot(collection(db, 'rooms', code, 'players'), { includeMetadataChanges:true }, snap => {
+    onPlayers(snap.docs.map(d => { const x = d.data();
+      return { ...x, uid:d.id, ts: (!d.metadata.hasPendingWrites && x.ts) ? x.ts.toMillis() : 0 }; }));
+  });
+  return () => { u1(); u2(); };
+}
+// 이번 라운드에 누가 어떤 물고기를 낚았는지 실시간 보기
+function mpWatchClaims(code, round, cb){
+  return onSnapshot(collection(db, 'rooms', code, 'rounds', String(round), 'claims'), { includeMetadataChanges:true }, snap => {
+    cb(snap.docs.filter(d => !d.metadata.hasPendingWrites).map(d => ({ id:d.id, uid:d.data().uid, ok:d.data().ok })));
+  });
+}
+// 물고기 낚기 시도: 먼저 기록한 사람만 성공 (이미 있으면 보안 규칙이 거절 → false)
+async function mpClaim(code, round, fid, ok){
+  try{
+    await setDoc(doc(db, 'rooms', code, 'rounds', String(round), 'claims', fid), { uid:me.uid, ok, at:serverTimestamp() });
+    return true;
+  }catch(e){ return false; }
+}
+
+window.FB = { saveGame, loadRanking, saveRecord, uid:() => me && me.uid,
+              mpCreate, mpJoin, mpSetMe, mpRoom, mpWatch, mpWatchClaims, mpClaim };
 loadRanking();
 // 처음 화면으로 돌아올 때마다 최신 랭킹 다시 불러오기
 document.getElementById('homeBtn').addEventListener('click', loadRanking);
