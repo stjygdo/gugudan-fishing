@@ -130,7 +130,7 @@ button.chip{cursor:pointer;font-size:.95rem}
 
 /* 물고기 연못: 가로 화면 4×3, 세로 화면 3×4 (12마리) */
 .pond{flex:1;min-height:0;width:100%;max-width:1100px;display:grid;
-  grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:4px 10px}
+  grid-template-columns:repeat(var(--cols,4),1fr);grid-template-rows:repeat(var(--rows,3),1fr);gap:4px 10px}
 .cell{position:relative;min-height:0;cursor:pointer;touch-action:manipulation}
 .cell svg{width:100%;height:100%;overflow:visible}
 .cell.empty svg{visibility:hidden}
@@ -383,7 +383,7 @@ body.iam-out #outBanner{display:block}
 
 /* 세로 화면(핸드폰·세운 패드): 3열 × 4행 */
 @media (orientation:portrait){
-  .pond{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr)}
+  .pond{grid-template-columns:repeat(var(--pcols,3),1fr);grid-template-rows:repeat(var(--prows,4),1fr)}
   .cat{height:clamp(110px,22dvh,280px)}
 }
 /* 좁은 화면 */
@@ -619,6 +619,10 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 /* ===================== JavaScript: 동작 ===================== */
 const $ = s => document.querySelector(s);
 const CELL_COUNT = 12;          // 물고기 12마리 (가로 4×3, 세로 3×4)
+// 함께 하기: 인원 수에 맞춰 물고기 칸 늘리기 [칸 수, 가로열, 가로행, 세로열, 세로행]
+const MP_GRID = { 2:[16,4,4,4,4], 3:[20,5,4,4,5], 4:[24,6,4,4,6], 5:[24,6,4,4,6] };
+const gridNow = () => (MODE === 'multi' && MP && MP.room && MP_GRID[MP.room.seats.length]) || [CELL_COUNT,4,3,3,4];
+const cellCount = () => gridNow()[0];
 // 줄이 끊어질 때 무작위로 나오는 글자
 const SNAP_WORDS = ['탕!','툭!','팅!','뚝!','퍽!','탁!','휘릭!','쏙!','첨벙!','휙!','빠직!','풍덩!'];
 /* ---------- 점수 배율 (중간 라운드에서 시작해도 공정하게) ----------
@@ -983,7 +987,9 @@ const FISH_SVG = `
 
 function buildPond(){
   const pond = $('#pond'); pond.innerHTML = ''; cells = [];
-  for(let i=0; i<CELL_COUNT; i++){
+  const [n, cols, rows, pcols, prows] = gridNow();
+  Object.entries({ '--cols':cols, '--rows':rows, '--pcols':pcols, '--prows':prows }).forEach(([k, v]) => pond.style.setProperty(k, v));
+  for(let i=0; i<n; i++){
     const el = document.createElement('div');
     el.className = 'cell empty';
     el.innerHTML = FISH_SVG;
@@ -1362,7 +1368,7 @@ const rPick = (R, arr) => arr[Math.floor(R() * arr.length)];
 // 라운드의 물고기 시간표: 칸마다 "몇 초에 어떤 물고기가 몇 초 동안" 나오는지
 function mpSchedule(seed, round){
   const out = [];
-  for(let i = 0; i < CELL_COUNT; i++){
+  for(let i = 0; i < cellCount(); i++){
     const R = mulberry32(seed + round * 7919 + i * 104729);
     const list = []; let t = rRange(R, 300, 4500), k = 0;
     while(t < ROUND_TIME * 1000){
