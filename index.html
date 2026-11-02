@@ -424,7 +424,7 @@ body.iam-out #outBanner{display:block}
     <input class="nick" id="nick" type="text" maxlength="10" placeholder="닉네임 입력" autocomplete="off" enterkeyhint="go">
     <div class="nick-msg" id="nickMsg"></div>
     <button class="start-btn home-start" id="startBtn">🐟 혼자 하기</button>
-    <button class="start-btn together-btn" id="togetherBtn">👥 함께 하기 <small>(2~5명)</small></button>
+    <button class="start-btn together-btn" id="togetherBtn">👥 함께 하기 <small>(2~6명)</small></button>
 
     <!-- 랭킹 1~5등 -->
     <div class="rank-cap">🏆 최종 점수 랭킹</div>
@@ -1346,7 +1346,7 @@ function endGame(reason){
 }
 
 
-/* ===================== 함께 하기 (2~5명, 하나의 연못에서 경쟁) =====================
+/* ===================== 함께 하기 (2~6명, 하나의 연못에서 경쟁·협동) =====================
    · 방장이 방을 만들면 4자리 방 번호가 생기고, 친구들이 번호로 들어옴 (최대 6명)
    · 모두 같은 물고기를 봄: 물고기 순서는 방 번호에 딸린 '씨앗(seed)'으로 모든 기기에서 똑같이 계산
    · 먼저 터치한 사람이 낚음: Firebase에 "이 물고기 내가 낚았다" 기록을 먼저 남긴 사람만 성공
@@ -1925,7 +1925,7 @@ async function mpCreate(name, info){
   }
   throw new Error('방 번호를 만들지 못함');
 }
-// 방 들어가기: 대기 중이고 5명 미만이면 내 자리 추가
+// 방 들어가기: 대기 중이고 6명 미만이면 내 자리 추가
 async function mpJoin(code, name){
   const u = await ready, ref = doc(db, 'rooms', code);
   const res = await runTransaction(db, async tx => {
