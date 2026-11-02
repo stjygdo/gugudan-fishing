@@ -922,65 +922,164 @@ const sfx = {
   tang: () => { tone(1200,.05,'square',0,.12); tone(500,.08,'triangle',.02,.15); tone(110,.3,'triangle',.06,.18); }
 };
 
-/* ---------- 배경 음악 (Web Audio로 직접 연주) ----------
-   라운드마다 다른 곡 15개. mel=멜로디, bass=베이스 (MIDI 번호, _ = 쉼), long=베이스를 길게 */
+/* ---------- 배경 음악 (Web Audio로 직접 연주 · 음악 파일 없음) ----------
+   라운드마다 다른 곡 15개. 코드(화음) + 멜로디 + 베이스 + 아르페지오 + 패드 + 드럼 + 잔향(리버브)·메아리(딜레이)
+   멜로디 표기: 8분음표 한 칸씩, '-' = 앞 음 길게, '.' = 쉼, '|' = 마디 구분(무시) */
 const midi = m => 440 * Math.pow(2, (m - 69) / 12);
-const _ = null;
+const NOTE_I = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
+const noteNum = s => { const k = /^([A-G])(#|b)?(\d)$/.exec(s); return k ? 12 * (+k[3] + 1) + NOTE_I[k[1]] + (k[2] === '#' ? 1 : k[2] === 'b' ? -1 : 0) : null; };
+const CHORD_Q = { '':[0,4,7], m:[0,3,7], M7:[0,4,7,11], m7:[0,3,7,10], '7':[0,4,7,10], '6':[0,4,7,9], sus:[0,5,7] };
+function parseChord(c){ const k = /^([A-G])(#|b)?(.*)$/.exec(c); const root = 48 + NOTE_I[k[1]] + (k[2] === '#' ? 1 : k[2] === 'b' ? -1 : 0);
+  return { root, tones:(CHORD_Q[k[3]] || CHORD_Q['']).map(x => root + x) }; }
+function parseMel(str){
+  const tk = str.split(/\s+/).filter(x => x && x !== '|'), out = [];
+  tk.forEach((t, i) => { if(t === '-' || t === '.'){ out.push(null); return; }
+    let n = 0; while(tk[i + 1 + n] === '-') n++; out.push({ m:noteNum(t), len:n + 1 }); });
+  return out;
+}
+// 드럼 패턴 (16분음표 16칸): k=킥, s=스네어, h=하이햇
+const DRUMS = {
+  none:{}, heart:{ k:[0,3] }, shaker:{ h:[0,2,4,6,8,10,12,14], hv:.25 },
+  soft:{ k:[0,8], h:[4,12], hv:.5 }, lofi:{ k:[0,10], s:[8], h:[0,2,4,6,8,10,12,14], hv:.35, swing:true },
+  groove:{ k:[0,6,8], s:[4,12], h:[0,2,4,6,8,10,12,14], hv:.45 }, latin:{ k:[0,8], s:[3,10], h:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], hv:.22, rim:true },
+  march:{ k:[0,8], s:[4,12], h:[2,6,10,14], hv:.4 }, drive:{ k:[0,4,8,12], s:[4,12], h:[2,6,10,14], hv:.6 },
+  epic:{ k:[0,2,8,10], s:[4,12], h:[0,2,4,6,8,10,12,14], hv:.5 }
+};
 const BGM = [
-  /* 1 맑은 바다: 경쾌한 장조 */ { bpm:112, lead:'triangle', bassW:'sine', vol:.05,
-    mel:[72,76,79,76, 74,76,72,_, 69,72,74,72, 76,74,72,_], bass:[48,_,55,_, 45,_,52,_, 41,_,48,_, 43,_,50,_] },
-  /* 2 노을 바다: 느긋한 노래 */ { bpm:96, lead:'triangle', bassW:'sine', vol:.05,
-    mel:[65,69,72,_, 70,69,65,_, 67,70,74,72, 70,69,67,_], bass:[41,_,48,_, 46,_,53,_, 43,_,50,_, 48,_,_,_] },
-  /* 3 산호초: 통통 튀는 8비트 */ { bpm:124, lead:'square', bassW:'triangle', vol:.03,
-    mel:[67,71,74,71, 72,74,76,74, 71,67,69,71, 72,71,69,_], bass:[43,_,50,_, 48,_,55,_, 40,_,47,_, 50,_,_,_] },
-  /* 4 해초 숲: 살랑살랑 */ { bpm:100, lead:'sine', bassW:'triangle', vol:.06,
-    mel:[62,_,65,67, 69,_,67,65, 64,_,62,_, 60,62,64,_], bass:[38,_,_,45, _,_,43,_, 36,_,_,43, _,_,45,_] },
-  /* 5 비 오는 바다: 잔잔한 단조 */ { bpm:80, lead:'sine', bassW:'sine', vol:.06, long:true,
-    mel:[76,_,74,_, 72,_,71,_, 69,_,71,72, 71,_,_,_], bass:[45,_,_,_, 48,_,_,_, 41,_,_,_, 40,_,_,_] },
-  /* 6 밤바다: 자장가 */ { bpm:70, lead:'triangle', bassW:'sine', vol:.055, long:true,
-    mel:[72,_,79,_, 77,76,74,_, 76,_,72,_, 74,_,_,_], bass:[48,_,_,_, 53,_,_,_, 52,_,_,_, 43,_,_,_] },
-  /* 7 북극 바다: 맑은 종소리 */ { bpm:108, lead:'sine', bassW:'triangle', vol:.045, long:true,
-    mel:[88,_,83,_, 85,_,80,_, 81,83,85,_, 83,_,_,_], bass:[52,_,_,_, 49,_,_,_, 45,_,_,_, 47,_,_,_] },
-  /* 8 깊은 바다: 신비로운 단조 */ { bpm:84, lead:'sine', bassW:'triangle', vol:.06, long:true,
-    mel:[69,_,72,_, 76,_,74,72, 71,_,69,_, 64,_,_,_], bass:[45,_,_,_, 41,_,_,_, 43,_,_,_, 40,_,_,_] },
-  /* 9 심해: 으스스 */ { bpm:64, lead:'sine', bassW:'sawtooth', vol:.045, long:true,
-    mel:[69,_,_,70, _,_,64,_, _,63,_,_, _,_,_,_], bass:[33,_,_,_, _,_,_,_, 34,_,_,_, _,_,_,_] },
-  /* 10 열대 바다: 신나는 리듬 */ { bpm:118, lead:'triangle', bassW:'sine', vol:.05,
-    mel:[72,74,76,79, 81,79,76,74, 72,76,79,76, 74,72,_,_], bass:[48,_,52,_, 55,_,52,_, 53,_,57,_, 55,_,_,_] },
-  /* 11 화산 바다: 묵직한 단조 */ { bpm:132, lead:'sawtooth', bassW:'square', vol:.028,
-    mel:[57,60,63,60, 57,_,62,63, 60,_,57,55, 57,_,_,_], bass:[33,33,_,33, 36,_,33,_, 31,31,_,31, 33,_,_,_] },
-  /* 12 난파선: 뱃노래 */ { bpm:90, lead:'triangle', bassW:'triangle', vol:.05,
-    mel:[64,_,67,69, 71,_,69,67, 64,_,62,64, 67,_,_,_], bass:[40,_,47,_, 40,_,47,_, 38,_,45,_, 40,_,_,_] },
-  /* 13 폭풍 바다: 몰아치는 리듬 */ { bpm:140, lead:'square', bassW:'sawtooth', vol:.03,
-    mel:[69,_,69,72, 74,_,72,69, 67,_,67,70, 72,_,70,67], bass:[45,45,45,45, 43,43,43,43, 41,41,41,41, 40,40,40,40] },
-  /* 14 소용돌이: 빙글빙글 */ { bpm:104, lead:'sine', bassW:'triangle', vol:.055, long:true,
-    mel:[76,79,83,79, 76,79,83,86, 84,81,77,81, 84,_,_,_], bass:[52,_,_,_, 52,_,_,_, 53,_,_,_, 53,_,_,_] },
-  /* 15 끝판왕: 빠르고 긴장감 */ { bpm:152, lead:'square', bassW:'sawtooth', vol:.035,
-    mel:[62,62,65,62, 67,62,69,68, 62,62,65,62, 70,69,67,65], bass:[38,38,50,38, 38,50,38,50, 36,36,48,36, 37,37,49,37] }
-];
-let bgm = { timer:null, theme:null, step:0, next:0 };   // theme = 라운드 번호
-function bgmNote(m, t, dur, wave, vol){
-  const o = ac.createOscillator(), g = ac.createGain();
-  o.type = wave; o.frequency.value = midi(m);
-  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .02);
-  g.gain.exponentialRampToValueAtTime(.0005, t + dur);
-  o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur + .05);
+  /* 1 맑은 바다: 상쾌한 팝 */ { bpm:108, lead:'bell', bass:'rf', arp:8, pad:true, drums:'soft', ch:['C','G','Am','F'],
+    mel:'E5 - G5 - A5 G5 E5 - | D5 - G5 - B5 - A5 G5 | C5 - E5 - A5 - G5 E5 | F5 - E5 D5 C5 - - . | E5 - G5 - C6 - B5 A5 | B5 - D6 - B5 - G5 - | A5 - C6 - E6 - D6 C6 | A5 - G5 F5 E5 - - .' },
+  /* 2 노을 바다: 로파이 재즈 */ { bpm:82, lead:'piano', bass:'long', arp:0, pad:true, drums:'lofi', ch:['FM7','Em7','Dm7','G7'],
+    mel:'A5 - - G5 E5 - C5 - | G5 - - E5 D5 - B4 - | F5 - E5 D5 C5 - A4 - | B4 - D5 - F5 - - . | A5 - C6 - B5 A5 G5 - | G5 - B5 - A5 G5 E5 - | F5 - A5 - G5 F5 D5 - | D5 - - - . . . .' },
+  /* 3 산호초: 통통 마림바 */ { bpm:118, lead:'marimba', bass:'bounce', arp:16, pad:false, drums:'groove', ch:['G','Em','C','D'],
+    mel:'G5 . B5 . D6 B5 G5 . | E5 . G5 . B5 G5 E5 . | C5 E5 G5 E5 C6 - B5 A5 | A5 . F#5 . D5 - - . | B5 . D6 . G6 - D6 B5 | G5 . B5 . E6 - B5 G5 | E5 G5 C6 G5 E6 - D6 C6 | A5 - B5 - G5 - - .' },
+  /* 4 해초 숲: 산들 플루트 */ { bpm:94, lead:'flute', bass:'root', arp:8, pad:true, drums:'shaker', ch:['Dm7','G','Dm7','Am7'],
+    mel:'D5 - F5 - A5 - G5 F5 | G5 - - B5 A5 - G5 - | F5 - A5 - C6 - A5 F5 | E5 - - - . . . . | A5 - C6 - D6 - C6 A5 | B5 - G5 - D5 - G5 - | A5 - F5 - D5 - F5 A5 | E5 - C5 - A4 - - .' },
+  /* 5 비 오는 바다: 빗소리 피아노 */ { bpm:74, lead:'piano', bass:'long', arp:8, pad:true, drums:'none', ch:['Am','FM7','Dm7','E7'],
+    mel:'E5 - - D5 C5 - B4 - | C5 - - A4 F5 - E5 - | D5 - F5 - A5 - G5 F5 | E5 - - - G#5 - - . | A5 - - G5 E5 - C5 - | C6 - - B5 A5 - E5 - | F5 - D5 - A5 - G5 F5 | E5 - D5 - B4 - - .' },
+  /* 6 밤바다: 오르골 자장가 */ { bpm:66, lead:'musicbox', bass:'long', arp:0, pad:true, drums:'none', ch:['C','Em','F','G'],
+    mel:'G5 - E5 - G5 - C6 - | B5 - G5 - E5 - - . | A5 - F5 - A5 - C6 - | B5 - - - D5 - - . | E5 - G5 - C6 - E6 - | D6 - B5 - G5 - - . | C6 - A5 - F5 - A5 - | G5 - - - - - - .' },
+  /* 7 북극 바다: 반짝 종소리 */ { bpm:98, lead:'bell', bass:'long', arp:16, pad:true, drums:'shaker', ch:['A','E','F#m','D'],
+    mel:'E6 - C#6 - A5 - C#6 E6 | B5 - G#5 - E5 - G#5 B5 | C#6 - A5 - F#5 - A5 C#6 | D6 - - C#6 B5 - - . | A5 - E6 - C#6 - E6 A5 | G#5 - E6 - B5 - E6 G#5 | F#5 - C#6 - A5 - C#6 F#5 | F#5 - E5 - D5 - - .' },
+  /* 8 깊은 바다: 신비로운 단조 */ { bpm:80, lead:'soft', bass:'long', arp:8, pad:true, drums:'soft', ch:['Dm','Bb','Gm','A'],
+    mel:'A4 - - D5 F5 - E5 D5 | D5 - - - F5 - - . | G5 - - F5 D5 - Bb4 - | C#5 - - - E5 - - . | A5 - - G5 F5 - E5 D5 | F5 - - - D5 - Bb4 - | Bb5 - - A5 G5 - F5 - | E5 - - - C#5 - - .' },
+  /* 9 심해: 어둡고 고요한 울림 */ { bpm:62, lead:'glass', bass:'long', arp:0, pad:true, drums:'heart', ch:['Em','C','Em','B7'],
+    mel:'B4 - - - C5 - B4 - | G4 - - - E4 - - . | B4 - - - D5 - C5 B4 | D#5 - - - - - - . | E5 - - - F#5 - G5 - | E5 - - - C5 - - . | G5 - F#5 - E5 - B4 - | A4 - - - F#4 - - .' },
+  /* 10 열대 바다: 스틸드럼 칼립소 */ { bpm:114, lead:'steel', bass:'bounce', arp:0, pad:false, drums:'latin', ch:['F','Dm','Gm7','C7'],
+    mel:'C6 . A5 C6 . A5 F5 . | D6 . A5 D6 . A5 F5 . | Bb5 . G5 Bb5 D6 - C6 Bb5 | A5 - G5 - E5 - C5 . | F5 . A5 C6 . F6 E6 D6 | D6 . C6 A5 . F5 D5 . | G5 . Bb5 D6 . F6 E6 D6 | E6 - - C6 - - . .' },
+  /* 11 화산 바다: 묵직한 신스 */ { bpm:126, lead:'synth', bass:'pulse', arp:16, pad:true, drums:'drive', ch:['Cm','Ab','Bb','G'],
+    mel:'C5 - Eb5 - G5 - Eb5 C5 | Eb5 - Ab5 - C6 - Ab5 Eb5 | D5 - F5 - Bb5 - F5 D5 | B4 - D5 - G5 - - . | G5 - - Eb5 G5 - C6 - | C6 - - Ab5 Eb5 - C5 - | D5 - F5 - Bb5 - D6 - | B5 - - - G5 - - .' },
+  /* 12 난파선: 아코디언 뱃노래 */ { bpm:96, lead:'accordion', bass:'rf', arp:0, pad:false, drums:'march', ch:['Dm','C','Bb','A'],
+    mel:'A4 - D5 - D5 E5 F5 - | E5 - C5 - C5 D5 E5 - | D5 - Bb4 - D5 F5 Bb5 - | A5 - G5 - E5 - C#5 . | F5 - A5 - A5 G5 F5 - | E5 - G5 - G5 F5 E5 - | D5 - F5 - Bb5 A5 G5 - | A5 - - - - - . .' },
+  /* 13 폭풍 바다: 몰아치는 신스 */ { bpm:136, lead:'synth', bass:'pulse', arp:16, pad:true, drums:'drive', ch:['Em','C','D','B'],
+    mel:'E5 E5 G5 E5 B5 - A5 G5 | E5 E5 G5 E5 C6 - B5 A5 | F#5 F#5 A5 F#5 D6 - C6 A5 | D#5 - F#5 - B5 - - . | B5 - G5 - E5 - G5 B5 | C6 - G5 - E5 - G5 C6 | D6 - A5 - F#5 - A5 D6 | D#6 - - - B5 - - .' },
+  /* 14 소용돌이: 꿈결 같은 빙글빙글 */ { bpm:100, lead:'bell', bass:'long', arp:16, pad:true, drums:'shaker', ch:['FM7','G6','Am7','Em7'],
+    mel:'A5 - C6 - E6 - C6 A5 | B5 - D6 - E6 - D6 B5 | C6 - E6 - A6 - E6 C6 | B5 - G5 - E5 - - . | F5 - E6 - C6 - A5 - | G5 - E6 - D6 - B5 - | A5 - E6 - C6 - A5 - | G5 - B5 - E6 - - .' },
+  /* 15 끝판왕: 웅장한 결전 */ { bpm:146, lead:'brass', bass:'pulse', arp:16, pad:true, drums:'epic', ch:['Dm','Bb','C','A'],
+    mel:'D5 - D5 F5 A5 - D6 - | Bb5 - A5 G5 F5 - D5 - | C5 - E5 G5 C6 - Bb5 A5 | A5 - C#6 - E6 - - . | F5 - E5 D5 A5 - D6 - | D6 - C6 Bb5 F5 - Bb5 - | C6 - Bb5 A5 G5 - E5 - | E5 - C#5 - A4 - - .' }
+].map(T => ({ ...T, notes:parseMel(T.mel), chords:T.ch.map(parseChord) }));
+
+let bgm = { timer:null, theme:null, step:0, next:0 };   // theme = 라운드 번호, step = 16분음표 번호
+let fx = null;                                          // 음악 전용 믹서 (잔향·메아리·압축)
+function makeFx(){
+  const master = ac.createGain(); master.gain.value = .32;   // 효과음보다 작게
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 3;
+  master.connect(comp).connect(ac.destination);
+  // 잔향: 소리가 퍼지는 공간감 (짧게 만든 잡음 응답)
+  const rev = ac.createConvolver(), len = ac.sampleRate * 2.2, ir = ac.createBuffer(2, len, ac.sampleRate);
+  for(let c = 0; c < 2; c++){ const d = ir.getChannelData(c); for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+  rev.buffer = ir; const revG = ac.createGain(); revG.gain.value = .32; rev.connect(revG).connect(master);
+  // 메아리: 멜로디가 살짝 따라 울림
+  const dl = ac.createDelay(1.5), fb = ac.createGain(), dlF = ac.createBiquadFilter(), dlG = ac.createGain();
+  fb.gain.value = .32; dlF.type = 'lowpass'; dlF.frequency.value = 2400; dlG.gain.value = .28;
+  dl.connect(dlF).connect(fb).connect(dl); dlF.connect(dlG).connect(master);
+  return { master, rev, dl };
+}
+// 한 음 연주: 여러 겹의 발진기 + 음량 모양(ADSR) + 필터
+function voice(t, m, dur, o){
+  const f = midi(m), g = ac.createGain(), out = o.filter ? ac.createBiquadFilter() : null;
+  const peak = o.vol, a = o.a || .01, rel = o.rel || .25;
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + a);
+  if(o.decay) g.gain.setTargetAtTime(peak * (o.sus || 0), t + a, o.decay);
+  g.gain.setValueAtTime(o.decay ? peak * (o.sus || 0) + .0001 : peak, t + Math.max(a, dur));
+  g.gain.setTargetAtTime(0, t + Math.max(a, dur), rel / 3);
+  const end = t + Math.max(a, dur) + rel + .05;
+  (o.parts || [[o.wave || 'sine', 1, 1, 0]]).forEach(([w, ratio, amp, det]) => {
+    const osc = ac.createOscillator(), og = ac.createGain();
+    osc.type = w; osc.frequency.value = f * ratio; osc.detune.value = det || 0; og.gain.value = amp;
+    if(o.vib){ const l = ac.createOscillator(), lg = ac.createGain(); l.frequency.value = 5.2; lg.gain.value = o.vib;
+      l.connect(lg).connect(osc.detune); l.start(t + .15); l.stop(end); }
+    osc.connect(og).connect(g); osc.start(t); osc.stop(end);
+  });
+  let node = g;
+  if(out){ out.type = 'lowpass'; out.Q.value = o.q || .7; out.frequency.setValueAtTime(o.filter, t);
+    if(o.fEnv){ out.frequency.setValueAtTime(o.fEnv, t); out.frequency.setTargetAtTime(o.filter, t + .01, .12); }
+    g.connect(out); node = out; }
+  node.connect(fx.master);
+  if(o.rev) { const s = ac.createGain(); s.gain.value = o.rev; node.connect(s).connect(fx.rev); }
+  if(o.echo){ const s = ac.createGain(); s.gain.value = o.echo; node.connect(s).connect(fx.dl); }
+}
+// 악기 소리 모음
+const INSTR = {
+  bell:     { parts:[['sine',1,1],['sine',2,.35],['sine',3.01,.18],['sine',4.2,.08]], vol:.11, a:.005, decay:.45, sus:.12, rel:.9, rev:.8, echo:.5 },
+  piano:    { parts:[['triangle',1,1],['sine',2,.3],['sine',1,.5,6]], vol:.12, a:.006, decay:.5, sus:.15, rel:.6, filter:2600, rev:.7, echo:.25 },
+  marimba:  { parts:[['sine',1,1],['sine',4,.25],['sine',10,.05]], vol:.15, a:.003, decay:.12, sus:0, rel:.2, rev:.4, echo:.15 },
+  flute:    { parts:[['sine',1,1],['triangle',2,.12]], vol:.1, a:.07, rel:.3, vib:14, rev:.7, echo:.35 },
+  soft:     { parts:[['sine',1,1],['triangle',1,.4,7]], vol:.11, a:.05, rel:.5, vib:8, rev:.8, echo:.45 },
+  musicbox: { parts:[['sine',2,1],['sine',4,.3],['sine',6.02,.08]], vol:.08, a:.003, decay:.35, sus:.05, rel:1.1, rev:.9, echo:.4 },
+  glass:    { parts:[['sine',1,1],['sine',2.01,.25],['sine',3.5,.08]], vol:.09, a:.25, rel:1.4, vib:6, rev:1, echo:.6 },
+  steel:    { parts:[['sine',1,1],['sine',2,.5],['sine',3.02,.2],['triangle',1,.3,9]], vol:.12, a:.004, decay:.22, sus:.08, rel:.35, rev:.45, echo:.2 },
+  synth:    { parts:[['sawtooth',1,.6,-9],['sawtooth',1,.6,9],['square',.5,.25]], vol:.07, a:.01, rel:.25, filter:1500, fEnv:4200, q:3, rev:.4, echo:.35 },
+  accordion:{ parts:[['square',1,.5,-5],['sawtooth',1,.5,6],['square',2,.15]], vol:.06, a:.04, rel:.15, filter:1900, vib:10, rev:.45 },
+  brass:    { parts:[['sawtooth',1,.6,-6],['sawtooth',1,.6,6],['sawtooth',.5,.3]], vol:.08, a:.04, rel:.25, filter:1700, fEnv:3800, q:1.5, rev:.5, echo:.25 }
+};
+const PAD  = { parts:[['sawtooth',1,.5,-11],['sawtooth',1,.5,11],['triangle',.5,.6]], vol:.022, a:.7, rel:1.2, filter:900, rev:1 };
+const ARP  = { parts:[['triangle',1,1],['sine',2,.25]], vol:.045, a:.004, decay:.1, sus:0, rel:.18, filter:3200, rev:.6, echo:.4 };
+const BASS = { parts:[['sine',1,1],['triangle',1,.45]], vol:.16, a:.01, rel:.15, filter:700 };
+function drum(kind, t, v){
+  const g = ac.createGain(); g.connect(fx.master);
+  if(kind === 'k'){ const o = ac.createOscillator(); o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(42, t + .14);
+    g.gain.setValueAtTime(.32 * v, t); g.gain.exponentialRampToValueAtTime(.001, t + .28); o.connect(g); o.start(t); o.stop(t + .3); return; }
+  const len = kind === 's' ? .18 : .05, b = ac.createBuffer(1, ac.sampleRate * len, ac.sampleRate), d = b.getChannelData(0);
+  for(let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const n = ac.createBufferSource(), f = ac.createBiquadFilter(); n.buffer = b;
+  f.type = kind === 's' ? 'bandpass' : 'highpass'; f.frequency.value = kind === 's' ? 1800 : 7500;
+  g.gain.setValueAtTime((kind === 's' ? .16 : .05) * v, t); g.gain.exponentialRampToValueAtTime(.001, t + len);
+  n.connect(f).connect(g); n.start(t);
+  if(kind === 's'){ const s = ac.createGain(); s.gain.value = .3; g.connect(s).connect(fx.rev); }
+}
+function bgmStep(T, t, s16, d16){
+  const bar = Math.floor(s16 / 16), pos = s16 % 16, C = T.chords[bar % T.chords.length], D = DRUMS[T.drums] || {};
+  // 패드: 마디 첫 박에 화음을 길게
+  if(T.pad && pos === 0) C.tones.forEach((m, i) => voice(t, m + 12, d16 * 15, { ...PAD, vol:PAD.vol * (i ? .8 : 1) }));
+  // 베이스
+  const R = C.root - 12, fifth = C.root - 5;
+  const bass = { root:{0:R, 8:R}, rf:{0:R, 8:fifth}, long:{0:R}, bounce:{0:R, 6:R + 12, 8:fifth, 14:R + 12}, pulse:{0:R,2:R,4:R,6:R,8:R,10:R,12:R + 12,14:R} }[T.bass] || {};
+  if(bass[pos] != null) voice(t, bass[pos], d16 * (T.bass === 'long' ? 15 : T.bass === 'pulse' ? 1.6 : 3.5), BASS);
+  // 아르페지오: 화음 음을 차례로 반짝반짝
+  if(T.arp && pos % (T.arp === 16 ? 1 : 2) === 0){ const k = T.arp === 16 ? pos : pos / 2, tones = C.tones, up = [...tones, tones[0] + 12, ...tones.slice(1).map(x => x + 12)];
+    voice(t, up[k % up.length] + 12, d16 * 1.5, ARP); }
+  // 멜로디 (8분음표)
+  if(pos % 2 === 0){ const n = T.notes[(s16 / 2) % T.notes.length]; if(n && n.m) voice(t, n.m, d16 * 2 * n.len * .92, INSTR[T.lead]); }
+  // 드럼
+  const sw = D.swing && pos % 4 === 2 ? d16 * .33 : 0;
+  if(D.k && D.k.includes(pos)) drum('k', t, T.drums === 'heart' ? .55 : 1);
+  if(D.s && D.s.includes(pos)) drum('s', t, D.rim ? .5 : 1);
+  if(D.h && D.h.includes(pos)) drum('h', t + sw, D.hv * (pos % 4 === 0 ? 1 : .7));
 }
 function bgmPlay(theme){
   if(bgm.theme === theme && bgm.timer) return;
   bgmStop(); bgm.theme = theme;
   if(!soundOn) return;
-  try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume && ac.resume(); }catch(e){ return; }
-  bgm.step = 0; bgm.next = ac.currentTime + .1;
+  try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume && ac.resume(); fx = fx || makeFx(); }catch(e){ return; }
+  fx.dl.delayTime.setValueAtTime(60 / BGM[theme - 1].bpm * .75, ac.currentTime);   // 메아리 간격: 점8분음표
+  bgm.step = 0; bgm.next = ac.currentTime + .12;
   bgm.timer = setInterval(() => {
-    const T = BGM[bgm.theme - 1], stepDur = 60 / T.bpm / 2;      // 8분음표
-    while(bgm.next < ac.currentTime + .2){
-      const i = bgm.step % 16, m = T.mel[i], b = T.bass[i];
-      if(m) bgmNote(m, bgm.next, stepDur * 1.6, T.lead, T.vol);
-      if(b) bgmNote(b, bgm.next, stepDur * (T.long ? 4 : 1.2), T.bassW, T.vol * .9);
-      bgm.next += stepDur; bgm.step++;
+    const T = BGM[bgm.theme - 1], d16 = 60 / T.bpm / 4;            // 16분음표 길이
+    while(bgm.next < ac.currentTime + .25){
+      try{ bgmStep(T, bgm.next, bgm.step, d16); }catch(e){}
+      bgm.next += d16; bgm.step++;
     }
-  }, 30);
+  }, 40);
 }
 function bgmStop(){ clearInterval(bgm.timer); bgm.timer = null; }
 $('#soundBtn').onclick = () => {
