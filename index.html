@@ -566,7 +566,7 @@ body.iam-out #outBanner{display:block}
 <div class="dex-modal" id="dexModal">
   <div class="dex-box">
     <h2 id="dexTitle">📖 바다 친구 도감</h2>
-    <div class="dex-sub">라운드를 깨면 그 라운드의 바다 친구를 모아요!</div>
+    <div class="dex-sub">이 기기에서 친구들이 라운드를 깨며 모은 바다 친구예요!</div>
     <div class="dex-grid" id="dexGrid"></div>
     <button class="dex-close" id="dexClose">닫기</button>
   </div>
@@ -1266,6 +1266,8 @@ const fishSvg = r => FISH_SVG.replace('%ART%', fishKind(r).art);
 const DEX_KEY = 'fishDex';
 function dexAll(){ try{ return JSON.parse(localStorage.getItem(DEX_KEY)) || {}; }catch(e){ return {}; } }
 const dexOf = nick => new Set(dexAll()[nick] || []);
+// 이 기기 전체 도감: 이 기기에서 누구라도 모은 친구를 모두 합침
+const dexDevice = () => new Set(Object.values(dexAll()).flat());
 function dexAdd(r){
   const nick = getNick(); if(!nick) return false;
   const all = dexAll(), have = new Set(all[nick] || []);
@@ -1284,15 +1286,9 @@ function dexCard(r, locked){
   return d;
 }
 function openDex(){
-  const nick = getNick();
-  if(!nick){
-    const el = $('#nick'); el.classList.remove('need'); void el.offsetWidth; el.classList.add('need'); el.focus();
-    $('#nickMsg').textContent = '👆 닉네임을 입력하면 내 도감을 볼 수 있어요!';
-    return;
-  }
-  const have = dexOf(nick), grid = $('#dexGrid'); grid.innerHTML = '';
+  const have = dexDevice(), grid = $('#dexGrid'); grid.innerHTML = '';     // 닉네임 없이도 열림
   for(let r = 1; r <= LAST_ROUND; r++) grid.appendChild(dexCard(r, !have.has(r)));
-  $('#dexTitle').textContent = `📖 ${nick}의 바다 친구 도감 (${have.size}/${LAST_ROUND})` + (have.size >= LAST_ROUND ? ' 👑' : '');
+  $('#dexTitle').textContent = `📖 바다 친구 도감 (${have.size}/${LAST_ROUND})` + (have.size >= LAST_ROUND ? ' 👑' : '');
   $('#dexModal').classList.add('show');
 }
 // 결과 화면: 이번 판에 새로 모은 친구
@@ -1300,7 +1296,7 @@ function renderDexNew(){
   const box = $('#dexNew'), list = S.newDex || [];
   box.classList.toggle('show', list.length > 0);
   if(!list.length){ box.innerHTML = ''; return; }
-  box.innerHTML = `📖 새로 모은 바다 친구 ${list.length}마리! <small>(도감 ${dexOf(getNick()).size}/${LAST_ROUND})</small><div class="dex-grid"></div>`;
+  box.innerHTML = `📖 새로 모은 바다 친구 ${list.length}마리! <small>(도감 ${dexDevice().size}/${LAST_ROUND})</small><div class="dex-grid"></div>`;
   list.forEach(r => box.querySelector('.dex-grid').appendChild(dexCard(r, false)));
 }
 function colorFish(svg, body, dark, belly){
