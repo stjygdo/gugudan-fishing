@@ -572,7 +572,7 @@ body.iam-out #outBanner{display:block}
 <div class="dex-modal" id="dexModal">
   <div class="dex-box">
     <h2 id="dexTitle">📖 바다 친구 도감</h2>
-    <div class="dex-sub">이 기기에서 친구들이 라운드를 깨며 모은 바다 친구예요!</div>
+    <div class="dex-sub">라운드를 깨면 그 라운드의 바다 친구를 모아요!</div>
     <div class="dex-grid" id="dexGrid"></div>
     <div class="dex-info" id="dexInfo"></div>
     <button class="dex-close" id="dexClose">닫기</button>
@@ -1301,26 +1301,30 @@ function dexCard(r, locked, withWho){
   d.innerHTML = fishSvg(r) + `<div>${locked ? `❓ ${r}라운드` : k.name}</div>`;
   colorFish(d.querySelector('svg'), ...pal[0]);
   if(!locked && withWho){
-    const who = dexWho(r), w = document.createElement('div'); w.className = 'dex-who';
-    w.textContent = who.length > 2 ? `${who[0].n}·${who[1].n} 외 ${who.length - 2}명` : who.map(x => x.n).join('·');
-    d.appendChild(w); d.onclick = () => dexInfo(r);
+    d.onclick = () => dexInfo(r);
   }
   return d;
 }
 function openDex(){
-  const have = dexDevice(), grid = $('#dexGrid'); grid.innerHTML = '';     // 닉네임 없이도 열림
+  const nick = getNick();
+  if(!nick){                                   // 닉네임을 넣어야 내 도감이 열림
+    const el = $('#nick'); el.classList.remove('need'); void el.offsetWidth; el.classList.add('need'); el.focus();
+    $('#nickMsg').textContent = '👆 닉네임을 입력하면 내 도감을 볼 수 있어요!';
+    return;
+  }
+  const have = dexOf(nick), grid = $('#dexGrid'); grid.innerHTML = '';
   for(let r = 1; r <= LAST_ROUND; r++) grid.appendChild(dexCard(r, !have.has(r), true));
-  $('#dexInfo').innerHTML = have.size ? '👆 친구 카드를 누르면 누가 어떻게 모았는지 보여요' : '아직 모은 친구가 없어요. 라운드를 깨 보세요! 🎣';
-  $('#dexTitle').textContent = `📖 바다 친구 도감 (${have.size}/${LAST_ROUND})` + (have.size >= LAST_ROUND ? ' 👑' : '');
+  $('#dexInfo').innerHTML = have.size ? '👆 친구 카드를 누르면 언제 어떻게 모았는지 보여요' : '아직 모은 친구가 없어요. 라운드를 깨 보세요! 🎣';
+  $('#dexTitle').textContent = `📖 ${nick}의 바다 친구 도감 (${have.size}/${LAST_ROUND})` + (have.size >= LAST_ROUND ? ' 👑' : '');
   $('#dexModal').classList.add('show');
 }
 // 카드를 누르면: 누가 · 언제 · 어떤 방식으로 모았는지
 function dexInfo(r){
   const k = fishKind(r), fmt = t => { const d = new Date(t); return `${d.getMonth() + 1}월 ${d.getDate()}일`; };
-  const rows = dexWho(r).map(x => `<li><b></b>${x.at ? ` · ${fmt(x.at)} · ${HOW_TXT[x.how] || ''}` : ''}</li>`);
+  const me = dexWho(r).find(x => x.n === getNick()) || {};
+  $('#dexInfo').innerHTML = `<div class="dex-info-t">${k.name} (${r}라운드)</div>`
+    + (me.at ? `${fmt(me.at)}에 모았어요! (${HOW_TXT[me.how] || ''})` : '언제 모았는지 기록이 없어요.');
   const box = $('#dexInfo');
-  box.innerHTML = `<div class="dex-info-t">${k.name} (${r}라운드)를 모은 친구 ${rows.length}명</div><ol>${rows.join('')}</ol>`;
-  box.querySelectorAll('li b').forEach((b, i) => b.textContent = dexWho(r)[i].n);   // 이름은 글자로만 넣기
   box.scrollIntoView({ block:'nearest', behavior:'smooth' });
 }
 // 결과 화면: 이번 판에 새로 모은 친구
@@ -1328,7 +1332,7 @@ function renderDexNew(){
   const box = $('#dexNew'), list = S.newDex || [];
   box.classList.toggle('show', list.length > 0);
   if(!list.length){ box.innerHTML = ''; return; }
-  box.innerHTML = `📖 새로 모은 바다 친구 ${list.length}마리! <small>(도감 ${dexDevice().size}/${LAST_ROUND})</small><div class="dex-grid"></div>`;
+  box.innerHTML = `📖 새로 모은 바다 친구 ${list.length}마리! <small>(도감 ${dexOf(getNick()).size}/${LAST_ROUND})</small><div class="dex-grid"></div>`;
   list.forEach(r => box.querySelector('.dex-grid').appendChild(dexCard(r, false)));
 }
 function colorFish(svg, body, dark, belly){
