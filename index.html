@@ -311,6 +311,34 @@ body.theme-boss .eq text{fill:#fff;stroke:#2a0618}
 body.theme-boss .pupil{fill:#ff2b2b}
 .boss-only{display:none}
 body.theme-boss .boss-only{display:inline}
+/* 황금 바다 친구: 반짝반짝 */
+.cell.gold svg{filter:drop-shadow(0 0 6px #fff36b) drop-shadow(0 0 14px #ffc400)}
+.cell.gold::after{content:'✨';position:absolute;right:6%;top:18%;font-size:1.4rem;animation:twinkle .8s ease-in-out infinite alternate;pointer-events:none}
+@keyframes twinkle{from{transform:scale(.7) rotate(-15deg);opacity:.6}to{transform:scale(1.2) rotate(15deg);opacity:1}}
+.float.gold{color:#ffb800;font-size:2rem;text-shadow:0 2px 0 #7a4a00,0 0 10px #fff3a0}
+/* 바다 친구 도감 */
+.dex-btn{width:100%;border:none;border-radius:16px;padding:10px;font-family:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;
+  background:#fff7d6;color:#8a5a00;box-shadow:0 4px 0 #e0b84a;margin-top:-4px}
+.dex-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #e0b84a}
+.dex-modal{display:none;position:fixed;inset:0;z-index:80;background:rgba(10,30,60,.55);align-items:center;justify-content:center;padding:16px}
+.dex-modal.show{display:flex}
+.dex-box{width:100%;max-width:620px;max-height:92dvh;overflow:auto;background:#fff;border-radius:20px;padding:14px 14px 16px;text-align:center}
+.dex-box h2{margin:2px 0 4px;font-size:1.3rem}
+.dex-sub{font-size:.85rem;color:#5a6b7d;margin-bottom:10px}
+.dex-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+@media (max-width:480px){.dex-grid{grid-template-columns:repeat(3,1fr)}}
+.dex-card{background:#e9f6ff;border-radius:12px;padding:4px 2px 6px;font-size:.78rem;font-weight:800;color:#24506a}
+.dex-card svg{width:100%;height:auto;display:block}
+.dex-card .ln,.dex-card .eq{display:none}
+.dex-card.boss .boss-only{display:inline}
+.dex-card.lock{background:#eef1f4;color:#8a96a3}
+.dex-card.lock svg{filter:brightness(0) opacity(.18)}
+.dex-close{margin-top:12px;border:none;border-radius:14px;padding:10px 28px;font-family:inherit;font-weight:800;font-size:1rem;background:var(--accent);color:#fff;cursor:pointer}
+.dex-new{display:none;margin:8px 0 2px;background:#fff7d6;border-radius:14px;padding:8px 10px;font-weight:800;color:#8a5a00}
+.dex-new.show{display:block}
+.dex-new .dex-grid{margin-top:6px}
+/* 모두 상장 */
+.rr-awards{display:block;font-size:.72rem;color:#c0570b;white-space:normal;line-height:1.35}
 body.theme-boss .smile,body.theme-boss .blush{display:none}
 
 @keyframes bubbleUp{from{background-position:0 0,60px 40px}to{background-position:0 -220px,60px -120px}}
@@ -435,6 +463,7 @@ body.iam-out #outBanner{display:block}
     </div>
 
     <!-- 랭킹 1~5등 -->
+    <button class="dex-btn" id="dexBtn">📖 바다 친구 도감</button>
     <div class="rank-cap">🏆 최종 점수 랭킹</div>
     <div class="rank" id="rankList"></div>
     <div class="db-status" id="dbStatus">⏳ 랭킹 불러오는 중…</div>
@@ -533,6 +562,16 @@ body.iam-out #outBanner{display:block}
   <div class="pond" id="pond"></div>
 </section>
 
+<!-- 바다 친구 도감 창 -->
+<div class="dex-modal" id="dexModal">
+  <div class="dex-box">
+    <h2 id="dexTitle">📖 바다 친구 도감</h2>
+    <div class="dex-sub">라운드를 깨면 그 라운드의 바다 친구를 모아요!</div>
+    <div class="dex-grid" id="dexGrid"></div>
+    <button class="dex-close" id="dexClose">닫기</button>
+  </div>
+</div>
+
 <!-- 4) 결과 화면 -->
 <section id="resultScreen" class="screen">
   <div class="panel">
@@ -540,6 +579,7 @@ body.iam-out #outBanner{display:block}
     <div class="score-big" id="finalScore">0</div>
     <div class="my-rank" id="myRank"></div>
     <div class="room-rank" id="roomRank"></div>
+    <div class="dex-new" id="dexNew"></div>
     <div class="stats">
       <div class="stat">🏁 도달 라운드<b id="rRound">-</b><small id="rRoundDetail"></small></div>
       <div class="stat">낚은 물고기<b id="rCorrect">0</b></div>
@@ -1112,6 +1152,47 @@ const fishKind = r => FISH_KINDS[Math.min(Math.max(r || 1, 1), LAST_ROUND) - 1];
 const roundColors = r => isBoss(r) ? BOSS_COLORS : (fishKind(r).colors || COLORS);
 const fishSvg = r => FISH_SVG.replace('%ART%', fishKind(r).art);
 // 물고기 색칠: CSS 변수(--b 몸 / --d 진한 색 / --l 배)
+/* ---------- 바다 친구 도감: 라운드를 깨면 모음 (이 기기에 닉네임별로 저장) ---------- */
+const DEX_KEY = 'fishDex';
+function dexAll(){ try{ return JSON.parse(localStorage.getItem(DEX_KEY)) || {}; }catch(e){ return {}; } }
+const dexOf = nick => new Set(dexAll()[nick] || []);
+function dexAdd(r){
+  const nick = getNick(); if(!nick) return false;
+  const all = dexAll(), have = new Set(all[nick] || []);
+  if(have.has(r)) return false;
+  have.add(r); all[nick] = [...have].sort((a, b) => a - b);
+  try{ localStorage.setItem(DEX_KEY, JSON.stringify(all)); }catch(e){}
+  (S.newDex = S.newDex || []).push(r);
+  return true;
+}
+function dexCard(r, locked){
+  const k = fishKind(r), pal = isBoss(r) ? BOSS_COLORS : (k.colors || COLORS);
+  const d = document.createElement('div');
+  d.className = 'dex-card' + (locked ? ' lock' : '') + (isBoss(r) ? ' boss' : '');
+  d.innerHTML = fishSvg(r) + `<div>${locked ? `❓ ${r}라운드` : k.name}</div>`;
+  colorFish(d.querySelector('svg'), ...pal[0]);
+  return d;
+}
+function openDex(){
+  const nick = getNick();
+  if(!nick){
+    const el = $('#nick'); el.classList.remove('need'); void el.offsetWidth; el.classList.add('need'); el.focus();
+    $('#nickMsg').textContent = '👆 닉네임을 입력하면 내 도감을 볼 수 있어요!';
+    return;
+  }
+  const have = dexOf(nick), grid = $('#dexGrid'); grid.innerHTML = '';
+  for(let r = 1; r <= LAST_ROUND; r++) grid.appendChild(dexCard(r, !have.has(r)));
+  $('#dexTitle').textContent = `📖 ${nick}의 바다 친구 도감 (${have.size}/${LAST_ROUND})` + (have.size >= LAST_ROUND ? ' 👑' : '');
+  $('#dexModal').classList.add('show');
+}
+// 결과 화면: 이번 판에 새로 모은 친구
+function renderDexNew(){
+  const box = $('#dexNew'), list = S.newDex || [];
+  box.classList.toggle('show', list.length > 0);
+  if(!list.length){ box.innerHTML = ''; return; }
+  box.innerHTML = `📖 새로 모은 바다 친구 ${list.length}마리! <small>(도감 ${dexOf(getNick()).size}/${LAST_ROUND})</small><div class="dex-grid"></div>`;
+  list.forEach(r => box.querySelector('.dex-grid').appendChild(dexCard(r, false)));
+}
 function colorFish(svg, body, dark, belly){
   svg.style.setProperty('--b', body); svg.style.setProperty('--d', dark); svg.style.setProperty('--l', belly);
 }
@@ -1159,7 +1240,7 @@ function applyTheme(r){
 function startRound_(first){
   S.gen = ++GEN; S.cfg = roundCfg(S.round);
   S.mult = roundMult(S.round) * S.danMult; S.roundScore = 0;   // GEN: 이전 판·라운드의 남은 타이머가 끼어들지 않게 하는 번호
-  S.roundCaught = 0; S.roundMiss = 0; S.timeLeft = ROUND_TIME;
+  S.roundCaught = 0; S.roundMiss = 0; S.timeLeft = ROUND_TIME; S.goldN = 0;
   buildPond(); applyTheme(S.round); updateHud();
   bgmPlay(S.round);
   const intro = [isBoss(S.round) ? '👑 끝판왕 등장!' : scene(S.round).name, `${S.round}라운드`];
@@ -1187,9 +1268,10 @@ function roundClear(){
   cells.forEach(c => clearTimeout(c.timer));
   const bonus = pts(50 + S.timeLeft);     // 클리어 보너스 (50 + 남은 초) × 배율
   addScore(bonus); S.cleared++; closeRound(true); updateHud();
+  const newOne = dexAdd(S.round);
   sfx.clear();
   if(S.round >= LAST_ROUND){ setTimeout(() => endGame('allclear'), 700); return; }
-  countdown([`🎉 ${S.round}라운드 클리어!`, `보너스 +${bonus}`], () => {
+  countdown([`🎉 ${S.round}라운드 클리어!`, `보너스 +${bonus}`].concat(newOne ? [`📖 ${fishKind(S.round).name} 모았다!`] : []), () => {
     if(S.over) return;
     S.round++; startRound_(false);
   }, 1100);
@@ -1245,14 +1327,16 @@ function spawn(c){
   }
   const want = correctOnBoard() < MIN_CORRECT ? Math.random() < .7 : Math.random() < S.cfg.correctP;
   const eq = makeEquation(want);
-  Object.assign(c, eq, {empty:false, busy:false});
-  const [body, dark, belly] = pick(roundColors(S.round));
+  const gold = eq.a * eq.b === eq.shown && (S.goldN || 0) < 2 && Math.random() < GOLD_P * 1.5;
+  if(gold) S.goldN = (S.goldN || 0) + 1;
+  Object.assign(c, eq, {empty:false, busy:false, gold});
+  const [body, dark, belly] = gold ? GOLD_COLORS : pick(roundColors(S.round));
   const svg = c.el.querySelector('svg');
   colorFish(svg, body, dark, belly);
   svg.querySelector('text').textContent = `${eq.a}×${eq.b}=${eq.shown}`;
   const life = rand(...S.cfg.life);
   c.el.style.setProperty('--life', life + 'ms');
-  setState(c, 'live', 'spawn');
+  setState(c, 'live', 'spawn', gold ? 'gold' : '');
   clearTimeout(c.timer);
   c.timer = setTimeout(() => expire(c), life);
 }
@@ -1293,10 +1377,11 @@ function touch(c){
   if(isCorrect(c)){
     c.busy = true;
     S.correct++; S.combo++; S.lastCatchAt = Date.now(); S.bestCombo = Math.max(S.bestCombo, S.combo);
-    const bonus = comboBonus(S.combo), gain = pts(10 + bonus);
+    const bonus = comboBonus(S.combo), gain = pts((c.gold ? GOLD_PTS : 10) + bonus);
     addScore(gain);
-    setState(c, 'caught'); floatText(c, bonus ? `+${gain} 🔥` : '+' + gain, bonus ? 'combo' : 'good'); sfx.good();
-    catReact(S.combo >= 3 ? `${S.combo}연속! 최고다냥!` : '냥! 잘 낚았다!', 'happy');
+    if(c.gold) S.gold = (S.gold || 0) + 1;
+    setState(c, 'caught'); floatText(c, c.gold ? `✨ +${gain}` : bonus ? `+${gain} 🔥` : '+' + gain, c.gold ? 'gold' : bonus ? 'combo' : 'good'); sfx.good();
+    catReact(c.gold ? '황금이다냥!! ✨' : S.combo >= 3 ? `${S.combo}연속! 최고다냥!` : '냥! 잘 낚았다!', 'happy');
     c.timer = setTimeout(() => { setState(c, 'empty'); c.empty = true;
       c.timer = setTimeout(() => spawn(c), gapDelay()); }, 500);
     S.roundCaught++;
@@ -1357,6 +1442,7 @@ function endGame(reason){
     miss: `💨 물고기 ${MAX_MISS}마리를 놓쳤어요!`
   };
   $('#endTitle').textContent = titles[reason] || '🏁 게임 끝!';
+  renderDexNew();
   S.running = false;
   clearInterval(clockTimer); clockTimer = null;
   cells.forEach(c => clearTimeout(c.timer));
@@ -1446,6 +1532,8 @@ function endGame(reason){
    · 맞는 물고기 15마리가 낚이면 다 같이 다음 라운드 (방장 화면이 진행을 맡음) */
 const MP_MAX = 6, MP_INTRO = 5000;
 const mpCorrectP = r => .7 - .2 * (r - 1) / (LAST_ROUND - 1);   // 함께 하기 맞는 물고기 비율: 1R 70% → 15R 50%
+const GOLD_P = .06, GOLD_PTS = 30, GOLD_TEAM = 3;      // 황금 바다 친구: 맞는 물고기의 6% / 낚으면 30점(협동은 팀 3마리)
+const GOLD_COLORS = ['#ffd23f','#c98a00','#fff3b0'];
 const MP_NEXT = 1500;                                           // 함께 하기: 물고기를 낚으면 1.5초 뒤 그 자리에 다음 물고기             // 최대 인원, 라운드 시작 전 안내 시간(ms)
 const MATES = [
   { name:'치즈냥', color:'#e8892b' }, { name:'멍멍이', color:'#9a6438' },
@@ -1526,7 +1614,8 @@ function mpSchedule(seed, round){
     while(t < ROUND_TIME * 1000){
       const eq = makeEquation(R() < mpCorrectP(round), R);
       const life = rRange(R, ...S.cfg.life);
-      list.push({ id:`${i}-${k}`, t, life, ...eq, col:Math.floor(R() * 24) });
+      const gold = eq.a * eq.b === eq.shown && R() < GOLD_P;
+      list.push({ id:`${i}-${k}`, t, life, ...eq, gold, col:Math.floor(R() * 24) });
       t += life + 1000 + rRange(R, ...S.cfg.gap) * 1.3; k++;
     }
     out.push(list);
@@ -1683,7 +1772,8 @@ function mpOnClaims(list){
   if(!MP || !S.running && !MP.roundOver) return;
   list.forEach(cl => { MP.claims[cl.id] = cl; });
   const okN = list.filter(cl => cl.ok).length, badN = list.length - okN;
-  const caught = S.coop ? Math.max(0, okN - badN) : okN;      // 협동: 틀린 물고기는 팀 낚은 수에서 1마리씩 빼기
+  const goldN = list.filter(cl => cl.ok && mpFish(cl.id) && mpFish(cl.id).gold).length;
+  const caught = S.coop ? Math.max(0, okN + goldN * (GOLD_TEAM - 1) - badN) : okN;   // 협동: 황금은 3마리, 틀린 물고기는 1마리씩 빼기
   if(caught !== S.roundCaught){ S.roundCaught = caught; updateHud(); }
   MP.wrongMiss = badN;
   // 한 라운드에 틀린 물고기를 MP_OUT번 낚은 사람은 탈락 (게임 끝까지 구경)
@@ -1697,6 +1787,7 @@ function mpOnClaims(list){
   else if(S.running && S.coop && S.roundMiss >= MAX_MISS && !MP.roundOver) mpRoundFail();
   mpTick();
 }
+const mpFish = id => { const [i, k] = id.split('-').map(Number); return MP.sched && MP.sched[i] && MP.sched[i][k]; };
 function mpOutChanged(){
   if(!S.out && MP.out.has(MP.uid)){
     S.out = true; S.combo = 0; document.body.classList.add('iam-out'); updateHud();
@@ -1747,7 +1838,7 @@ function mpTick(){
   if(now >= ROUND_TIME * 1000 && !MP.roundOver) mpRoundTimeout();
 }
 function paintFish(c, eq, col){
-  const pal = roundColors(S.round), [body, dark, belly] = pal[col % pal.length];
+  const pal = roundColors(S.round), [body, dark, belly] = eq.gold ? GOLD_COLORS : pal[col % pal.length];
   const svg = c.el.querySelector('svg');
   colorFish(svg, body, dark, belly);
   svg.querySelector('text').textContent = `${eq.a}×${eq.b}=${eq.shown}`;
@@ -1756,7 +1847,7 @@ function mpShowFish(c, f, elapsed){
   Object.assign(c, { a:f.a, b:f.b, shown:f.shown, fid:f.id, f, state:'live', empty:false, busy:false, pending:false });
   paintFish(c, f, f.col);
   c.el.style.setProperty('--life', f.life + 'ms');
-  setState(c, 'live', elapsed < 600 ? 'spawn' : '');
+  setState(c, 'live', elapsed < 600 ? 'spawn' : '', f.gold ? 'gold' : '');
   // 늦게 그려졌으면 지난 시간만큼 줄 색·몸부림을 앞당김
   c.el.querySelector('.ln line').style.animationDelay = c.el.querySelector('.wig').style.animationDelay = (-elapsed) + 'ms';
 }
@@ -1766,7 +1857,7 @@ function mpClaimed(c, f, cl){
   const mine = cl.uid === MP.uid, seat = seatOf(cl.uid), color = seat >= 0 ? MATES[seat].color : '#333';
   if(cl.ok){
     setState(c, 'caught');
-    if(!mine){ floatText(c, `🎣 ${nameOf(cl.uid)}`, 'mate', color); }
+    if(!mine){ floatText(c, (f.gold ? '✨ ' : '🎣 ') + nameOf(cl.uid), 'mate', color); }
     mateReact(seat, 'happy');
   }else{
     setState(c, 'snap');
@@ -1795,8 +1886,9 @@ function mpTouch(c){
     if(!won){ if(!MP.claims[f.id] || MP.claims[f.id].uid !== MP.uid) floatText(c, S.coop ? '친구가 먼저!' : '늦었다냥!', 'esc'); return; }
     if(ok){
       S.correct++; S.combo++; S.lastCatchAt = Date.now(); S.bestCombo = Math.max(S.bestCombo, S.combo);
-      const bonus = comboBonus(S.combo), gain = pts(10 + bonus);
-      addScore(gain); floatText(c, bonus ? `+${gain} 🔥` : '+' + gain, bonus ? 'combo' : 'good'); sfx.good();
+      const bonus = comboBonus(S.combo), gain = pts((f.gold ? GOLD_PTS : 10) + bonus);
+      if(f.gold) S.gold = (S.gold || 0) + 1;
+      addScore(gain); floatText(c, f.gold ? `✨ +${gain}` + (S.coop ? ` 팀+${GOLD_TEAM}` : '') : bonus ? `+${gain} 🔥` : '+' + gain, f.gold ? 'gold' : bonus ? 'combo' : 'good'); sfx.good();
     }else{
       S.wrong++; S.combo = 0;
       S.score = Math.max(0, S.score - WRONG_PENALTY); S.roundScore = Math.max(0, S.roundScore - WRONG_PENALTY);
@@ -1809,14 +1901,15 @@ function mpTouch(c){
 }
 function mpPushMe(){
   if(!MP) return;
-  window.FB.mpSetMe(MP.code, { name:getNick(), score:S.score, caught:S.correct, wrong:S.wrong, round:S.round });
+  window.FB.mpSetMe(MP.code, { name:getNick(), score:S.score, caught:S.correct, wrong:S.wrong, round:S.round, combo:S.bestCombo || 0, gold:S.gold || 0 });
 }
 function mpRoundClear(){
   MP.roundOver = true; S.running = false;
   const bonus = pts(50 + S.timeLeft);
   addScore(bonus); S.cleared++; closeRound(true); updateHud(); mpPushMe(); sfx.clear();
   const last = S.round >= LAST_ROUND, r = S.round;
-  countdown(last ? ['👑 끝판왕 격파!'] : [`🎉 ${r}라운드 클리어!`, `보너스 +${bonus}`], () => {}, 1300);
+  const newOne = !S.out && dexAdd(r);                           // 탈락하지 않은 사람만 도감에 모음
+  countdown((last ? ['👑 끝판왕 격파!'] : [`🎉 ${r}라운드 클리어!`, `보너스 +${bonus}`]).concat(newOne ? [`📖 ${fishKind(r).name} 모았다!`] : []), () => {}, 1300);
   if(MP.isHost) setTimeout(() => {
     if(!MP) return;
     if(last) window.FB.mpRoom(MP.code, { status:'ended', endReason:'allclear' });
@@ -1876,16 +1969,33 @@ function mateReact(seat, mood){
 /* ---------- 함께 하기 결과: 방 순위 ---------- */
 function mpResults(){
   const box = $('#roomRank'); box.innerHTML = '';
+  const pv = (uid, mine, key) => (uid === MP.uid ? mine : (MP.players[uid] && MP.players[uid][key])) || 0;
   const rows = MP.room.seats.map((uid, i) => ({ uid, i, name:nameOf(uid),
-    score:(uid === MP.uid ? S.score : (MP.players[uid] && MP.players[uid].score)) || 0,
-    caught:(uid === MP.uid ? S.correct : (MP.players[uid] && MP.players[uid].caught)) || 0 }))
+    score:pv(uid, S.score, 'score'), caught:pv(uid, S.correct, 'caught'), wrong:pv(uid, S.wrong, 'wrong'),
+    combo:pv(uid, S.bestCombo, 'combo'), gold:pv(uid, S.gold, 'gold') }))
     .sort((a, b) => S.coop ? b.caught - a.caught : b.score - a.score);
-  const medals = S.coop ? ['🤝','🤝','🤝','🤝','🤝'] : ['🥇','🥈','🥉','4','5'];
+  // 모두 상장: 한 명도 빠짐없이 상 받기
+  const acc = r => r.caught / ((r.caught + r.wrong) || 1);
+  const maxOf = (list, f) => list.length ? Math.max(...list.map(f)) : 0;
+  const topCaught = maxOf(rows, r => r.caught), topCombo = maxOf(rows, r => r.combo);
+  const accPool = rows.filter(r => r.caught >= 3), topAcc = maxOf(accPool, acc);
+  rows.forEach(r => {
+    r.awards = [];
+    if(topCaught > 0 && r.caught === topCaught) r.awards.push('🐟 낚시왕');
+    if(accPool.length && r.caught >= 3 && acc(r) === topAcc) r.awards.push('🎯 정확도왕');
+    if(topCombo >= 3 && r.combo === topCombo) r.awards.push('🔥 콤보왕');
+    if(r.caught >= 1 && r.wrong === 0) r.awards.push('👀 눈썰미왕');
+    if(r.gold > 0) r.awards.push('✨ 황금 낚시꾼');
+    if(!r.awards.length) r.awards.push('💪 노력상');
+  });
+  const medals = S.coop ? ['🤝','🤝','🤝','🤝','🤝','🤝'] : ['🥇','🥈','🥉','4','5','6'];
   rows.forEach((r, k) => {
     const d = document.createElement('div');
     d.className = 'rr-row' + (r.uid === MP.uid ? ' me' : '');
     d.innerHTML = `<span class="rr-medal">${medals[k]}</span>${mateSvg(r.i, 'rr-svg')}<span class="rr-name"></span><span class="rr-pts">${r.score}점<small>🐟 ${r.caught}마리</small></span>`;
     d.querySelector('.rr-name').textContent = r.name + (r.uid === MP.uid ? ' (나)' : '');
+    const aw = document.createElement('span'); aw.className = 'rr-awards'; aw.textContent = r.awards.join(' · ');
+    d.querySelector('.rr-name').appendChild(aw);
     box.appendChild(d);
   });
   const myRank = rows.findIndex(r => r.uid === MP.uid) + 1;
@@ -1893,6 +2003,9 @@ function mpResults(){
 }
 
 $('#startBtn').onclick = () => tryStart('solo');
+$('#dexBtn').onclick = openDex;
+$('#dexClose').onclick = () => $('#dexModal').classList.remove('show');
+$('#dexModal').onclick = e => { if(e.target.id === 'dexModal') $('#dexModal').classList.remove('show'); };
 $('#togetherBtn').onclick = () => tryStart('multi');
 $('#goBtn').onclick = () => MODE === 'multi' ? mpCreateRoom() : startGame();
 $('#backBtn').onclick = () => MODE === 'multi' ? goLobby() : showScreen('startScreen');
