@@ -326,7 +326,7 @@ body.theme-boss .smile,body.theme-boss .blush{display:none}
 /* ===== 함께 하기 ===== */
 .together-btn{background:linear-gradient(180deg,#8f6bff,#6a46e8);box-shadow:0 7px 0 #4b2fb8;margin-top:-2px}
 .together-btn:active{box-shadow:0 2px 0 #4b2fb8}
-.together-btn small{font-size:.55em}
+.together-btn small{font-size:.55em;position:absolute;margin:.75em 0 0 .4em;white-space:nowrap}   /* (2~6명)은 옆에 붙여 두고 '함께 하기' 글자만 가운데 */
 .join-row{display:flex;gap:8px;align-items:stretch}
 .code-in{flex:1;min-width:0;font-size:1.6rem;padding:10px;letter-spacing:6px;border-radius:18px}
 .join-btn{width:auto;flex:none;font-size:1.3rem;padding:10px 18px;border-radius:18px}
@@ -424,7 +424,7 @@ body.iam-out #outBanner{display:block}
     <input class="nick" id="nick" type="text" maxlength="10" placeholder="닉네임 입력" autocomplete="off" enterkeyhint="go">
     <div class="nick-msg" id="nickMsg"></div>
     <button class="start-btn home-start" id="startBtn">🐟 혼자 하기</button>
-    <button class="start-btn together-btn" id="togetherBtn">👥 함께 하기 <small>(2~6명)</small></button>
+    <button class="start-btn together-btn" id="togetherBtn">👥 함께 하기<small>(2~6명)</small></button>
 
     <!-- 랭킹 1~5등 -->
     <div class="rank-cap">🏆 최종 점수 랭킹</div>
