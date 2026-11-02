@@ -1037,15 +1037,18 @@ const FISH_KINDS = [
     <rect ${FL} x="58" y="134" width="152" height="10" rx="5" stroke="#4a6b2a" stroke-width="2"/>
     <circle ${FL} cx="44" cy="106" r="26" stroke="#4a6b2a" stroke-width="2"/>
     ${EYE(42, 98, 10)}${BLUSH(50, 116)}${SMILE(24, 112)}${HOOK}` },
-  { name:'🐙 문어', colors:[['#ff8fb1','#d94f7f','#ffd1df'],['#c98bff','#8a4fd9','#ecd6ff'],['#ff8a6b','#d9542f','#ffd6c8']], art:`
-    <g class="tent" fill="none" stroke-linecap="round" style="stroke:var(--b)" stroke-width="16">
-      <path d="M64 130 q-10 22 -26 30"/><path d="M92 138 q-4 24 -18 34"/><path d="M122 140 q0 20 8 32"/>
-      <path d="M150 138 q8 22 24 30"/><path d="M178 130 q14 18 34 20"/></g>
-    <g fill="#fff" opacity=".6"><circle cx="40" cy="158" r="3"/><circle cx="76" cy="168" r="3"/><circle cx="128" cy="166" r="3"/><circle cx="172" cy="164" r="3"/><circle cx="208" cy="148" r="3"/></g>
-    <ellipse class="body" ${FB} cx="122" cy="100" rx="94" ry="56"/>
-    <ellipse ${FL} cx="160" cy="70" rx="22" ry="12" opacity=".6" transform="rotate(-20 160 70)"/>
-    ${EYE(56, 92, 12)}${EYE(86, 88, 12)}${BLUSH(50, 116)}
-    <ellipse cx="36" cy="112" rx="8" ry="6" fill="none" stroke="#1d2b3a" stroke-width="3"/>${HOOK}` },
+  { name:'🐙 문어', colors:[['#ff8fb1','#d94f7f','#ffd1df'],['#b98bff','#7a4fd9','#ecd6ff'],['#ff8a6b','#d9542f','#ffd6c8']], art:`
+    <g class="tent" fill="none" style="stroke:var(--b)" stroke-width="15" stroke-linecap="round">
+      <path d="M62 128 C44 132 30 124 30 110"/><path d="M82 140 C76 160 58 166 50 156"/><path d="M106 146 C104 166 92 174 86 166"/>
+      <path d="M134 146 C136 166 148 174 154 166"/><path d="M158 140 C164 160 182 166 190 156"/><path d="M178 128 C196 132 210 124 210 110"/></g>
+    <g fill="none" style="stroke:var(--l)" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 9" opacity=".95">
+      <path d="M60 134 C46 136 36 128 35 116"/><path d="M80 146 C74 160 62 164 56 158"/><path d="M104 152 C102 164 94 170 90 166"/>
+      <path d="M136 152 C138 164 146 170 150 166"/><path d="M160 146 C166 160 178 164 184 158"/><path d="M180 134 C194 136 204 128 205 116"/></g>
+    <path class="body" ${FB} d="M50 112 C40 56 78 22 120 22 C162 22 200 56 190 112 C186 140 160 150 120 150 C80 150 54 140 50 112 Z"/>
+    <ellipse ${FL} cx="92" cy="44" rx="20" ry="11" opacity=".75" transform="rotate(-25 92 44)"/>
+    <g ${FD} opacity=".35"><circle cx="150" cy="44" r="5"/><circle cx="166" cy="60" r="3.5"/><circle cx="74" cy="66" r="3.5"/></g>
+    ${EYE(98, 74, 13)}${EYE(144, 74, 13)}${BLUSH(76, 96)}${BLUSH(166, 96)}
+    <ellipse cx="121" cy="92" rx="6" ry="5" fill="#fff" stroke="#1d2b3a" stroke-width="2.5"/>${HOOK}` },
   { name:'🦀 게', colors:[['#ff6a4d','#c2341f','#ffc2b0'],['#ff8a3d','#c45a10','#ffd2a8'],['#e8504f','#a8201f','#ffb8b0']], art:`
     <g style="stroke:var(--d)" stroke-width="7" stroke-linecap="round" fill="none">
       <path d="M70 136 l-20 18 l-6 14"/><path d="M84 144 l-12 20"/><path d="M164 136 l20 18 l6 14"/><path d="M150 144 l12 20"/>
@@ -1094,31 +1097,39 @@ const FISH_KINDS = [
     <g fill="none" stroke="#8fd3ff" stroke-width="5" stroke-linecap="round"><path d="M104 50 q-10 -18 -22 -20"/><path d="M104 50 v-26"/><path d="M104 50 q10 -18 22 -20"/></g>
     ${EYE(56, 106, 10)}${BLUSH(60, 124)}
     <path d="M22 118 q20 10 46 4" stroke="#1d2b3a" stroke-width="3" fill="none" stroke-linecap="round"/>${HOOK}` },
-  { name:'🦑 오징어', colors:[['#ff7a8a','#c23a50','#ffd0d6'],['#c77dff','#8a3fd0','#efd6ff'],['#ff9f6b','#d0602a','#ffdcc8']], art:`
-    <g class="tailg"><path ${FD} d="M196 84 C214 70 228 86 226 112 C228 138 214 152 196 140 Z"/></g>
-    <g class="tent" fill="none" style="stroke:var(--b)" stroke-width="7" stroke-linecap="round">
-      <path d="M44 100 q-18 -10 -30 -2"/><path d="M42 108 q-18 2 -32 12"/><path d="M44 118 q-14 14 -30 18"/><path d="M48 126 q-8 18 -22 28"/></g>
-    <path class="body" ${FB} d="M40 112 C40 86 70 76 110 76 L196 86 C214 96 214 128 196 138 L110 148 C70 148 40 138 40 112 Z"/>
-    <path ${FL} d="M60 132 C100 142 160 140 196 132 L196 138 L110 148 C80 148 64 142 60 132 Z"/>
-    <g ${FD} opacity=".45"><circle cx="110" cy="92" r="4"/><circle cx="140" cy="96" r="5"/><circle cx="168" cy="94" r="4"/><circle cx="184" cy="108" r="3"/><circle cx="124" cy="104" r="3"/></g>
-    ${EYE(64, 102, 14)}${BLUSH(66, 126)}${HOOK}` },
+  { name:'🦑 오징어', colors:[['#ff8a9a','#c23a50','#ffdbe0'],['#c9a0ff','#8a4fd0','#f0e3ff'],['#ffb07a','#d0602a','#ffe4d0']], art:`
+    <g class="tailg"><path class="tail" ${FD} d="M186 112 L212 64 C222 84 230 100 228 112 C230 124 222 140 212 160 Z"/></g>
+    <g class="tent" fill="none" style="stroke:var(--b)" stroke-linecap="round">
+      <path stroke-width="8" d="M48 100 C30 90 18 92 10 84"/><path stroke-width="8" d="M46 108 C28 104 16 108 6 104"/>
+      <path stroke-width="8" d="M46 118 C28 120 16 126 6 124"/><path stroke-width="8" d="M48 126 C30 134 20 142 12 144"/>
+      <path stroke-width="5" d="M50 96 C36 74 20 68 12 60"/><path stroke-width="5" d="M50 130 C36 150 22 158 14 166"/></g>
+    <ellipse ${FD} cx="12" cy="60" rx="7" ry="5" transform="rotate(-30 12 60)"/><ellipse ${FD} cx="14" cy="166" rx="7" ry="5" transform="rotate(30 14 166)"/>
+    <path class="body" ${FB} d="M84 80 C120 74 168 82 196 100 C204 106 204 118 196 124 C168 142 120 150 84 144 Z"/>
+    <path ${FL} d="M88 132 C124 138 168 132 194 120 C190 128 172 140 140 146 C116 150 98 148 88 144 Z" opacity=".9"/>
+    <g ${FD} opacity=".4"><circle cx="112" cy="90" r="4"/><circle cx="136" cy="88" r="5"/><circle cx="160" cy="94" r="4"/><circle cx="178" cy="104" r="3"/><circle cx="124" cy="102" r="3"/><circle cx="150" cy="106" r="3"/></g>
+    <path class="body" ${FB} d="M44 112 C44 88 60 76 86 78 C92 92 92 132 86 146 C60 148 44 136 44 112 Z"/>
+    <path d="M86 80 C92 96 92 128 86 144" fill="none" style="stroke:var(--d)" stroke-width="3" opacity=".6"/>
+    ${EYE(64, 102, 13)}${BLUSH(66, 126)}${HOOK}` },
   { name:'🌊 가오리', colors:[['#5fc8c8','#2a8a96','#d8f6f2'],['#7ab0e8','#3a6fb0','#e0eefc'],['#b0a0e8','#6f5fb8','#ece6fc']], art:`
-    <g class="tailg"><path ${FD} d="M196 116 C214 120 222 132 228 156" stroke-width="4" style="stroke:var(--d)" fill="none" stroke-linecap="round"/></g>
-    <path class="body" ${FB} d="M10 118 C40 92 66 66 104 62 C120 60 136 60 150 62 C186 66 208 96 224 118 C200 130 176 140 150 144 C130 147 110 147 90 144 C60 140 34 130 10 118 Z"/>
-    <path class="belly" ${FL} d="M40 124 C80 134 160 136 200 124 C170 140 140 146 116 146 C90 146 64 138 40 124 Z"/>
-    <path ${FD} d="M54 74 C44 66 40 76 48 84 Z"/><path ${FD} d="M64 70 C58 58 50 62 52 74 Z"/>
-    <g fill="#fff" opacity=".55"><circle cx="150" cy="80" r="4"/><circle cx="176" cy="94" r="5"/><circle cx="190" cy="110" r="3"/><circle cx="160" cy="100" r="3"/></g>
-    ${EYE(64, 92, 10)}${EYE(92, 86, 10)}${BLUSH(60, 110)}${SMILE(30, 112)}${HOOK}` },
-  { name:'🦐 새우', colors:[['#ff7a4d','#c2401a','#ffd2b8'],['#ff5f5f','#b8241f','#ffc8c0'],['#ff9a4d','#c8600f','#ffe0b8']], art:`
-    <g fill="none" style="stroke:var(--d)" stroke-width="3" stroke-linecap="round">
-      <path d="M40 84 C30 50 10 40 4 20"/><path d="M46 80 C50 44 40 20 46 4"/></g>
-    <g style="stroke:var(--d)" stroke-width="4" stroke-linecap="round"><path d="M80 140 l-6 16"/><path d="M100 144 l-4 16"/><path d="M120 146 l-2 16"/><path d="M140 144 l0 16"/><path d="M160 140 l2 16"/></g>
-    <g class="tailg"><path class="tail" ${FD} d="M192 128 C206 132 220 146 222 166 C210 160 202 156 196 160 C192 150 186 140 186 132 Z"/></g>
-    <path class="body" ${FB} d="M28 108 C30 74 70 62 120 62 C170 62 208 84 206 118 C204 134 194 142 184 140 L60 140 C40 138 28 126 28 108 Z"/>
-    <g fill="none" style="stroke:var(--d)" stroke-width="3" opacity=".6"><path d="M84 64 q-8 38 0 76"/><path d="M114 62 q-8 40 0 78"/><path d="M144 63 q-8 40 0 77"/><path d="M172 70 q-8 36 0 70"/></g>
-    <path ${FL} d="M44 128 C80 136 150 138 196 128 C190 140 184 140 184 140 L60 140 C50 140 46 134 44 128 Z" opacity=".8"/>
-    <path d="M30 96 C20 92 14 98 22 104 Z" ${FD}/>
-    ${EYE(52, 90, 12)}${BLUSH(56, 114)}${SMILE(30, 112)}${HOOK}` },
+    <g class="tailg"><path d="M192 112 C206 112 216 118 228 132" fill="none" style="stroke:var(--d)" stroke-width="5" stroke-linecap="round"/>
+      <path ${FD} d="M214 118 l8 -8 l2 10 Z"/></g>
+    <path class="body" ${FB} d="M30 112 C50 92 80 62 112 38 C126 28 138 34 150 54 C166 82 184 100 200 112 C184 124 166 142 150 170 C138 190 126 196 112 186 C80 162 50 132 30 112 Z" transform="translate(0 22.4) scale(1 .8)"/>
+    <path ${FL} d="M60 112 C90 102 150 100 186 112 C150 124 90 122 60 112 Z" opacity=".7"/>
+    <g fill="#fff" opacity=".55"><circle cx="124" cy="62" r="4"/><circle cx="140" cy="76" r="5"/><circle cx="110" cy="80" r="3"/><circle cx="124" cy="160" r="4"/><circle cx="140" cy="148" r="5"/><circle cx="110" cy="144" r="3"/></g>
+    <path ${FB} d="M34 100 C20 96 16 86 22 80 C28 86 34 92 42 96 Z"/><path ${FB} d="M34 124 C20 128 16 138 22 144 C28 138 34 132 42 128 Z"/>
+    ${EYE(56, 98, 10)}${EYE(56, 126, 10)}${SMILE(30, 108)}${HOOK}` },
+  { name:'🦐 새우', colors:[['#ff7a4d','#c2401a','#ffd2b8'],['#ff6b6b','#b8241f','#ffd0c8'],['#ff9a4d','#c8600f','#ffe0b8']], art:`
+    <g fill="none" style="stroke:var(--d)" stroke-width="2.5" stroke-linecap="round">
+      <path d="M46 78 C66 34 126 18 186 28"/><path d="M42 80 C56 44 104 32 152 44"/></g>
+    <g style="stroke:var(--d)" stroke-width="4" stroke-linecap="round"><path d="M84 138 l-6 18"/><path d="M104 140 l-5 18"/><path d="M124 138 l-4 18"/><path d="M144 134 l-3 18"/><path d="M162 128 l-2 16"/></g>
+    <g class="tailg"><path class="tail" ${FD} d="M192 104 C206 88 218 80 228 82 C222 94 220 104 222 110 C220 116 222 126 228 138 C218 140 206 132 192 118 Z"/>
+      <path ${FB} d="M196 108 C210 100 220 100 226 110 C220 120 210 120 196 114 Z" opacity=".8"/></g>
+    <path class="body" ${FB} d="M56 80 C100 66 160 70 192 96 C200 102 200 116 192 120 C160 132 110 144 56 142 Z"/>
+    <path ${FL} d="M60 132 C110 134 160 124 194 114 C190 122 160 132 110 142 C90 144 70 144 60 142 Z" opacity=".9"/>
+    <g fill="none" stroke="#fff" stroke-width="3" opacity=".6" stroke-linecap="round"><path d="M96 72 q-6 34 0 70"/><path d="M124 70 q-6 34 0 70"/><path d="M152 76 q-6 30 0 60"/><path d="M176 88 q-5 18 0 36"/></g>
+    <path ${FB} d="M28 106 C28 84 46 72 70 74 C78 90 78 128 70 142 C46 142 28 128 28 106 Z"/>
+    <path ${FD} d="M32 90 L8 82 L34 100 Z"/>
+    ${EYE(52, 98, 13)}${BLUSH(52, 122)}${SMILE(28, 112)}${HOOK}` },
   { name:'🦈 상어', colors:[['#8fa7bf','#4f6a85','#f2f6fa'],['#7f9fb8','#3f5f7a','#eef4fa'],['#9aa8b8','#5a6878','#f4f6f8']], art:`
     <g class="tailg"><path class="tail" ${FD} d="M194 108 C206 92 214 62 230 50 C226 82 222 100 216 112 C222 124 226 140 230 160 C214 150 206 130 194 116 Z"/></g>
     <path class="fin" ${FD} d="M100 76 C112 52 130 34 142 30 C138 52 140 66 148 80 Z"/>
