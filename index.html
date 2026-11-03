@@ -848,8 +848,7 @@ const CLASS_NAMES = ['김시우', '박새나', '송은후', '송시안', '이설
     b.addEventListener('pointerdown', e => { e.preventDefault(); inp.value = n; $('#nickMsg').textContent = ''; box.classList.remove('show'); inp.blur(); });
     box.appendChild(b); });
   box.insertAdjacentHTML('beforeend', '<small>목록에 없으면 칸에 직접 입력하세요</small>');
-  const show = () => { if(!inp.value.trim()) box.classList.add('show'); };
-  inp.addEventListener('focus', show); inp.addEventListener('click', () => box.classList.add('show'));
+  inp.addEventListener('click', () => box.classList.toggle('show'));   // 한 번 누르면 열리고, 다시 누르면 닫힘
   inp.addEventListener('input', () => box.classList.toggle('show', !inp.value.trim()));
   inp.addEventListener('blur', () => setTimeout(() => box.classList.remove('show'), 120));
 })();
