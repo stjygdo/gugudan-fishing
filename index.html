@@ -329,6 +329,15 @@ body.theme-boss .boss-only{display:inline}
 .dex-btn{width:100%;border:none;border-radius:16px;padding:10px;font-family:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;
   background:#fff7d6;color:#8a5a00;box-shadow:0 4px 0 #e0b84a;margin-top:-4px}
 .dex-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #e0b84a}
+.dex-row{width:100%;display:flex;gap:10px;margin-top:-4px}
+.dex-row .dex-btn{flex:1;margin-top:0;white-space:nowrap}
+.dex-btn.class-btn{background:#e8f6ee;color:#1f7a4a;box-shadow:0 4px 0 #7cc79c}
+.dex-btn.class-btn:active{box-shadow:0 1px 0 #7cc79c}
+.dex-kinds{display:flex;justify-content:center;gap:4px;font-size:.85rem;margin-top:1px}
+.dex-kinds .off{opacity:.25;filter:grayscale(1)}
+.dex-card.k-race{background:linear-gradient(#f4f7fa,#f4f7fa) padding-box,linear-gradient(135deg,#eef2f6,#9aa8b8,#f8fafc,#8a98a8) border-box;border:3px solid transparent}
+.dex-card.k-coop{background:linear-gradient(#fffaf0,#fffaf0) padding-box,linear-gradient(90deg,#ff6b6b,#ffd23f,#5fd38a,#5fb2ff,#b98bff) border-box;border:3px solid transparent}
+.dex-info .dim{color:#8a96a3}
 .dex-modal{display:none;position:fixed;inset:0;z-index:80;background:rgba(10,30,60,.55);align-items:center;justify-content:center;padding:16px}
 .dex-modal.show{display:flex}
 .dex-box{width:100%;max-width:620px;max-height:92dvh;overflow:auto;background:#fff;border-radius:20px;padding:14px 14px 16px;text-align:center}
@@ -481,7 +490,7 @@ body.iam-out #outBanner{display:block}
     </div>
 
     <!-- 랭킹 1~5등 -->
-    <button class="dex-btn" id="dexBtn">📖 바다 친구 도감</button>
+    <div class="dex-row"><button class="dex-btn" id="dexBtn">📖 내 도감</button><button class="dex-btn class-btn" id="classDexBtn">🏫 우리 반 도감</button></div>
     <div class="rank-cap">🏆 최종 점수 랭킹</div>
     <div class="rank" id="rankList"></div>
     <div class="db-status" id="dbStatus">⏳ 랭킹 불러오는 중…</div>
@@ -584,7 +593,7 @@ body.iam-out #outBanner{display:block}
 <div class="dex-modal" id="dexModal">
   <div class="dex-box">
     <h2 id="dexTitle">📖 바다 친구 도감</h2>
-    <div class="dex-sub">라운드를 깨면 그 라운드의 바다 친구를 모아요!</div>
+    <div class="dex-sub" id="dexSub"></div>
     <div class="dex-grid" id="dexGrid"></div>
     <div class="dex-info" id="dexInfo"></div>
     <button class="dex-close" id="dexClose">닫기</button>
@@ -1293,42 +1302,53 @@ const fishKind = r => FISH_KINDS[Math.min(Math.max(r || 1, 1), LAST_ROUND) - 1];
 const roundColors = r => isBoss(r) ? BOSS_COLORS : (fishKind(r).colors || COLORS);
 const fishSvg = r => FISH_SVG.replace('%ART%', fishKind(r).art);
 // 물고기 색칠: CSS 변수(--b 몸 / --d 진한 색 / --l 배)
-/* ---------- 바다 친구 도감: 라운드를 깨면 모음 (이 기기에 닉네임별로 저장) ---------- */
-const DEX_KEY = 'fishDex', DEX_LOG_KEY = 'fishDexLog';
-function dexLog(){ try{ return JSON.parse(localStorage.getItem(DEX_LOG_KEY)) || []; }catch(e){ return []; } }
-const HOW_TXT = { solo:'🐟 혼자 하기', race:'⚔️ 함께·경쟁', coop:'🤝 함께·협동' };
-// 이 라운드 친구를 모은 사람들 (모은 순서대로)
-function dexWho(r){
-  const all = dexAll(), log = dexLog().filter(x => x.r === r), names = Object.keys(all).filter(n => (all[n] || []).includes(r));
-  return names.map(n => ({ n, ...(log.find(x => x.n === n) || {}) })).sort((a, b) => (a.at || 0) - (b.at || 0));
+/* ---------- 바다 친구 도감 (닉네임별, 이 기기에 저장) ----------
+   같은 친구라도 깬 방식에 따라 카드 3종류: 🐟 일반(혼자 하기) · ⚔️ 은빛(함께·경쟁에서 그 라운드 가장 많이 낚음) · 🤝 우정(함께·협동)
+   15마리 × 3장 = 45장 */
+const DEX2_KEY = 'fishDex2';
+const KINDS = ['solo', 'race', 'coop'];
+const KIND_INFO = {
+  solo:{ icon:'🐟', card:'일반 카드', how:'🐟 혼자 하기로 깨면' },
+  race:{ icon:'⚔️', card:'은빛 카드', how:'⚔️ 함께·경쟁에서 그 라운드에 가장 많이 낚으면' },
+  coop:{ icon:'🤝', card:'우정 카드', how:'🤝 함께·협동으로 깨면' }
+};
+function dexAll(){
+  try{ const v = JSON.parse(localStorage.getItem(DEX2_KEY)); if(v) return v; }catch(e){}
+  // 예전 도감(fishDex) 옮겨 오기: 모은 방식 기록이 있으면 그 카드, 없으면 일반 카드
+  const all = {};
+  try{
+    const old = JSON.parse(localStorage.getItem('fishDex')) || {}, log = JSON.parse(localStorage.getItem('fishDexLog')) || [];
+    Object.keys(old).forEach(n => { all[n] = {};
+      (old[n] || []).forEach(r => { const l = log.find(x => x.n === n && x.r === r); all[n][r] = { [(l && l.how) || 'solo']:(l && l.at) || 0 }; }); });
+    localStorage.setItem(DEX2_KEY, JSON.stringify(all));
+  }catch(e){}
+  return all;
 }
-function dexAll(){ try{ return JSON.parse(localStorage.getItem(DEX_KEY)) || {}; }catch(e){ return {}; } }
-const dexOf = nick => new Set(dexAll()[nick] || []);
-// 이 기기 전체 도감: 이 기기에서 누구라도 모은 친구를 모두 합침
-const dexDevice = () => new Set(Object.values(dexAll()).flat());
-function dexAdd(r){
-  const nick = getNick(); if(!nick) return false;
-  const all = dexAll(), have = new Set(all[nick] || []);
-  if(have.has(r)) return false;
-  have.add(r); all[nick] = [...have].sort((a, b) => a - b);
-  try{ localStorage.setItem(DEX_KEY, JSON.stringify(all)); }catch(e){}
-  // 누가 · 언제 · 어떻게 모았는지 기록
-  const log = dexLog(); log.push({ n:nick, r, at:Date.now(), how:S.mode === 'multi' ? (S.coop ? 'coop' : 'race') : 'solo' });
-  try{ localStorage.setItem(DEX_LOG_KEY, JSON.stringify(log.slice(-500))); }catch(e){}
-  (S.newDex = S.newDex || []).push(r);
+const dexMine = nick => dexAll()[nick] || {};
+const dexCount = m => ({ friends:Object.keys(m).length, cards:Object.values(m).reduce((t, k) => t + Object.keys(k).length, 0) });
+function dexAdd(r, kind){
+  const nick = getNick(); if(!nick || !kind) return false;
+  const all = dexAll(), me = all[nick] = all[nick] || {}, slot = me[r] = me[r] || {};
+  if(slot[kind] != null) return false;
+  slot[kind] = Date.now();
+  try{ localStorage.setItem(DEX2_KEY, JSON.stringify(all)); }catch(e){}
+  (S.newDex = S.newDex || []).push({ r, kind });
   return true;
 }
-function dexCard(r, locked, withWho){
-  const k = fishKind(r), pal = isBoss(r) ? BOSS_COLORS : (k.colors || COLORS);
+// 카드 그리기: kinds = { solo:시각, race:시각, coop:시각 } (없으면 잠김)
+function dexCard(r, kinds, onClick){
+  const k = fishKind(r), pal = isBoss(r) ? BOSS_COLORS : (k.colors || COLORS), have = kinds && Object.keys(kinds).length;
   const d = document.createElement('div');
-  d.className = 'dex-card' + (locked ? ' lock' : '') + (isBoss(r) ? ' boss' : '');
-  d.innerHTML = fishSvg(r) + `<div>${locked ? `❓ ${r}라운드` : k.name}</div>`;
+  d.className = 'dex-card' + (have ? '' : ' lock') + (isBoss(r) ? ' boss' : '')
+    + (kinds && kinds.coop != null ? ' k-coop' : kinds && kinds.race != null ? ' k-race' : '');
+  d.innerHTML = fishSvg(r) + `<div>${have ? k.name : `❓ ${r}라운드`}</div>`
+    + `<div class="dex-kinds">${KINDS.map(x => `<span class="${kinds && kinds[x] != null ? '' : 'off'}">${KIND_INFO[x].icon}</span>`).join('')}</div>`;
   colorFish(d.querySelector('svg'), ...pal[0]);
-  if(!locked && withWho){
-    d.onclick = () => dexInfo(r);
-  }
+  if(onClick) d.onclick = onClick;
   return d;
 }
+const fmtDay = t => { const d = new Date(t); return `${d.getMonth() + 1}월 ${d.getDate()}일`; };
+let dexView = 'mine';
 function openDex(){
   const nick = getNick();
   if(!nick){                                   // 닉네임을 넣어야 내 도감이 열림
@@ -1336,28 +1356,71 @@ function openDex(){
     $('#nickMsg').textContent = '👆 닉네임을 입력하면 내 도감을 볼 수 있어요!';
     return;
   }
-  const have = dexOf(nick), grid = $('#dexGrid'); grid.innerHTML = '';
-  for(let r = 1; r <= LAST_ROUND; r++) grid.appendChild(dexCard(r, !have.has(r), true));
-  $('#dexInfo').innerHTML = have.size ? '👆 친구 카드를 누르면 언제 어떻게 모았는지 보여요' : '아직 모은 친구가 없어요. 라운드를 깨 보세요! 🎣';
-  $('#dexTitle').textContent = `📖 ${nick}의 바다 친구 도감 (${have.size}/${LAST_ROUND})` + (have.size >= LAST_ROUND ? ' 👑' : '');
+  dexView = 'mine';
+  const mine = dexMine(nick), c = dexCount(mine), grid = $('#dexGrid'); grid.innerHTML = '';
+  for(let r = 1; r <= LAST_ROUND; r++) grid.appendChild(dexCard(r, mine[r], () => dexInfo(r)));
+  $('#dexTitle').textContent = `📖 ${nick}의 바다 친구 도감`;
+  $('#dexSub').textContent = `친구 ${c.friends}/${LAST_ROUND} · 카드 ${c.cards}/${LAST_ROUND * 3}장` + (c.cards >= LAST_ROUND * 3 ? ' 👑 모두 모았어요!' : '');
+  $('#dexInfo').innerHTML = '🐟 일반 카드 · ⚔️ 은빛 카드 · 🤝 우정 카드<br>👆 카드를 누르면 어떻게 모으는지 보여요';
   $('#dexModal').classList.add('show');
 }
-// 카드를 누르면: 누가 · 언제 · 어떤 방식으로 모았는지
+// 카드를 누르면: 카드 3종류를 언제 모았는지 / 어떻게 모으는지
 function dexInfo(r){
-  const k = fishKind(r), fmt = t => { const d = new Date(t); return `${d.getMonth() + 1}월 ${d.getDate()}일`; };
-  const me = dexWho(r).find(x => x.n === getNick()) || {};
-  $('#dexInfo').innerHTML = `<div class="dex-info-t">${k.name} (${r}라운드)</div>`
-    + (me.at ? `${fmt(me.at)}에 모았어요! (${HOW_TXT[me.how] || ''})` : '언제 모았는지 기록이 없어요.');
-  const box = $('#dexInfo');
-  box.scrollIntoView({ block:'nearest', behavior:'smooth' });
+  const k = fishKind(r), slot = dexMine(getNick())[r] || {};
+  $('#dexInfo').innerHTML = `<div class="dex-info-t">${k.name} (${r}라운드)</div>` + KINDS.map(x => {
+    const t = slot[x], I = KIND_INFO[x];
+    return `<div class="${t != null ? '' : 'dim'}">${I.icon} ${I.card}: ${t != null ? (t ? `${fmtDay(t)}에 모았어요!` : '모았어요!') : `아직 없어요 (${I.how})`}</div>`;
+  }).join('');
+  $('#dexInfo').scrollIntoView({ block:'nearest', behavior:'smooth' });
 }
-// 결과 화면: 이번 판에 새로 모은 친구
+// 결과 화면: 이번 판에 새로 모은 카드
 function renderDexNew(){
   const box = $('#dexNew'), list = S.newDex || [];
   box.classList.toggle('show', list.length > 0);
   if(!list.length){ box.innerHTML = ''; return; }
-  box.innerHTML = `📖 새로 모은 바다 친구 ${list.length}마리! <small>(도감 ${dexOf(getNick()).size}/${LAST_ROUND})</small><div class="dex-grid"></div>`;
-  list.forEach(r => box.querySelector('.dex-grid').appendChild(dexCard(r, false)));
+  const c = dexCount(dexMine(getNick()));
+  box.innerHTML = `📖 새 카드 ${list.length}장! <small>(카드 ${c.cards}/${LAST_ROUND * 3}장)</small><div class="dex-grid"></div>`;
+  list.forEach(x => { const d = dexCard(x.r, { [x.kind]:1 });
+    d.querySelector('div').textContent = `${KIND_INFO[x.kind].icon} ${fishKind(x.r).name}`; box.querySelector('.dex-grid').appendChild(d); });
+}
+// 함께·경쟁: 이번 라운드에 내가 가장 많이 낚았나 (동점이면 모두)
+function mpRoundTop(){
+  const cnt = {};
+  Object.values(MP.claims).forEach(cl => { if(cl.ok) cnt[cl.uid] = (cnt[cl.uid] || 0) + 1; });
+  const mine = cnt[MP.uid] || 0;
+  return mine > 0 && mine >= Math.max(...Object.values(cnt));
+}
+
+/* ---------- 🏫 우리 반 협동 도감 (Firebase에 저장 → 어느 기기에서 봐도 같음) ---------- */
+async function openClassDex(){
+  dexView = 'class';
+  $('#dexTitle').textContent = '🏫 우리 반 협동 도감';
+  $('#dexSub').textContent = '불러오는 중… 🎣';
+  $('#dexGrid').innerHTML = ''; $('#dexInfo').textContent = '';
+  $('#dexModal').classList.add('show');
+  let list = null;
+  try{ list = await window.FB.loadClassDex(); }catch(e){}
+  if(dexView !== 'class') return;
+  if(!list){ $('#dexSub').textContent = '🟡 서버에 연결되지 않아 우리 반 도감을 불러올 수 없어요.'; return; }
+  const byR = {}; list.forEach(x => byR[x.r] = x);
+  const grid = $('#dexGrid');
+  for(let r = 1; r <= LAST_ROUND; r++){
+    const x = byR[r], d = dexCard(r, x ? { coop:1 } : null, x ? () => classDexInfo(x) : null);
+    d.querySelector('.dex-kinds').remove();                    // 우리 반 도감은 우정 카드만
+    if(x){ const c = document.createElement('div'); c.className = 'dex-who'; c.textContent = `🤝 ${x.count || 1}번`; d.appendChild(c); }
+    grid.appendChild(d);
+  }
+  $('#dexSub').textContent = `우리 반이 함께·협동으로 깬 바다 친구 ${list.length}/${LAST_ROUND} · 어느 기기에서 봐도 같아요`;
+  $('#dexInfo').textContent = list.length ? '👆 카드를 누르면 누가 함께 모았는지 보여요' : '아직 없어요. 친구들과 🤝 협동 모드로 라운드를 깨 보세요!';
+}
+function classDexInfo(x){
+  const box = $('#dexInfo'); box.innerHTML = '';
+  const add = (cls, txt) => { const d = document.createElement('div'); if(cls) d.className = cls; d.textContent = txt; box.appendChild(d); };
+  add('dex-info-t', `${fishKind(x.r).name} (${x.r}라운드)`);
+  if(x.first) add('', `🎉 처음 모은 날: ${fmtDay(x.first)}` + (x.firstNames && x.firstNames.length ? ` (${x.firstNames.join('·')})` : ''));
+  add('', `🤝 지금까지 협동으로 ${x.count || 1}번 깼어요`);
+  if(x.names && x.names.length) add('', `👥 함께한 친구: ${x.names.join(', ')}`);
+  box.scrollIntoView({ block:'nearest', behavior:'smooth' });
 }
 function colorFish(svg, body, dark, belly){
   svg.style.setProperty('--b', body); svg.style.setProperty('--d', dark); svg.style.setProperty('--l', belly);
@@ -1434,10 +1497,10 @@ function roundClear(){
   cells.forEach(c => clearTimeout(c.timer));
   const bonus = pts(50 + S.timeLeft);     // 클리어 보너스 (50 + 남은 초) × 배율
   addScore(bonus); S.cleared++; closeRound(true); updateHud();
-  const newOne = dexAdd(S.round);
+  const newOne = dexAdd(S.round, 'solo');
   sfx.clear();
   if(S.round >= LAST_ROUND){ setTimeout(() => endGame('allclear'), 700); return; }
-  countdown([`🎉 ${S.round}라운드 클리어!`, `보너스 +${bonus}`].concat(newOne ? [`📖 ${fishKind(S.round).name} 모았다!`] : []), () => {
+  countdown([`🎉 ${S.round}라운드 클리어!`, `보너스 +${bonus}`].concat(newOne ? [`📖 ${fishKind(S.round).name} 카드 모았다!`] : []), () => {
     if(S.over) return;
     S.round++; startRound_(false);
   }, 1100);
@@ -2074,8 +2137,12 @@ function mpRoundClear(){
   const bonus = pts(50 + S.timeLeft);
   addScore(bonus); S.cleared++; closeRound(true); updateHud(); mpPushMe(); sfx.clear();
   const last = S.round >= LAST_ROUND, r = S.round;
-  const newOne = !S.out && dexAdd(r);                           // 탈락하지 않은 사람만 도감에 모음
-  countdown((last ? ['👑 끝판왕 격파!'] : [`🎉 ${r}라운드 클리어!`, `보너스 +${bonus}`]).concat(newOne ? [`📖 ${fishKind(r).name} 모았다!`] : []), () => {}, 1300);
+  // 도감 카드: 협동 = 우정 카드, 경쟁 = 그 라운드에 가장 많이 낚았으면 은빛 카드 (탈락한 사람은 못 모음)
+  const kind = S.out ? null : S.coop ? 'coop' : mpRoundTop() ? 'race' : null;
+  const newOne = dexAdd(r, kind);
+  // 우리 반 협동 도감: 방장이 한 번만 서버에 기록 (탈락하지 않은 친구들 이름)
+  if(S.coop && MP.isHost) window.FB.classDexAdd(r, MP.room.seats.filter(u => !MP.out.has(u)).map(u => u === MP.uid ? getNick() : nameOf(u)));
+  countdown((last ? ['👑 끝판왕 격파!'] : [`🎉 ${r}라운드 클리어!`, `보너스 +${bonus}`]).concat(newOne ? [`📖 ${KIND_INFO[kind].icon} ${fishKind(r).name} ${KIND_INFO[kind].card}!`] : []), () => {}, 1300);
   if(MP.isHost) setTimeout(() => {
     if(!MP) return;
     if(last) window.FB.mpRoom(MP.code, { status:'ended', endReason:'allclear' });
@@ -2170,6 +2237,7 @@ function mpResults(){
 
 $('#startBtn').onclick = () => tryStart('solo');
 $('#dexBtn').onclick = openDex;
+$('#classDexBtn').onclick = openClassDex;
 $('#dexClose').onclick = () => $('#dexModal').classList.remove('show');
 $('#dexModal').onclick = e => { if(e.target.id === 'dexModal') $('#dexModal').classList.remove('show'); };
 $('#togetherBtn').onclick = () => tryStart('multi');
@@ -2357,8 +2425,31 @@ async function mpClaim(code, round, fid, ok){
   }catch(e){ return false; }
 }
 
+// 🏫 우리 반 협동 도감: 협동으로 깬 라운드를 서버에 모음 (방장이 한 번 기록)
+async function classDexAdd(r, names){
+  try{
+    await ready;
+    const ref = doc(db, 'classDex', String(r));
+    names = names.filter(n => typeof n === 'string' && n.length > 0 && n.length <= 10);
+    await runTransaction(db, async tx => {
+      const cur = await tx.get(ref);
+      if(!cur.exists()) tx.set(ref, { r, count:1, names:names.slice(0, 60), firstNames:names.slice(0, 6), first:serverTimestamp(), last:serverTimestamp() });
+      else { const d = cur.data(), all = [...new Set([...(d.names || []), ...names])].slice(0, 60);
+        tx.set(ref, { r, count:(d.count || 0) + 1, names:all, firstNames:d.firstNames || [], first:d.first || serverTimestamp(), last:serverTimestamp() }); }
+    });
+  }catch(e){ console.warn('우리 반 도감 기록 실패', e.code || e); }
+}
+async function loadClassDex(){
+  await ready;
+  const snap = await getDocs(collection(db, 'classDex'));
+  if(snap.metadata && snap.metadata.fromCache) throw new Error('cache');
+  const ms = t => t && t.toMillis ? t.toMillis() : null;
+  return snap.docs.map(d => { const x = d.data(); return { r:x.r, count:x.count, names:x.names || [], firstNames:x.firstNames || [], first:ms(x.first) }; })
+    .filter(x => x.r >= 1 && x.r <= 15);
+}
+
 window.FB = { saveGame, loadRanking, saveRecord, uid:() => me && me.uid,
-              mpCreate, mpJoin, mpSetMe, mpRoom, mpWatch, mpWatchClaims, mpClaim };
+              mpCreate, mpJoin, mpSetMe, mpRoom, mpWatch, mpWatchClaims, mpClaim, classDexAdd, loadClassDex };
 loadRanking();
 // 처음 화면으로 돌아올 때마다 최신 랭킹 다시 불러오기
 document.getElementById('homeBtn').addEventListener('click', loadRanking);
