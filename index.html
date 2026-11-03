@@ -62,6 +62,15 @@ input[type=range]{width:100%;accent-color:var(--sea2);height:28px}
 /* 아이폰(사파리)은 user-select:none이 입력창까지 막아 글자가 안 써지므로 입력창만 허용 */
 input,textarea{-webkit-user-select:text;user-select:text}
 button{touch-action:manipulation}
+/* 닉네임 칸을 누르면 우리 반 이름 고르기 (직접 입력도 됨) */
+.nick-wrap{position:relative;width:100%}
+.nick-pick{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#fff;border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,40,80,.25);padding:10px;flex-wrap:wrap;gap:8px;justify-content:center}
+.nick-pick.show{display:flex}
+.nick-pick button{border:2px solid #ffd84d;background:#fffbe8;border-radius:999px;padding:8px 16px;font-family:inherit;font-weight:800;
+  font-size:1.15rem;color:var(--ink);cursor:pointer}
+.nick-pick button:active{background:#ffd84d}
+.nick-pick small{flex-basis:100%;text-align:center;color:#7a8a9a;font-size:.8rem}
 .nick-msg{min-height:1.3em;margin-top:-6px;color:var(--bad);font-weight:800;font-size:.95rem}
 .nick:focus{border-color:#ffb800;box-shadow:0 0 0 4px rgba(255,216,77,.35)}
 .nick.need{animation:shake .35s;border-color:var(--bad)}
@@ -461,7 +470,10 @@ body.iam-out #outBanner{display:block}
 
     <p class="guide">🎣 맞는 곱셈식 물고기를 정확히 낚으세요!</p>
 
-    <input class="nick" id="nick" type="text" maxlength="10" placeholder="닉네임 입력" autocomplete="off" enterkeyhint="go">
+    <div class="nick-wrap">
+      <input class="nick" id="nick" type="text" maxlength="10" placeholder="닉네임 입력" autocomplete="off" enterkeyhint="go">
+      <div class="nick-pick" id="nickPick"></div>
+    </div>
     <div class="nick-msg" id="nickMsg"></div>
     <div class="start-row">
       <button class="start-btn home-start" id="startBtn">🐟 혼자 하기</button>
@@ -828,6 +840,19 @@ renderRoundPick();
 
 /* ---------- 닉네임 ---------- */
 $('#nick').value = '';             // 새로고침하면 항상 빈칸 (지난 이름을 불러오지 않음)
+// 우리 반 이름: 칸을 누르면 골라서 넣기 (목록에 없으면 직접 입력)
+const CLASS_NAMES = ['김시우', '박새나', '송은후', '송시안', '이설'];
+(function(){
+  const box = $('#nickPick'), inp = $('#nick');
+  CLASS_NAMES.forEach(n => { const b = document.createElement('button'); b.type = 'button'; b.textContent = n;
+    b.addEventListener('pointerdown', e => { e.preventDefault(); inp.value = n; $('#nickMsg').textContent = ''; box.classList.remove('show'); inp.blur(); });
+    box.appendChild(b); });
+  box.insertAdjacentHTML('beforeend', '<small>목록에 없으면 칸에 직접 입력하세요</small>');
+  const show = () => { if(!inp.value.trim()) box.classList.add('show'); };
+  inp.addEventListener('focus', show); inp.addEventListener('click', () => box.classList.add('show'));
+  inp.addEventListener('input', () => box.classList.toggle('show', !inp.value.trim()));
+  inp.addEventListener('blur', () => setTimeout(() => box.classList.remove('show'), 120));
+})();
 function getNick(){ return $('#nick').value.trim().slice(0,10); }
 function tryStart(mode){
   const n = getNick();
