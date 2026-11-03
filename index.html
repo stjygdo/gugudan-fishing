@@ -721,9 +721,13 @@ const ACTIVE_WINDOW = 5000;    // 최근 5초 안에 1마리 이상 낚았을 �
 // 틀린 식 물고기를 잘 참고 놓아줬을 때 나오는 칭찬
 const GOOD_WORDS = ['굿!','좋아!','잘 참았어!','멋져!','눈썰미 짱!','바로 그거야!','훌륭해!','역시!','침착해!','완벽해!','최고!','잘 골랐어!'];
 const MIN_CORRECT = 3;          // 화면에 맞는 식 최소 3마리 유지
-const MAX_MISS = 15;            // 놓친 물고기(도망+틀린 식 터치) 한도
+const MAX_MISS = 15;            // 놓친 물고기(도망+틀린 식 터치) 한도 (혼자 하기)
+const MP_MAX_MISS = 20;         // 함께·협동: 팀이 20마리 놓치면 끝
+const missMax = () => S && S.mode === 'multi' ? MP_MAX_MISS : MAX_MISS;
 const MISS_PER_ROUND = true;    // true: 라운드마다 0부터 다시 셈 / false: 게임 전체 누적
-const ROUND_GOAL = 15;          // 라운드마다 낚아야 할 맞는 물고기 수
+const ROUND_GOAL = 15;          // 라운드마다 낚아야 할 맞는 물고기 수 (혼자 하기)
+const MP_GOAL = 20;             // 함께 하기는 20마리
+const goalNow = () => S && S.mode === 'multi' ? MP_GOAL : ROUND_GOAL;
 const ROUND_TIME = 120;         // 라운드 제한 시간(초) = 2분
 const LAST_ROUND = 15;
 
@@ -1637,10 +1641,12 @@ function updateHud(){
   const nb = comboBonus(S.combo + 1);
   $('#combo').textContent = S.combo >= 2 ? `🔥 ${S.combo}연속!` + (nb ? ` 다음 +${nb}` : '') : '';
   $('#miss').textContent = missNow();
-  $('#missChip').classList.toggle('warn', missNow() >= MAX_MISS - 5);
+  $('#missChip').classList.toggle('warn', missNow() >= missMax() - 5);
+  $('#missMax').textContent = missMax();
   $('#rbRound').textContent = (S.round === LAST_ROUND ? '👑 ' : '') + S.round + '라운드' + (S.mult ? ` ×${S.mult.toFixed(1)}` : '');
   $('#rbCaught').textContent = S.roundCaught || 0;
-  $('#rbFill').style.width = Math.min(100, (S.roundCaught || 0) / ROUND_GOAL * 100) + '%';
+  $('#rbFill').style.width = Math.min(100, (S.roundCaught || 0) / goalNow() * 100) + '%';
+  $('#rbGoal').textContent = goalNow();
 }
 
 /* ---------- 게임 종료 ---------- */
@@ -1652,7 +1658,7 @@ function endGame(reason){
   const titles = {
     allclear: `👑 끝판왕 격파! ${LAST_ROUND}라운드 클리어!`,
     time: `⏰ ${S.round}라운드 시간 초과!`,
-    miss: `💨 물고기 ${MAX_MISS}마리를 놓쳤어요!`
+    miss: `💨 물고기 ${missMax()}마리를 놓쳤어요!`
   };
   $('#endTitle').textContent = titles[reason] || '🏁 게임 끝!';
   renderDexNew();
@@ -1679,7 +1685,7 @@ function endGame(reason){
     const rr = mpResults();
     if(S.coop){
       $('#endTitle').textContent = reason === 'allclear' ? `👑 우리 팀 ${LAST_ROUND}라운드 클리어!` : `🤝 우리 팀 ${S.round}라운드까지!`;
-      $('#myRank').textContent = `🤝 ${rr.count}명이 함께 · ` + ({ allclear:'끝판왕 격파!', time:'시간 초과', miss:`팀이 ${MAX_MISS}마리 놓침`, out:'모두 탈락' }[reason] || '게임 종료');
+      $('#myRank').textContent = `🤝 ${rr.count}명이 함께 · ` + ({ allclear:'끝판왕 격파!', time:'시간 초과', miss:`팀이 ${MP_MAX_MISS}마리 놓침`, out:'모두 탈락' }[reason] || '게임 종료');
       if(window.FB) window.FB.saveRecord({ name:getNick(), mode:'coop', room:MP.code, players:rr.count, teamScore:teamScore(), ...result });
     }else{
       $('#endTitle').textContent = `🏆 ${rr.winner.name} 우승!`;
@@ -1710,8 +1716,8 @@ function endGame(reason){
       + `<span class="bar"><i style="width:${Math.round(x.score / maxSc * 100)}%"></i></span>`
       + `<span class="sc">${x.score}</span>`
       + `<span class="st">${x.cleared ? '✅' : isBest ? '⚡' : '🐟'}</span>`;
-    row.title = x.cleared ? '클리어' : `${x.caught}/${ROUND_GOAL}마리`;
-    if(!x.cleared) row.querySelector('.rr').textContent += ` ${x.caught}/${ROUND_GOAL}`;
+    row.title = x.cleared ? '클리어' : `${x.caught}/${goalNow()}마리`;
+    if(!x.cleared) row.querySelector('.rr').textContent += ` ${x.caught}/${goalNow()}`;
     log.appendChild(row);
   });
   if(!S.roundLog.length) log.innerHTML = '<span>기록이 없어요</span>';
@@ -1742,7 +1748,7 @@ function endGame(reason){
    · 방장이 방을 만들면 4자리 방 번호가 생기고, 친구들이 번호로 들어옴 (최대 6명)
    · 모두 같은 물고기를 봄: 물고기 순서는 방 번호에 딸린 '씨앗(seed)'으로 모든 기기에서 똑같이 계산
    · 먼저 터치한 사람이 낚음: Firebase에 "이 물고기 내가 낚았다" 기록을 먼저 남긴 사람만 성공
-   · 맞는 물고기 15마리가 낚이면 다 같이 다음 라운드 (방장 화면이 진행을 맡음) */
+   · 맞는 물고기 20마리가 낚이면 다 같이 다음 라운드 (방장 화면이 진행을 맡음) */
 const MP_MAX = 6, MP_INTRO = 5000;
 const mpCorrectP = r => .7 - .2 * (r - 1) / (LAST_ROUND - 1);   // 함께 하기 맞는 물고기 비율: 1R 70% → 15R 50%
 const GOLD_P = .06, GOLD_PTS = 30, GOLD_TEAM = 3;      // 황금 바다 친구: 맞는 물고기의 6% / 낚으면 30점(협동은 팀 3마리)
@@ -1870,6 +1876,8 @@ let coopPick = false;
 try{ coopPick = localStorage.getItem('fishCoop') === '1'; }catch(e){}
 function renderModePick(){
   document.body.classList.toggle('pick-multi', MODE === 'multi');
+  $('#noteGoal').textContent = MODE === 'multi' ? MP_GOAL : ROUND_GOAL;   // 설정 화면 안내: 함께 하기는 20마리
+  $('#noteMax').textContent = MODE === 'multi' ? MP_MAX_MISS : MAX_MISS;
   document.querySelectorAll('#modePick .lv').forEach(b => b.classList.toggle('on', (b.dataset.m === 'coop') === coopPick));
 }
 document.querySelectorAll('#modePick .lv').forEach(b => b.onclick = () => {
@@ -1996,8 +2004,8 @@ function mpOnClaims(list){
   Object.keys(badBy).forEach(uid => { if(badBy[uid] >= MP_OUT && !MP.out.has(uid)){ MP.out.add(uid); newOut = true; } });
   if(newOut) mpOutChanged();
   if(S.coop){ S.roundMiss = MP.escMiss + MP.wrongMiss; updateHud(); }
-  if(S.running && caught >= ROUND_GOAL && !MP.roundOver) mpRoundClear();
-  else if(S.running && S.coop && S.roundMiss >= MAX_MISS && !MP.roundOver) mpRoundFail();
+  if(S.running && caught >= MP_GOAL && !MP.roundOver) mpRoundClear();
+  else if(S.running && S.coop && S.roundMiss >= MP_MAX_MISS && !MP.roundOver) mpRoundFail();
   mpTick();
 }
 const mpFish = id => { const [i, k] = id.split('-').map(Number); return MP.sched && MP.sched[i] && MP.sched[i][k]; };
@@ -2084,7 +2092,7 @@ function mpExpire(c, f){
   setState(c, 'snap');
   if(isCorrect(c)){ floatText(c, pick(SNAP_WORDS), 'tang'); sfx.tang(); S.escaped++;
     if(S.coop){ MP.escMiss++; S.roundMiss = MP.escMiss + MP.wrongMiss; updateHud();
-      if(S.roundMiss >= MAX_MISS && !MP.roundOver) mpRoundFail(); } }
+      if(S.roundMiss >= MP_MAX_MISS && !MP.roundOver) mpRoundFail(); } }
   else { floatText(c, pick(GOOD_WORDS), 'goodword'); S.ignored++; }
   mpLater(c, f);
 }
@@ -2133,7 +2141,7 @@ function mpRoundClear(){
     else window.FB.mpRoom(MP.code, { round:r + 1 }, true);
   }, 2800);
 }
-// 협동: 팀이 한 라운드에 15마리를 놓치면 끝
+// 협동: 팀이 한 라운드에 20마리를 놓치면 끝
 function mpRoundFail(){
   MP.roundOver = true; S.running = false;
   if(MP.isHost) window.FB.mpRoom(MP.code, { status:'ended', endReason:'miss' });
