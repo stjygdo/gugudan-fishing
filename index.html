@@ -306,14 +306,36 @@ body.bg-r13 #gameScreen::after{animation:lightning 6s infinite}
 body.bg-r14{background:linear-gradient(180deg,#3a2a7a 0%,#2c2070 35%,#1d165a 70%,#0e0b33 100%)}
 body.bg-r14 #gameScreen::after{inset:-75%;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(160,140,255,.12) 0 12deg,transparent 12deg 30deg);animation:spin 18s linear infinite;transform-origin:50% 50%}
 body.bg-r14 #gameScreen::before{background-image:radial-gradient(circle,rgba(200,180,255,.5) 0 2px,transparent 3px);background-size:120px 140px;animation:twinkle 2s ease-in-out infinite alternate}
-/* 15 끝판왕 */
-body.bg-r15{background:linear-gradient(180deg,#3a0b30 0%,#4d0c26 35%,#2a0618 70%,#0d0208 100%)}
-body.bg-r15 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,140,60,.6) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,60,60,.45) 0 2px,transparent 3px);
+/* 20 끝판왕 */
+body.bg-r20{background:linear-gradient(180deg,#3a0b30 0%,#4d0c26 35%,#2a0618 70%,#0d0208 100%)}
+body.bg-r20 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,140,60,.6) 0 3px,transparent 4px),radial-gradient(circle,rgba(255,60,60,.45) 0 2px,transparent 3px);
   background-size:180px 220px,120px 160px;animation:bubbleUp 7s linear infinite}
-body.bg-r15 #gameScreen::after{animation:flash 5s infinite}
+body.bg-r20 #gameScreen::after{animation:flash 5s infinite}
+/* 15 먼바다: 밝은 하늘과 반짝이는 물결 */
+body.bg-r15{background:linear-gradient(180deg,#e3f6ff 0%,#a9e2ff 20%,#4fb6f0 40%,#1f7fd0 75%,#0f4f96 100%)}
+body.bg-r15 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,255,255,.7) 0 2px,transparent 3px),radial-gradient(circle,rgba(255,255,255,.45) 0 1.5px,transparent 2.5px);
+  background-size:110px 90px,70px 60px;animation:twinkle 1.6s ease-in-out infinite alternate}
+body.bg-r15 #gameScreen::after{background:radial-gradient(circle at 15% 7%,#fffbd0 0 36px,rgba(255,245,180,.4) 37px 64px,transparent 65px)}
+/* 16 모래 바닥: 맑은 물 아래 모래와 조개 */
+body.bg-r16{background:linear-gradient(180deg,#d6fbff 0%,#9eeef2 25%,#55d0d8 55%,#e8d39a 82%,#d9b874 100%)}
+body.bg-r16 #gameScreen::before{background-image:radial-gradient(circle,rgba(255,255,255,.45) 0 3px,transparent 4px);background-size:150px 180px;animation:bubbleUp 13s linear infinite}
+body.bg-r16 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 80'><g opacity='.7'><path d='M40 70 a14 12 0 0 1 28 0z' fill='%23ffb0c8'/><path d='M150 74 l8 -16 l8 16z' fill='%23fff1c8'/><path d='M230 72 a12 10 0 0 1 24 0z' fill='%23ffd28a'/><circle cx='110' cy='72' r='4' fill='%23fff'/><circle cx='200' cy='74' r='3' fill='%23fff'/></g></svg>") repeat-x bottom/300px 80px}
+/* 17 바위 동굴: 어두운 바위 */
+body.bg-r17{background:linear-gradient(180deg,#3d4a4f 0%,#2e3a3f 30%,#1f2a2e 65%,#0e1517 100%)}
+body.bg-r17 #gameScreen::before{background-image:radial-gradient(circle,rgba(170,230,255,.45) 0 2.5px,transparent 3.5px);background-size:140px 170px;animation:bubbleUp 11s linear infinite}
+body.bg-r17 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'><g fill='%23121a1c' opacity='.8'><path d='M0 0 L60 0 L40 40 L20 26 L8 60 Z'/><path d='M300 0 L230 0 L250 50 L270 30 L290 70 Z'/><path d='M0 120 L50 80 L90 100 L140 76 L190 104 L240 84 L300 110 L300 120 Z'/></g></svg>") no-repeat center/100% 100%}
+/* 18 다시마 숲: 키 큰 다시마 */
+body.bg-r18{background:linear-gradient(180deg,#9fd9c0 0%,#5fb59a 25%,#2f7f6a 60%,#164a3f 100%)}
+body.bg-r18 #gameScreen::after{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 300'><g fill='none' stroke='%23a86a1a' stroke-width='12' stroke-linecap='round' opacity='.45'><path d='M40 300C20 240 60 200 38 140C22 100 48 60 40 0'/><path d='M150 300C170 250 130 200 152 150C166 110 140 80 150 30'/></g><g fill='%23c98a2a' opacity='.4'><ellipse cx='52' cy='120' rx='12' ry='6'/><ellipse cx='30' cy='200' rx='12' ry='6'/><ellipse cx='160' cy='170' rx='12' ry='6'/></g></svg>") repeat-x bottom/200px 100%;
+  transform-origin:bottom;animation:sway 5s ease-in-out infinite alternate}
+/* 19 오로라 바다: 밤하늘 오로라와 별 */
+body.bg-r19{background:linear-gradient(180deg,#071a2e 0%,#0b2a3f 35%,#0a2236 65%,#030a14 100%)}
+body.bg-r19 #gameScreen::before{background-image:radial-gradient(circle,#fff 0 1.5px,transparent 2.5px),radial-gradient(circle,rgba(200,255,230,.8) 0 1px,transparent 2px);
+  background-size:120px 100px,80px 70px;background-position:0 0,30px 40px;animation:twinkle 2.2s ease-in-out infinite alternate}
+body.bg-r19 #gameScreen::after{background:linear-gradient(100deg,transparent 5%,rgba(80,255,170,.32) 25%,rgba(120,200,255,.25) 45%,rgba(200,120,255,.25) 60%,transparent 80%) top/100% 45% no-repeat;animation:aurora 5s ease-in-out infinite alternate}
 
 /* 어두운 배경에서는 낚싯줄을 밝게 */
-body.bg-r6 .ln line,body.bg-r8 .ln line,body.bg-r9 .ln line,body.bg-r11 .ln line,body.bg-r12 .ln line,body.bg-r13 .ln line,body.bg-r14 .ln line,body.bg-r15 .ln line{stroke:#d8ecff}
+body.bg-r6 .ln line,body.bg-r8 .ln line,body.bg-r9 .ln line,body.bg-r11 .ln line,body.bg-r12 .ln line,body.bg-r13 .ln line,body.bg-r14 .ln line,body.bg-r17 .ln line,body.bg-r19 .ln line,body.bg-r20 .ln line{stroke:#d8ecff}
 /* 끝판왕 물고기 */
 body.theme-boss .bubble{border:3px solid #ff3b3b}
 body.theme-boss .eq text{fill:#fff;stroke:#2a0618}
@@ -729,7 +751,7 @@ const ROUND_GOAL = 15;          // 라운드마다 낚아야 할 맞는 물고�
 const MP_GOAL = 20;             // 함께 하기는 20마리
 const goalNow = () => S && S.mode === 'multi' ? MP_GOAL : ROUND_GOAL;
 const ROUND_TIME = 120;         // 라운드 제한 시간(초) = 2분
-const LAST_ROUND = 15;
+const LAST_ROUND = 20;
 
 /* 라운드별 난이도: 1라운드 → 20라운드로 갈수록
    life(물고기가 버티는 시간)·gap(새 물고기 간격)은 짧아지고, max(동시 마릿수)는 늘고,
@@ -760,6 +782,11 @@ const SCENES = [
   { name:'🚢 난파선',      cat:'보물이 있을지도 모른다냥!' },
   { name:'⛈️ 폭풍 바다',   cat:'폭풍이다냥! 꽉 잡아라냥!' },
   { name:'🌀 소용돌이',    cat:'빙글빙글 어지럽다냥~' },
+  { name:'🌤️ 먼바다',     cat:'돌고래가 점프한다냥!' },
+  { name:'🏖️ 모래 바닥',   cat:'모래 속에 누가 숨었냥?' },
+  { name:'🪨 바위 동굴',   cat:'동굴은 어둡다냥… 잘 봐!' },
+  { name:'🌿 다시마 숲',   cat:'해달이 둥둥 떠 있다냥~' },
+  { name:'🌌 오로라 바다', cat:'하늘이 반짝반짝하다냥!' },
   { name:'👑 끝판왕',      cat:'끝판왕이다냥! 힘내라냥!' }
 ];
 const scene = r => SCENES[Math.min(Math.max(r,1),LAST_ROUND) - 1];
@@ -1017,7 +1044,17 @@ const BGM = [
     mel:'E5 E5 G5 E5 B5 - A5 G5 | E5 E5 G5 E5 C6 - B5 A5 | F#5 F#5 A5 F#5 D6 - C6 A5 | D#5 - F#5 - B5 - - . | B5 - G5 - E5 - G5 B5 | C6 - G5 - E5 - G5 C6 | D6 - A5 - F#5 - A5 D6 | D#6 - - - B5 - - .' },
   /* 14 소용돌이: 꿈결 같은 빙글빙글 */ { bpm:100, lead:'bell', bass:'long', arp:16, pad:true, drums:'shaker', ch:['FM7','G6','Am7','Em7'],
     mel:'A5 - C6 - E6 - C6 A5 | B5 - D6 - E6 - D6 B5 | C6 - E6 - A6 - E6 C6 | B5 - G5 - E5 - - . | F5 - E6 - C6 - A5 - | G5 - E6 - D6 - B5 - | A5 - E6 - C6 - A5 - | G5 - B5 - E6 - - .' },
-  /* 15 끝판왕: 웅장한 결전 */ { bpm:146, lead:'brass', bass:'pulse', arp:16, pad:true, drums:'epic', ch:['Dm','Bb','C','A'],
+  /* 15 먼바다: 시원하게 달리는 팝 */ { bpm:120, lead:'pluck2', bass:'bounce', arp:16, pad:true, drums:'groove', ch:['D','A','Bm','G'],
+    mel:'F#5 - A5 - D6 - C#6 B5 | A5 - E5 - C#6 - A5 - | B5 - D6 - F#6 - E6 D6 | D6 - B5 - G5 - - . | A5 - F#5 - A5 B5 D6 - | C#6 - A5 - E5 - C#6 - | D6 - B5 - F#5 - B5 D6 | B5 - A5 - G5 - - .' },
+  /* 16 모래 바닥: 느긋한 우쿨렐레 */ { bpm:100, lead:'pluck2', bass:'rf', arp:8, pad:false, drums:'shaker', ch:['C','Am','Dm7','G7'],
+    mel:'E5 - G5 E5 C5 - E5 G5 | A5 - C6 A5 E5 - - . | F5 - A5 F5 D5 - F5 A5 | G5 - F5 - D5 - B4 . | C6 - B5 A5 G5 - E5 - | A5 - G5 E5 C5 - - . | D5 - F5 - A5 - C6 - | B5 - G5 - D5 - - .' },
+  /* 17 바위 동굴: 메아리치는 수수께끼 */ { bpm:88, lead:'glass', bass:'long', arp:8, pad:true, drums:'soft', ch:['Am','Em','F','E'],
+    mel:'A4 - C5 - E5 - - . | B4 - - - G4 - - . | A4 - C5 - F5 - E5 C5 | G#4 - - - B4 - - . | E5 - - D5 C5 - A4 - | G4 - B4 - E5 - - . | F5 - E5 - C5 - A4 - | B4 - - - G#4 - - .' },
+  /* 18 다시마 숲: 살랑이는 왈츠풍 */ { bpm:92, lead:'flute', bass:'root', arp:8, pad:true, drums:'shaker', ch:['G','Em','Am7','D'],
+    mel:'D5 - G5 - B5 - - A5 | G5 - E5 - B4 - - . | C5 - E5 - A5 - G5 E5 | F#5 - - - D5 - - . | B5 - - A5 G5 - D5 - | E5 - G5 - B5 - - . | C6 - - B5 A5 - E5 - | F#5 - A5 - D6 - - .' },
+  /* 19 오로라 바다: 신비롭게 반짝이는 */ { bpm:96, lead:'musicbox', bass:'long', arp:16, pad:true, drums:'soft', ch:['EM7','C#m7','AM7','B'],
+    mel:'G#5 - B5 - D#6 - - . | E6 - C#6 - G#5 - - . | E5 - G#5 - C#6 - B5 A5 | F#5 - - - D#5 - - . | B5 - - G#5 E5 - G#5 B5 | C#6 - - B5 G#5 - E5 - | A5 - C#6 - E6 - D#6 C#6 | B5 - - - F#5 - - .' },
+  /* 20 끝판왕: 웅장한 결전 */ { bpm:146, lead:'brass', bass:'pulse', arp:16, pad:true, drums:'epic', ch:['Dm','Bb','C','A'],
     mel:'D5 - D5 F5 A5 - D6 - | Bb5 - A5 G5 F5 - D5 - | C5 - E5 G5 C6 - Bb5 A5 | A5 - C#6 - E6 - - . | F5 - E5 D5 A5 - D6 - | D6 - C6 Bb5 F5 - Bb5 - | C6 - Bb5 A5 G5 - E5 - | E5 - C#5 - A4 - - .' }
 ].map(T => ({ ...T, notes:parseMel(T.mel), chords:T.ch.map(parseChord) }));
 
@@ -1068,6 +1105,7 @@ const INSTR = {
   marimba:  { parts:[['sine',1,1],['sine',4,.25],['sine',10,.05]], vol:.15, a:.003, decay:.12, sus:0, rel:.2, rev:.4, echo:.15 },
   flute:    { parts:[['sine',1,1],['triangle',2,.12]], vol:.1, a:.07, rel:.3, vib:14, rev:.7, echo:.35 },
   soft:     { parts:[['sine',1,1],['triangle',1,.4,7]], vol:.11, a:.05, rel:.5, vib:8, rev:.8, echo:.45 },
+  pluck2:   { parts:[['triangle',1,1],['sine',2,.4],['sine',3,.12]], vol:.13, a:.003, decay:.18, sus:.05, rel:.3, filter:3400, rev:.5, echo:.3 },
   musicbox: { parts:[['sine',2,1],['sine',4,.3],['sine',6.02,.08]], vol:.08, a:.003, decay:.35, sus:.05, rel:1.1, rev:.9, echo:.4 },
   glass:    { parts:[['sine',1,1],['sine',2.01,.25],['sine',3.5,.08]], vol:.09, a:.25, rel:1.4, vib:6, rev:1, echo:.6 },
   steel:    { parts:[['sine',1,1],['sine',2,.5],['sine',3.02,.2],['triangle',1,.3,9]], vol:.12, a:.004, decay:.22, sus:.08, rel:.35, rev:.45, echo:.2 },
@@ -1167,6 +1205,11 @@ const BASE_FISH = `
     <path class="boss-only" d="M30 110 l5 8 l5 -8 l5 8 l5 -8" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
     <path class="boss-only" d="M36 72 L42 46 L54 62 L62 40 L70 62 L82 46 L86 72 Z" fill="#ffd23f" stroke="#a87a00" stroke-width="3" stroke-linejoin="round"/>
     ${HOOK}`;
+// 둥근 별 모양 (불가사리)
+function starPath(cx, cy, R, r){ let d = '';
+  for(let i = 0; i < 10; i++){ const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R;
+    d += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ' ' + (cy + rr * Math.sin(a)).toFixed(1) + ' '; }
+  return d + 'Z'; }
 const FISH_KINDS = [
   { name:'🐟 물고기', art:BASE_FISH },
   { name:'🐢 거북이', colors:[['#5fb35f','#2f7a3a','#cfe9a0'],['#7ab85a','#3f7a2a','#e2efb0'],['#4fa88a','#2a6e58','#c8ecd8']], art:`
@@ -1299,6 +1342,56 @@ const FISH_KINDS = [
     <path fill="none" stroke="#8a5a2a" stroke-width="4" d="M134 104 m-10 0 a10 10 0 1 1 20 0 a20 20 0 1 1 -40 0"/>
     <path ${FL} d="M40 104 C40 82 64 74 80 84 C76 100 76 116 80 130 C62 140 40 128 40 104 Z" stroke="#8a5a2a" stroke-width="2.5"/>
     ${EYE(58, 100, 10)}${BLUSH(56, 118)}${HOOK}` },
+  { name:'🐬 돌고래', colors:[['#7fb4e0','#3f78b0','#e8f4ff'],['#8ab0d6','#4a6f9f','#eef4fb'],['#6fc0dc','#2f88a8','#e2f7fc']], art:`
+    <g class="tailg"><path class="tail" ${FD} d="M198 112 C208 98 218 90 230 84 C224 98 224 106 226 112 C224 118 224 126 230 140 C218 134 208 126 198 116 Z"/></g>
+    <path class="fin" ${FD} d="M108 78 C118 56 134 46 148 42 C140 58 140 70 150 82 Z"/>
+    <path class="body" ${FB} d="M10 114 C14 104 28 98 44 96 C68 74 142 70 182 92 C196 100 204 108 204 114 C196 128 160 146 110 148 C70 150 44 138 30 126 C18 124 8 120 10 114 Z"/>
+    <path class="belly" ${FL} d="M24 122 C60 142 140 150 198 120 C172 142 112 152 72 146 C50 142 34 134 24 122 Z"/>
+    <path class="fin" ${FD} d="M92 138 C86 158 98 168 116 162 C106 154 102 148 106 140 Z"/>
+    <circle cx="96" cy="78" r="3" fill="#1d2b3a" opacity=".5"/>
+    ${EYE(54, 104, 10)}${BLUSH(60, 122)}
+    <path d="M12 116 q22 10 46 2" stroke="#1d2b3a" stroke-width="3" fill="none" stroke-linecap="round"/>${HOOK}` },
+  { name:'⭐ 불가사리', colors:[['#ff9a6b','#d9542f','#ffd8c4'],['#ffcf5c','#d99a00','#fff2c4'],['#ff8fb1','#d94f7f','#ffd9e6']], art:`
+    <path class="body" style="fill:var(--b);stroke:var(--b)" stroke-width="16" stroke-linejoin="round" d="${starPath(124, 104, 74, 34)}"/>
+    <g ${FL} opacity=".9"><circle cx="124" cy="42" r="4"/><circle cx="68" cy="84" r="4"/><circle cx="180" cy="84" r="4"/><circle cx="88" cy="152" r="4"/><circle cx="160" cy="152" r="4"/>
+      <circle cx="124" cy="60" r="3"/><circle cx="86" cy="90" r="3"/><circle cx="162" cy="90" r="3"/><circle cx="98" cy="138" r="3"/><circle cx="150" cy="138" r="3"/></g>
+    ${EYE(108, 84, 10)}${EYE(140, 84, 10)}${BLUSH(96, 100)}${BLUSH(152, 100)}${HOOK}` },
+  { name:'🦞 랍스터', colors:[['#e8483a','#9e1f15','#ffb8a8'],['#d9402f','#8a1a10','#ffa898'],['#ef5a3a','#a82a10','#ffc0a8']], art:`
+    <g fill="none" style="stroke:var(--d)" stroke-width="2.5" stroke-linecap="round"><path d="M62 82 C70 40 130 22 196 30"/><path d="M56 84 C60 50 104 36 150 42"/></g>
+    <g style="stroke:var(--d)" stroke-width="5" stroke-linecap="round"><path d="M86 140 l-6 16"/><path d="M104 144 l-4 16"/><path d="M122 144 l-2 16"/><path d="M140 140 l0 16"/></g>
+    <path d="M58 96 C46 86 36 76 30 62" fill="none" style="stroke:var(--b)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M58 124 C46 134 36 144 30 156" fill="none" style="stroke:var(--b)" stroke-width="10" stroke-linecap="round"/>
+    <path ${FB} d="M30 62 C8 58 2 34 18 24 C24 36 34 40 42 38 C40 28 46 18 56 16 C60 34 52 58 30 62 Z" stroke="#6a1209" stroke-width="2.5"/>
+    <path ${FB} d="M30 156 C8 160 2 184 18 194 C24 182 34 178 42 180 C40 190 46 200 56 202 C60 184 52 160 30 156 Z" stroke="#6a1209" stroke-width="2.5" transform="translate(0 -26)"/>
+    <g class="tailg"><path class="tail" ${FD} d="M204 104 C216 94 226 92 230 96 C224 104 226 112 230 120 C226 126 216 124 204 116 Z"/></g>
+    <g ${FB} stroke="#6a1209" stroke-width="2.5"><ellipse cx="200" cy="110" rx="12" ry="18"/><ellipse cx="184" cy="110" rx="14" ry="24"/><ellipse cx="166" cy="110" rx="16" ry="30"/></g>
+    <ellipse class="body" ${FB} cx="106" cy="110" rx="62" ry="38" stroke="#6a1209" stroke-width="2.5"/>
+    <ellipse ${FL} cx="106" cy="126" rx="44" ry="14" opacity=".7"/>
+    <g style="stroke:var(--d)" stroke-width="3"><path d="M64 96 v-16"/><path d="M80 92 v-16"/></g>
+    ${EYE(64, 78, 9)}${EYE(80, 74, 9)}${BLUSH(62, 116)}${HOOK}` },
+  { name:'🦦 해달', colors:[['#9a6a42','#5f3b20','#e8cfae'],['#8a5f3c','#553519','#e2c6a2'],['#a87850','#6a4426','#f0dbbf']], art:`
+    <g class="tailg"><path class="tail" ${FD} d="M204 118 C214 114 224 116 230 122 C224 130 214 132 204 128 Z"/></g>
+    <g ${FD}><ellipse cx="200" cy="84" rx="9" ry="14" transform="rotate(-20 200 84)"/><ellipse cx="214" cy="92" rx="9" ry="14" transform="rotate(-35 214 92)"/></g>
+    <ellipse class="body" ${FB} cx="132" cy="114" rx="80" ry="38"/>
+    <ellipse class="belly" ${FL} cx="132" cy="106" rx="62" ry="24"/>
+    <g ${FB}><circle cx="34" cy="78" r="8"/><circle cx="64" cy="70" r="8"/></g>
+    <circle ${FB} cx="50" cy="102" r="34"/>
+    <ellipse ${FL} cx="44" cy="112" rx="20" ry="15"/>
+    <path d="M86 76 a14 12 0 0 1 28 0 z" fill="#c9a0ff" stroke="#7a4fd9" stroke-width="2"/><path d="M92 76 v-8 M100 76 v-10 M108 76 v-8" stroke="#7a4fd9" stroke-width="1.6"/>
+    <g ${FB}><ellipse cx="88" cy="82" rx="8" ry="6"/><ellipse cx="112" cy="82" rx="8" ry="6"/></g>
+    <g stroke="#1d2b3a" stroke-width="3.5" fill="none" stroke-linecap="round"><path d="M36 94 q5 -6 10 0"/><path d="M58 92 q5 -6 10 0"/></g>
+    <ellipse cx="44" cy="106" rx="6" ry="4.5" fill="#1d2b3a"/><path d="M38 114 q6 5 12 0" stroke="#1d2b3a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    ${BLUSH(30, 112)}${BLUSH(64, 112)}${HOOK}` },
+  { name:'🐋 범고래', colors:[['#2a3442','#141a22','#f4f8fb'],['#273246','#121826','#eef4fb'],['#30343a','#16181c','#f6f6f6']], art:`
+    <g class="tailg"><path class="tail" ${FD} d="M196 110 C206 96 216 86 230 80 C224 96 224 106 226 112 C224 120 224 128 230 144 C216 138 206 128 196 116 Z"/></g>
+    <path class="fin" ${FD} d="M110 76 C116 46 126 22 134 14 C136 40 138 60 148 80 Z"/>
+    <path class="body" ${FB} d="M14 114 C14 92 40 78 72 76 C120 70 170 82 196 104 C204 112 202 120 196 124 C170 144 120 152 80 150 C40 148 14 136 14 114 Z"/>
+    <path class="belly" ${FL} d="M20 124 C50 146 130 154 190 124 C170 146 120 156 80 152 C46 148 26 138 20 124 Z"/>
+    <ellipse ${FL} cx="60" cy="96" rx="16" ry="7" transform="rotate(-8 60 96)"/>
+    <path ${FL} d="M150 110 C160 100 176 100 184 108 C176 116 162 118 150 110 Z" opacity=".55"/>
+    <path class="fin" ${FD} d="M84 140 C78 162 92 172 110 166 C100 158 96 150 100 142 Z"/>
+    <circle cx="46" cy="100" r="5" fill="#fff"/><circle class="pupil" cx="45" cy="101" r="3.4" fill="#1d2b3a"/>
+    ${BLUSH(48, 124)}<path d="M16 118 q22 10 44 4" stroke="#f4f8fb" stroke-width="3" fill="none" stroke-linecap="round"/>${HOOK}` },
   { name:'👑 끝판왕', art:BASE_FISH }
 ];
 const fishKind = r => FISH_KINDS[Math.min(Math.max(r || 1, 1), LAST_ROUND) - 1];
@@ -1316,7 +1409,7 @@ const KIND_INFO = {
   coop:{ icon:'🤝', card:'우정 카드', how:'🤝 함께·협동으로 깨면' }
 };
 function dexAll(){
-  try{ const v = JSON.parse(localStorage.getItem(DEX2_KEY)); if(v) return v; }catch(e){}
+  try{ const v = JSON.parse(localStorage.getItem(DEX2_KEY)); if(v) return dexR20(v); }catch(e){}
   // 예전 도감(fishDex) 옮겨 오기: 모은 방식 기록이 있으면 그 카드, 없으면 일반 카드
   const all = {};
   try{
@@ -1324,6 +1417,15 @@ function dexAll(){
     Object.keys(old).forEach(n => { all[n] = {};
       (old[n] || []).forEach(r => { const l = log.find(x => x.n === n && x.r === r); all[n][r] = { [(l && l.how) || 'solo']:(l && l.at) || 0 }; }); });
     localStorage.setItem(DEX2_KEY, JSON.stringify(all));
+  }catch(e){}
+  return dexR20(all);
+}
+// 20라운드로 늘리면서 끝판왕이 15 → 20라운드로 옮겨 감: 예전 15라운드 카드를 20으로 (한 번만)
+function dexR20(all){
+  try{
+    if(localStorage.getItem('fishDexR20')) return all;
+    Object.values(all).forEach(m => { if(m[15]){ m[20] = m[15]; delete m[15]; } });
+    localStorage.setItem(DEX2_KEY, JSON.stringify(all)); localStorage.setItem('fishDexR20', '1');
   }catch(e){}
   return all;
 }
@@ -1689,7 +1791,7 @@ function endGame(reason){
       if(window.FB) window.FB.saveRecord({ name:getNick(), mode:'coop', room:MP.code, players:rr.count, teamScore:teamScore(), ...result });
     }else{
       $('#endTitle').textContent = `🏆 ${rr.winner.name} 우승!`;
-      $('#myRank').textContent = `🏅 방 순위 ${rr.myRank}등 / ${rr.count}명 · ` + ({ allclear:'15라운드 클리어', time:`${S.round}라운드 시간 초과`, out:'모두 탈락' }[reason] || '게임 종료');
+      $('#myRank').textContent = `🏅 방 순위 ${rr.myRank}등 / ${rr.count}명 · ` + ({ allclear:`${LAST_ROUND}라운드 클리어`, time:`${S.round}라운드 시간 초과`, out:'모두 탈락' }[reason] || '게임 종료');
       if(window.FB) window.FB.saveRecord({ name:getNick(), mode:'multi', room:MP.code, players:rr.count, roomRank:rr.myRank, ...result });
     }
     $('#againBtn').textContent = '👥 다시 함께 하기';
@@ -2436,7 +2538,7 @@ async function loadClassDex(){
   if(snap.metadata && snap.metadata.fromCache) throw new Error('cache');
   const ms = t => t && t.toMillis ? t.toMillis() : null;
   return snap.docs.map(d => { const x = d.data(); return { r:x.r, count:x.count, names:x.names || [], firstNames:x.firstNames || [], first:ms(x.first) }; })
-    .filter(x => x.r >= 1 && x.r <= 15);
+    .filter(x => x.r >= 1 && x.r <= 20);
 }
 
 window.FB = { saveGame, loadRanking, saveRecord, uid:() => me && me.uid,
